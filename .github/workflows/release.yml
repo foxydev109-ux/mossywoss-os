@@ -36,14 +36,17 @@ jobs:
           distribution: temurin
           java-version: "17"
 
-      - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
-
       - name: Install Android platform + build tools
+        env:
+          ANDROID_HOME: /usr/local/lib/android/sdk
         run: |
+          export PATH="$ANDROID_HOME/cmdline-tools/latest/bin:$PATH"
+          yes | sdkmanager --licenses > /dev/null || true
           yes | sdkmanager 'platforms;android-34' 'build-tools;34.0.0' > /dev/null
 
       - name: Build Android APK
+        env:
+          ANDROID_HOME: /usr/local/lib/android/sdk
         run: |
           if [ -f build_apk.sh ]; then
             chmod +x build_apk.sh
