@@ -613,6 +613,8 @@ bootEl.style.transition = 'opacity 0.8s ease';
 
       MWO.taskbar.init();
       MWO.start.init();
+      MWO.currentUser = { id: currentUser.id, name: currentUser.name };
+      try { localStorage.setItem('mwo_user_name', currentUser.name); } catch (e) {}
       MWO.notif.show('Welcome', `Logged in as ${currentUser.name}`);
     },
 
@@ -2728,6 +2730,10 @@ bootEl.style.transition = 'opacity 0.8s ease';
               nm.style.fontWeight = 'bold';
               nm.style.fontSize = '0.9em';
               nm.textContent = p.name;
+              const dev = document.createElement('div');
+              dev.style.fontSize = '0.72em';
+              dev.style.opacity = '0.75';
+              dev.textContent = 'Developer: ' + (p.publisher || 'mwo-user');
               const cat = document.createElement('div');
               cat.style.fontSize = '0.72em';
               cat.style.color = 'var(--text2)';

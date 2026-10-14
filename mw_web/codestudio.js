@@ -41,7 +41,7 @@ MWO.CodeStudio = (function() {
           <button class="mw-btn" onclick="MWO.CodeStudio.newFile()" style="font-size:0.78em;padding:6px 12px">New</button>
           <button class="mw-btn" onclick="MWO.CodeStudio.openFile()" style="font-size:0.78em;padding:6px 12px">Open</button>
           <button class="mw-btn" onclick="MWO.CodeStudio.saveFile()" style="font-size:0.78em;padding:6px 12px">Save</button>
-          <button class="mw-btn primary" onclick="MWO.CodeStudio.run()" style="font-size:0.78em;padding:6px 14px">Run Run</button>
+          <button class="mw-btn primary" onclick="MWO.CodeStudio.run()" style="font-size:0.78em;padding:6px 14px">Run Run</button> <button class="mw-btn primary" onclick="MWO.CodeStudio.publish()" style="font-size:0.78em;padding:6px 14px;background:#2e7d4f">Build zip + Publish</button>
           <div style="flex:1"></div>
           <span id="cs-status" style="font-size:0.72em;color:var(--text2)">Line 1, Col 1 | 1 lines | Runs practical C/C++/C# subset (pointers out of scope)</span>
         </div>
@@ -259,6 +259,25 @@ MWO.CodeStudio = (function() {
     newFile: newFile,
     openFile: openFile,
     saveFile: saveFile,
-    run: run
+    run: run,
+    publish: function() {
+      var src = textarea ? textarea.value : '';
+      if (!src.trim()) { alert('Write some code first.'); return; }
+      if (currentLang !== 'html' && currentLang !== 'javascript') {
+        alert('Publishing to the MWO Store supports HTML/CSS/JS projects. For C/C++/C# code, use Run to execute it here.');
+        return;
+      }
+      try {
+        var html = currentLang === 'html' ? src
+          : '<!DOCTYPE html><html><head></head><body style="background:#0d1117;color:#e8e8e8;font-family:monospace;padding:12px"><script>\n' +
+            src.replace(/<\//g, '<\\/') + '\n<\/script></body></html>';
+        var bytes = new TextEncoder().encode(html);
+        MWO.ZipBuilder.buildZip([{ name: 'index.html', bytes: bytes }]).then(function(buf) {
+          var f = new File([buf], 'codestudio_project.zip', { type: 'application/zip' });
+          MWO.Publisher.openWithZip(f);
+          alert('Real zip built in-OS. Complete the MossGuard scan, rules, and disclaimer in Publish Studio to publish it to the MWO Store.');
+        });
+      } catch (e) { alert('Publish failed: ' + e.message); }
+    }
   };
 })();

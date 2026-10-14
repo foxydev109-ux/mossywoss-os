@@ -51,7 +51,12 @@ CHANGELOG (final for this release cycle):
   windows open maximized, full-screen start menu on small screens
 - Publish Studio (real zip upload, MossGuard scan, rules, Store publishing),
   real zip extraction/downloads, C/C++/C#-subset interpreter, WebXR voxel VR
-- New automated end-to-end publisher/store contract test (4/4 green)
+- Game Builder Kit (store-downloadable): code games/apps in-OS, test-run
+  them live, build REAL zips in-OS (CRC32 + deflate) and publish through
+  Publish Studio; Code Studio gained the same publish handoff; user-published
+  items show "Developer: <username>", pre-made store items show none
+- New automated end-to-end tests: publisher/store contract (4/4) and
+  game builder zip round-trip (9/9) - all green
 - APK 1.1: v1+v2+v3 signing, uncompressed resources.arsc, WebViewAssetLoader
   secure origin (Android 7.0+)
 - Shell cleanup: removed ~2,500 lines of duplicated dead code

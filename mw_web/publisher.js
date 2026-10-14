@@ -8,6 +8,8 @@
 
 MWO.Publisher = (function() {
   'use strict';
+  let stagedFile = null;
+  'use strict';
 
   /* ----------------------------------------------------------------------
    * Helper Functions
@@ -477,7 +479,8 @@ MWO.Publisher = (function() {
         uploadBtn.onclick = function() { fileInput.click(); };
 
         fileInput.onchange = async function(e) {
-          const file = e.target.files && e.target.files[0];
+          const file = (e.target.files && e.target.files[0]) || stagedFile;
+          stagedFile = null;
           if (!file) return;
 
           selectedZipName = file.name;
@@ -1127,7 +1130,7 @@ MWO.Publisher = (function() {
             folder: extractedFolder,
             entryFile: entryFile,
             publishedAt: new Date().toISOString(),
-            publisher: 'local-user',
+            publisher: (function() { try { return (MWO.currentUser && MWO.currentUser.name) || localStorage.getItem('mwo_user_name') || 'mwo-user'; } catch (e) { return 'mwo-user'; } })(),
             version: '1.0.0'
           };
 
@@ -1471,6 +1474,10 @@ MWO.Publisher = (function() {
   return {
     open: openWindow,
     listPublished: listPublished,
-    runPublished: runPublished
+    runPublished: runPublished,
+    // Stage a real File (already built in-OS by the Game Builder Kit / Code
+    // Studio) so the next opened Publish Studio uses it instead of a picker.
+    stageFile: function(f) { stagedFile = f; },
+    openWithZip: function(f) { stagedFile = f; openWindow(); }
   };
 })();

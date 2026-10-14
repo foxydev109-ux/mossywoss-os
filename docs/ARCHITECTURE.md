@@ -182,6 +182,24 @@ local-first means each user's store lives on their device - sharing happens
 by sending the zip itself (the other user publishes it identically). No
 cross-user server exists or is claimed.
 
+
+## Game Builder Kit + Code Studio publish pipeline (tested)
+
+```
+code in-OS (HTML/CSS/JS; Code Studio also runs C/C++/C# subsets)
+   -> Test Run (live iframe)
+   -> MWO.ZipBuilder.buildZip: real CRC32 + stored/deflate-raw entries
+   -> MWO.Publisher.openWithZip (staged File, no device file pickers)
+   -> MossGuard scan -> mandatory rules + disclaimer -> publish
+   -> Store card shows "Developer: <MWO username>"
+```
+
+Verified by tests/gamebuilder_test.js (9/9): the built zip has valid PK/EOCD
+records and is opened by the OS's own extractor with content intact; the
+Game Builder Kit is store-downloadable (not pre-installed); user-published
+items carry the logged-in user's name. Built-in (pre-made) store items show
+NO developer or studio attribution - only user-published content does.
+
 ## Changelog of the current cycle
 
 - Icon overhaul: pure-CSS monogram tiles; 800+ emoji and all SVG removed
@@ -205,3 +223,11 @@ cross-user server exists or is claimed.
   (honest native-track proposal), reproducible Dockerfile build+test
 - Tests: 84/84 apps, 15/15 fresh-PC, 11/11 browser zip/download,
   10/10 second boot, 11/11 interpreter, 6/6 VR engine — all green
+
+- Game Builder Kit (store-downloadable): code + test-run + REAL in-OS zip
+  building (CRC32 + deflate-raw) feeding Publish Studio; Code Studio gained
+  the same Build-zip-and-Publish handoff; Developer tags on user-published
+  items; no studio/dev labels on pre-made store content
+- Tests: 85/85 apps, 15/15 fresh-PC, 11/11 browser zip/download, 10/10 second
+  boot, 11/11 interpreter, 6/6 VR engine, 4/4 publisher-store, 9/9 game
+  builder - all green
