@@ -536,7 +536,7 @@
       id: 'mossguard',
       name: 'MossGuard',
       description: 'Security scanner & OS updates',
-      icon: '🛡️',
+      icon: 'mossguard',
       category: 'app',
       installed: true,
       launch: function() {
@@ -551,7 +551,7 @@
     var winBody = MWO.wm.create({
       id: 'mossguard',
       title: 'MossGuard Security & Updates',
-      icon: '🛡️',
+      icon: 'mossguard-security-updat',
       width: 620,
       height: 650,
       resizable: true
@@ -585,9 +585,9 @@
         <div style="display:flex;flex-direction:column;height:100%;background:#0c0e1a;color:#e2e8f0;font-family:system-ui,-apple-system,sans-serif">
           <!-- Top Tab Navigation -->
           <div style="display:flex;background:rgba(255,255,255,0.04);border-bottom:1px solid rgba(255,255,255,0.08);padding:6px 12px 0;gap:6px">
-            <button class="mg-tab-btn" data-tab="scan" style="padding:10px 16px;border:none;background:${activeTab==='scan'?'rgba(124,108,255,0.25)':'transparent'};color:${activeTab==='scan'?'#a78bfa':'#94a3b8'};border-top-left-radius:8px;border-top-right-radius:8px;font-weight:600;font-size:13px;cursor:pointer">🛡️ Scanner</button>
-            <button class="mg-tab-btn" data-tab="quarantine" style="padding:10px 16px;border:none;background:${activeTab==='quarantine'?'rgba(124,108,255,0.25)':'transparent'};color:${activeTab==='quarantine'?'#a78bfa':'#94a3b8'};border-top-left-radius:8px;border-top-right-radius:8px;font-weight:600;font-size:13px;cursor:pointer">☣️ Quarantine (${quarantineList.length})</button>
-            <button class="mg-tab-btn" data-tab="updates" style="padding:10px 16px;border:none;background:${activeTab==='updates'?'rgba(124,108,255,0.25)':'transparent'};color:${activeTab==='updates'?'#a78bfa':'#94a3b8'};border-top-left-radius:8px;border-top-right-radius:8px;font-weight:600;font-size:13px;cursor:pointer">🔄 OS Updates</button>
+ <button class="mg-tab-btn" data-tab="scan" style="padding:10px 16px;border:none;background:${activeTab==='scan'?'rgba(124,108,255,0.25)':'transparent'};color:${activeTab==='scan'?'#a78bfa':'#94a3b8'};border-top-left-radius:8px;border-top-right-radius:8px;font-weight:600;font-size:13px;cursor:pointer"> Scanner</button>
+ <button class="mg-tab-btn" data-tab="quarantine" style="padding:10px 16px;border:none;background:${activeTab==='quarantine'?'rgba(124,108,255,0.25)':'transparent'};color:${activeTab==='quarantine'?'#a78bfa':'#94a3b8'};border-top-left-radius:8px;border-top-right-radius:8px;font-weight:600;font-size:13px;cursor:pointer"> Quarantine (${quarantineList.length})</button>
+ <button class="mg-tab-btn" data-tab="updates" style="padding:10px 16px;border:none;background:${activeTab==='updates'?'rgba(124,108,255,0.25)':'transparent'};color:${activeTab==='updates'?'#a78bfa':'#94a3b8'};border-top-left-radius:8px;border-top-right-radius:8px;font-weight:600;font-size:13px;cursor:pointer"> OS Updates</button>
           </div>
 
           <!-- Main Content Body -->
@@ -625,7 +625,7 @@
               <div style="font-size:12px;color:#94a3b8;margin-top:4px">Last system scan: ${lastScan}</div>
             </div>
             <button id="mg-start-scan-btn" ${isScanning?'disabled':''} style="padding:10px 20px;background:linear-gradient(135deg, #7c6cff, #5a48e8);border:none;border-radius:8px;color:#fff;font-weight:600;font-size:13px;cursor:${isScanning?'not-allowed':'pointer'};opacity:${isScanning?0.6:1}">
-              ${isScanning ? '⏳ Scanning VFS...' : '🔍 Scan All Files'}
+              ${isScanning ? '⏳ Scanning VFS...' : ' Scan All Files'}
             </button>
           </div>
 
@@ -639,7 +639,7 @@
 
               ${scanResults.flagged.length === 0 ? `
                 <div style="text-align:center;padding:24px 0;color:#4ade80;font-size:13px">
-                  ✅ No threats or high-risk heuristics detected in filesystem!
+                  [ok] No threats or high-risk heuristics detected in filesystem!
                 </div>
               ` : `
                 <div style="display:flex;flex-direction:column;gap:10px">
@@ -657,8 +657,8 @@
                           ${item.findings.map(function(f){ return '• ' + f.detail; }).join('<br>')}
                         </div>
                         <div style="display:flex;gap:8px;margin-top:4px">
-                          <button class="mg-action-quarantine" data-path="${item.path}" data-idx="${idx}" style="padding:4px 10px;background:rgba(245,158,11,0.2);border:1px solid rgba(245,158,11,0.4);border-radius:6px;color:#fcd34d;font-size:11px;cursor:pointer">☣️ Quarantine</button>
-                          <button class="mg-action-delete" data-path="${item.path}" data-idx="${idx}" style="padding:4px 10px;background:rgba(239,68,68,0.2);border:1px solid rgba(239,68,68,0.4);border-radius:6px;color:#fca5a5;font-size:11px;cursor:pointer">🗑️ Delete Forever</button>
+ <button class="mg-action-quarantine" data-path="${item.path}" data-idx="${idx}" style="padding:4px 10px;background:rgba(245,158,11,0.2);border:1px solid rgba(245,158,11,0.4);border-radius:6px;color:#fcd34d;font-size:11px;cursor:pointer"> Quarantine</button>
+ <button class="mg-action-delete" data-path="${item.path}" data-idx="${idx}" style="padding:4px 10px;background:rgba(239,68,68,0.2);border:1px solid rgba(239,68,68,0.4);border-radius:6px;color:#fca5a5;font-size:11px;cursor:pointer"> Delete Forever</button>
                           <button class="mg-action-keep" data-idx="${idx}" style="padding:4px 10px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:6px;color:#cbd5e1;font-size:11px;cursor:pointer">Keep</button>
                         </div>
                       </div>
@@ -692,8 +692,8 @@
                     <div style="font-size:11px;color:#94a3b8">Original path: <span style="font-family:monospace">${item.originalPath}</span></div>
                     <div style="font-size:11px;color:#f87171">Reason: ${item.reason}</div>
                     <div style="display:flex;gap:8px;margin-top:6px">
-                      <button class="mg-q-release" data-qpath="${item.qPath}" style="padding:4px 10px;background:rgba(34,197,94,0.2);border:1px solid rgba(34,197,94,0.4);border-radius:6px;color:#86efac;font-size:11px;cursor:pointer">↩️ Release to /Downloads</button>
-                      <button class="mg-q-delete" data-qpath="${item.qPath}" style="padding:4px 10px;background:rgba(239,68,68,0.2);border:1px solid rgba(239,68,68,0.4);border-radius:6px;color:#fca5a5;font-size:11px;cursor:pointer">🗑️ Delete Forever</button>
+ <button class="mg-q-release" data-qpath="${item.qPath}" style="padding:4px 10px;background:rgba(34,197,94,0.2);border:1px solid rgba(34,197,94,0.4);border-radius:6px;color:#86efac;font-size:11px;cursor:pointer"> Release to /Downloads</button>
+ <button class="mg-q-delete" data-qpath="${item.qPath}" style="padding:4px 10px;background:rgba(239,68,68,0.2);border:1px solid rgba(239,68,68,0.4);border-radius:6px;color:#fca5a5;font-size:11px;cursor:pointer"> Delete Forever</button>
                     </div>
                   </div>
                 `;
@@ -714,7 +714,7 @@
               <div style="font-size:12px;color:#94a3b8;margin-top:2px">Codename: ${MWO.version.codename}</div>
             </div>
             <button id="mg-check-upd-btn" ${updateState.checking?'disabled':''} style="padding:10px 16px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:8px;color:#fff;font-weight:600;font-size:12px;cursor:pointer">
-              ${updateState.checking ? '🔄 Checking...' : '🔄 Check for Updates'}
+ ${updateState.checking? ' Checking...': ' Check for Updates'}
             </button>
           </div>
 
@@ -742,7 +742,7 @@
           ${updateState.info ? `
             <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:16px">
               ${updateState.info.updateAvailable ? `
-                <div style="color:#38bdf8;font-weight:700;font-size:14px;margin-bottom:8px">✨ Update Available: v${updateState.info.latestVersion}</div>
+ <div style="color:#38bdf8;font-weight:700;font-size:14px;margin-bottom:8px"> Update Available: v${updateState.info.latestVersion}</div>
                 <div style="font-size:12px;color:#cbd5e1;margin-bottom:10px">What's New:</div>
                 <ul style="margin:0 0 14px 18px;padding:0;font-size:12px;color:#94a3b8">
                   ${updateState.info.notes.map(function(n){ return '<li>' + n + '</li>'; }).join('')}
@@ -757,16 +757,16 @@
                   </div>
                 ` : (updateState.blobUrl ? `
                   <div style="display:flex;flex-direction:column;gap:8px">
-                    <div style="font-size:12px;color:#4ade80">✅ Package downloaded & verified at ${updateState.installedPath}</div>
-                    <button id="mg-apply-reboot-btn" style="padding:10px;background:linear-gradient(135deg, #22c55e, #16a34a);border:none;border-radius:8px;color:#fff;font-weight:700;font-size:13px;cursor:pointer">🚀 Apply & Reboot OS</button>
+                    <div style="font-size:12px;color:#4ade80">[ok] Package downloaded & verified at ${updateState.installedPath}</div>
+                    <button id="mg-apply-reboot-btn" style="padding:10px;background:linear-gradient(135deg, #22c55e, #16a34a);border:none;border-radius:8px;color:#fff;font-weight:700;font-size:13px;cursor:pointer"> Apply & Reboot OS</button>
                     <div style="font-size:11px;color:#94a3b8">Note: This update runs in-memory until you re-save the build file from Files.</div>
                   </div>
                 ` : `
-                  <button id="mg-dl-install-btn" style="padding:10px 16px;background:linear-gradient(135deg, #7c6cff, #5a48e8);border:none;border-radius:8px;color:#fff;font-weight:600;font-size:13px;cursor:pointer">⬇ Download & Install</button>
+ <button id="mg-dl-install-btn" style="padding:10px 16px;background:linear-gradient(135deg, #7c6cff, #5a48e8);border:none;border-radius:8px;color:#fff;font-weight:600;font-size:13px;cursor:pointer"> Download & Install</button>
                 `)}
               ` : `
                 <div style="color:#4ade80;font-weight:600;font-size:13px;text-align:center">
-                  ✅ Your MossyWoss OS is up to date (v${MWO.version.string()}).
+                  [ok] Your MossyWoss OS is up to date (v${MWO.version.string()}).
                 </div>
               `}
             </div>
@@ -774,7 +774,7 @@
 
           ${updateState.error ? `
             <div style="background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.3);border-radius:8px;padding:10px 12px;color:#fca5a5;font-size:12px">
-              ❌ ${updateState.error}
+              [FAIL] ${updateState.error}
             </div>
           ` : ''}
 

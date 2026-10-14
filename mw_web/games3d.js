@@ -682,21 +682,21 @@ var MWO = MWO || {};
 
 
   // =========================================================================
-  // 3. GAME 1: Sky Racers 3D 🏎️ (WebGL Kart Racer)
+ // 3. GAME 1: Sky Racers 3D (WebGL Kart Racer)
   // =========================================================================
 
   MWO.registerApp({
     id: 'skyracers3d',
     name: 'Sky Racers 3D',
     description: 'High-speed 3D kart racing circuit with AI & boost pads',
-    icon: '🏎️',
+    icon: 'sky-racers-3d',
     category: 'game',
     installed: false,
     launch: function() {
       var win = MWO.wm.create({
         id: 'skyracers-' + Date.now(),
-        title: 'Sky Racers 3D 🏎️',
-        icon: '🏎️',
+ title: 'Sky Racers 3D ',
+        icon: 'sky-racers-3d',
         width: 640,
         height: 440,
         resizable: true
@@ -713,7 +713,7 @@ var MWO = MWO || {};
           '<div id="sky-touch-controls" style="position:absolute;bottom:12px;left:12px;right:12px;display:flex;justify-content:space-between;pointer-events:auto;">' +
             '<div style="display:flex;gap:6px;">' +
               '<button id="sky-btn-left" class="mw-btn" style="width:54px;height:54px;font-size:1.4em;background:rgba(255,255,255,0.15);border-radius:50%;color:#fff;">◀</button>' +
-              '<button id="sky-btn-right" class="mw-btn" style="width:54px;height:54px;font-size:1.4em;background:rgba(255,255,255,0.15);border-radius:50%;color:#fff;">▶</button>' +
+              '<button id="sky-btn-right" class="mw-btn" style="width:54px;height:54px;font-size:1.4em;background:rgba(255,255,255,0.15);border-radius:50%;color:#fff;">Run</button>' +
             '</div>' +
             '<div style="display:flex;gap:6px;">' +
               '<button id="sky-btn-brake" class="mw-btn" style="width:54px;height:54px;font-size:0.85em;background:rgba(233,69,96,0.3);border-radius:50%;color:#fff;font-weight:700;">BRAKE</button>' +
@@ -723,7 +723,7 @@ var MWO = MWO || {};
           '<div id="sky-overlay" style="position:absolute;inset:0;background:rgba(10,10,26,0.85);display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;z-index:10;">' +
             '<h1 style="font-size:2em;color:#e94560;margin-bottom:6px;">Sky Racers 3D</h1>' +
             '<p style="color:#aaa;font-size:0.9em;margin-bottom:16px;">3 Laps to Victory! Touch Controls or WASD / Arrow Keys</p>' +
-            '<button id="sky-start-btn" class="mw-btn primary" style="padding:12px 28px;font-size:1.1em;border-radius:8px;">Tap to Start 🏎️</button>' +
+ '<button id="sky-start-btn" class="mw-btn primary" style="padding:12px 28px;font-size:1.1em;border-radius:8px;">Tap to Start </button>' +
           '</div>' +
         '</div>';
 
@@ -915,7 +915,7 @@ var MWO = MWO || {};
               saveHighScore('skyracers_best', lapTime, true);
               win.querySelector('#sky-overlay').style.display = 'flex';
               win.querySelector('#sky-overlay').innerHTML =
-                '<h1 style="color:#e94560;">FINISH! 🏆</h1>' +
+                '<h1 style="color:#e94560;">FINISH! WIN</h1>' +
                 '<p style="margin:12px 0;">Total Time: ' + lapTime.toFixed(1) + 's</p>' +
                 '<button onclick="location.reload()" class="mw-btn primary">Play Again</button>';
             } else {
@@ -1002,21 +1002,21 @@ var MWO = MWO || {};
 
 
   // =========================================================================
-  // 4. GAME 2: Star Fighter 3D 🚀 (WebGL Space Dogfight)
+  // 4. GAME 2: Star Fighter 3D  (WebGL Space Dogfight)
   // =========================================================================
 
   MWO.registerApp({
     id: 'starfighter3d',
     name: 'Star Fighter 3D',
     description: '3D WebGL space dogfight with enemies, asteroids & waves',
-    icon: '🚀',
+    icon: 'star-fighter-3d',
     category: 'game',
     installed: false,
     launch: function() {
       var win = MWO.wm.create({
         id: 'starfighter-' + Date.now(),
-        title: 'Star Fighter 3D 🚀',
-        icon: '🚀',
+        title: 'Star Fighter 3D ',
+        icon: 'star-fighter-3d',
         width: 640,
         height: 440,
         resizable: true
@@ -1036,12 +1036,12 @@ var MWO = MWO || {};
             '</div>' +
           '</div>' +
           '<div style="position:absolute;bottom:12px;right:12px;display:flex;gap:10px;pointer-events:auto;">' +
-            '<button id="sf-fire-btn" class="mw-btn" style="width:64px;height:64px;font-size:1.1em;background:rgba(233,69,96,0.6);border-radius:50%;color:#fff;font-weight:700;">FIRE 💥</button>' +
+            '<button id="sf-fire-btn" class="mw-btn" style="width:64px;height:64px;font-size:1.1em;background:rgba(233,69,96,0.6);border-radius:50%;color:#fff;font-weight:700;">FIRE X</button>' +
           '</div>' +
           '<div id="sf-overlay" style="position:absolute;inset:0;background:rgba(3,3,12,0.85);display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;z-index:10;">' +
             '<h1 style="font-size:2.2em;color:#3498db;margin-bottom:6px;">Star Fighter 3D</h1>' +
             '<p style="color:#aaa;font-size:0.9em;margin-bottom:16px;">Destroy enemy space fighters! Drag right side or WASD to fly.</p>' +
-            '<button id="sf-start-btn" class="mw-btn primary" style="padding:12px 28px;font-size:1.1em;border-radius:8px;">Launch Mission 🚀</button>' +
+            '<button id="sf-start-btn" class="mw-btn primary" style="padding:12px 28px;font-size:1.1em;border-radius:8px;">Launch Mission </button>' +
           '</div>' +
         '</div>';
 
@@ -1208,7 +1208,7 @@ var MWO = MWO || {};
                 saveHighScore('starfighter_kills', kills, false);
                 win.querySelector('#sf-overlay').style.display = 'flex';
                 win.querySelector('#sf-overlay').innerHTML =
-                  '<h1 style="color:#e94560;">DEFEATED! 💥</h1>' +
+                  '<h1 style="color:#e94560;">DEFEATED! X</h1>' +
                   '<p>Total Kills: ' + kills + ' | Wave: ' + wave + '</p>' +
                   '<button onclick="location.reload()" class="mw-btn primary">Restart</button>';
               }
@@ -1268,21 +1268,21 @@ var MWO = MWO || {};
 
 
   // =========================================================================
-  // 5. GAME 3: Crimson Depths 🕹️ (WebGL First-Person Dungeon Shooter)
+ // 5. GAME 3: Crimson Depths (WebGL First-Person Dungeon Shooter)
   // =========================================================================
 
   MWO.registerApp({
     id: 'crimsondepths',
     name: 'Crimson Depths 3D',
     description: 'First-person dungeon crawler shooter with 16x16 maze, DDA raycasting & minimap',
-    icon: '🕹️',
+    icon: 'crimson',
     category: 'game',
     installed: false,
     launch: function() {
       var win = MWO.wm.create({
         id: 'crimson-' + Date.now(),
-        title: 'Crimson Depths 3D 🕹️',
-        icon: '🕹️',
+ title: 'Crimson Depths 3D ',
+        icon: 'crimson-depths-3d',
         width: 640,
         height: 480,
         resizable: true
@@ -1299,12 +1299,12 @@ var MWO = MWO || {};
           '</div>' +
           '<div style="position:absolute;bottom:12px;right:12px;display:flex;gap:8px;pointer-events:auto;">' +
             '<button id="cd-btn-weapon" class="mw-btn" style="width:50px;height:50px;font-size:0.75em;background:rgba(255,255,255,0.15);border-radius:50%;color:#fff;font-weight:700;">GUN/XBOW</button>' +
-            '<button id="cd-btn-fire" class="mw-btn" style="width:60px;height:60px;font-size:1.1em;background:rgba(233,69,96,0.7);border-radius:50%;color:#fff;font-weight:700;">SHOOT 🔫</button>' +
+ '<button id="cd-btn-fire" class="mw-btn" style="width:60px;height:60px;font-size:1.1em;background:rgba(233,69,96,0.7);border-radius:50%;color:#fff;font-weight:700;">SHOOT </button>' +
           '</div>' +
           '<div id="cd-overlay" style="position:absolute;inset:0;background:rgba(5,2,5,0.88);display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;z-index:10;">' +
             '<h1 style="font-size:2.2em;color:#e94560;margin-bottom:6px;">Crimson Depths</h1>' +
             '<p style="color:#aaa;font-size:0.85em;margin-bottom:16px;">Escape 5 Floors of Crawlers & Spitters. Look: Touch Drag | Move: Joystick/WASD</p>' +
-            '<button id="cd-start-btn" class="mw-btn primary" style="padding:12px 28px;font-size:1.1em;border-radius:8px;">Enter Dungeon 🗝️</button>' +
+ '<button id="cd-start-btn" class="mw-btn primary" style="padding:12px 28px;font-size:1.1em;border-radius:8px;">Enter Dungeon </button>' +
           '</div>' +
         '</div>';
 
@@ -1459,7 +1459,7 @@ var MWO = MWO || {};
                   saveHighScore('crimson_max_floor', player.floor, false);
                   win.querySelector('#cd-overlay').style.display = 'flex';
                   win.querySelector('#cd-overlay').innerHTML =
-                    '<h1 style="color:#e94560;">YOU DIED! 💀</h1>' +
+ '<h1 style="color:#e94560;">YOU DIED! </h1>' +
                     '<button onclick="location.reload()" class="mw-btn primary">Try Again</button>';
                 }
               }
@@ -1480,7 +1480,7 @@ var MWO = MWO || {};
               saveHighScore('crimson_max_floor', 5, false);
               win.querySelector('#cd-overlay').style.display = 'flex';
               win.querySelector('#cd-overlay').innerHTML =
-                '<h1 style="color:#2ecc71;">DUNGEON ESCAPED! 🏆</h1>' +
+                '<h1 style="color:#2ecc71;">DUNGEON ESCAPED! WIN</h1>' +
                 '<button onclick="location.reload()" class="mw-btn primary">Main Menu</button>';
             } else {
               win.querySelector('#cd-floor').textContent = player.floor + '/5';
@@ -1544,21 +1544,21 @@ var MWO = MWO || {};
 
 
   // =========================================================================
-  // 6. GAME 4: Siege Defense 3D 🏰 (WebGL Tower Defense)
+  // 6. GAME 4: Siege Defense 3D  (WebGL Tower Defense)
   // =========================================================================
 
   MWO.registerApp({
     id: 'siegedefense3d',
     name: 'Siege Defense 3D',
     description: '3D WebGL tower defense strategy with Goblins, Orcs, Trolls & Castle',
-    icon: '🏰',
+    icon: 'siege-defense-3d',
     category: 'game',
     installed: false,
     launch: function() {
       var win = MWO.wm.create({
         id: 'siegedefense-' + Date.now(),
-        title: 'Siege Defense 3D 🏰',
-        icon: '🏰',
+        title: 'Siege Defense 3D ',
+        icon: 'siege-defense-3d',
         width: 640,
         height: 480,
         resizable: true
@@ -1568,19 +1568,19 @@ var MWO = MWO || {};
         '<div style="position:relative;width:100%;height:100%;background:#0a120a;overflow:hidden;font-family:sans-serif;user-select:none;">' +
           '<canvas id="sd-canvas" style="width:100%;height:100%;display:block;touch-action:none;"></canvas>' +
           '<div style="position:absolute;top:10px;left:10px;right:10px;display:flex;justify-content:space-between;pointer-events:none;color:#fff;font-size:0.85em;font-weight:700;">' +
-            '<div>GOLD: 💰<span id="sd-gold" style="color:#f1c40f;">150</span></div>' +
-            '<div>CASTLE HP: 🏰<span id="sd-castle-hp" style="color:#e94560;">100</span></div>' +
+            '<div>GOLD: $<span id="sd-gold" style="color:#f1c40f;">150</span></div>' +
+            '<div>CASTLE HP: <span id="sd-castle-hp" style="color:#e94560;">100</span></div>' +
             '<div>WAVE: <span id="sd-wave" style="color:#3498db;">1/15</span></div>' +
           '</div>' +
           '<div id="sd-tower-menu" style="position:absolute;bottom:12px;left:50%;transform:translateX(-50%);display:flex;gap:8px;background:rgba(0,0,0,0.7);padding:8px 12px;border-radius:10px;pointer-events:auto;">' +
-            '<button id="sd-btn-archer" class="mw-btn" style="font-size:0.8em;padding:6px 12px;">🏹 Archer (50g)</button>' +
-            '<button id="sd-btn-cannon" class="mw-btn" style="font-size:0.8em;padding:6px 12px;">💣 Cannon (100g)</button>' +
-            '<button id="sd-btn-frost" class="mw-btn" style="font-size:0.8em;padding:6px 12px;">❄️ Frost (75g)</button>' +
+            '<button id="sd-btn-archer" class="mw-btn" style="font-size:0.8em;padding:6px 12px;">Bow Archer (50g)</button>' +
+            '<button id="sd-btn-cannon" class="mw-btn" style="font-size:0.8em;padding:6px 12px;">■ Cannon (100g)</button>' +
+ '<button id="sd-btn-frost" class="mw-btn" style="font-size:0.8em;padding:6px 12px;"> Frost (75g)</button>' +
           '</div>' +
           '<div id="sd-overlay" style="position:absolute;inset:0;background:rgba(10,18,10,0.88);display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;z-index:10;">' +
             '<h1 style="font-size:2.2em;color:#f1c40f;margin-bottom:6px;">Siege Defense 3D</h1>' +
             '<p style="color:#aaa;font-size:0.85em;margin-bottom:16px;">Protect the Castle! Tap grid cells to place defense towers.</p>' +
-            '<button id="sd-start-btn" class="mw-btn primary" style="padding:12px 28px;font-size:1.1em;border-radius:8px;">Start Defense 🏰</button>' +
+            '<button id="sd-start-btn" class="mw-btn primary" style="padding:12px 28px;font-size:1.1em;border-radius:8px;">Start Defense </button>' +
           '</div>' +
         '</div>';
 
@@ -1680,7 +1680,7 @@ var MWO = MWO || {};
                 saveHighScore('siegedefense_max_wave', wave, false);
                 win.querySelector('#sd-overlay').style.display = 'flex';
                 win.querySelector('#sd-overlay').innerHTML =
-                  '<h1 style="color:#e94560;">CASTLE FELL! 💥</h1>' +
+                  '<h1 style="color:#e94560;">CASTLE FELL! X</h1>' +
                   '<button onclick="location.reload()" class="mw-btn primary">Try Again</button>';
               }
               continue;
@@ -1730,7 +1730,7 @@ var MWO = MWO || {};
               saveHighScore('siegedefense_max_wave', 15, false);
               win.querySelector('#sd-overlay').style.display = 'flex';
               win.querySelector('#sd-overlay').innerHTML =
-                '<h1 style="color:#2ecc71;">VICTORY! 🏆</h1>' +
+                '<h1 style="color:#2ecc71;">VICTORY! WIN</h1>' +
                 '<button onclick="location.reload()" class="mw-btn primary">Play Again</button>';
             } else {
               win.querySelector('#sd-wave').textContent = wave + '/15';

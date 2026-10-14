@@ -169,8 +169,8 @@ MWO.Recorder = (function() {
 
       <div style="flex:1;display:flex;flex-direction:column;gap:8px;margin-top:4px">
         <div style="display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.1);padding-bottom:6px">
-          <span style="font-weight:bold;font-size:0.9em;color:#4dedea">📹 RECORDINGS LIBRARY (/Videos)</span>
-          <button id="rec-refresh-btn" class="mw-btn" style="padding:2px 8px;font-size:0.75em">🔄 Refresh</button>
+ <span style="font-weight:bold;font-size:0.9em;color:#4dedea"> RECORDINGS LIBRARY (/Videos)</span>
+ <button id="rec-refresh-btn" class="mw-btn" style="padding:2px 8px;font-size:0.75em"> Refresh</button>
         </div>
         <div id="rec-list-container" style="display:flex;flex-direction:column;gap:6px;max-height:160px;overflow-y:auto;padding-right:4px">
           <div style="color:#777;font-size:0.85em;text-align:center;padding:20px">Loading recordings...</div>
@@ -264,15 +264,15 @@ MWO.Recorder = (function() {
 
           itemDiv.innerHTML = `
             <div style="display:flex;align-items:center;gap:8px;overflow:hidden">
-              <span style="font-size:1.2em">🎬</span>
+ <span style="font-size:1.2em"></span>
               <div style="display:flex;flex-direction:column;overflow:hidden">
                 <span style="font-weight:600;white-space:nowrap;text-overflow:ellipsis;overflow:hidden">${file.name}</span>
                 <span style="font-size:0.75em;color:#888">${sizeStr} ${dateStr ? '• ' + dateStr : ''}</span>
               </div>
             </div>
             <div style="display:flex;gap:6px">
-              <button class="mw-btn rec-play-btn" style="padding:4px 8px;font-size:0.75em;background:#2ecc71;color:#fff;border:none;border-radius:4px;cursor:pointer">▶ Play</button>
-              <button class="mw-btn rec-del-btn" style="padding:4px 8px;font-size:0.75em;background:#e74c3c;color:#fff;border:none;border-radius:4px;cursor:pointer">🗑 Delete</button>
+              <button class="mw-btn rec-play-btn" style="padding:4px 8px;font-size:0.75em;background:#2ecc71;color:#fff;border:none;border-radius:4px;cursor:pointer">Run Play</button>
+ <button class="mw-btn rec-del-btn" style="padding:4px 8px;font-size:0.75em;background:#e74c3c;color:#fff;border:none;border-radius:4px;cursor:pointer"> Delete</button>
             </div>
           `;
 

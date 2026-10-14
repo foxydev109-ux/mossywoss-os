@@ -232,13 +232,13 @@ var MWO = MWO || {};
 
 
   // =========================================================================
-  // LIFE SIM 1: FOX LIFE 🦊
+  // LIFE SIM 1: FOX LIFE Fox
   // =========================================================================
   function launchFoxLife() {
     var win = MWO.wm.create({
       id: 'fox-life-' + Date.now(),
-      title: 'Fox Life 🦊',
-      icon: '🦊',
+      title: 'Fox Life Fox',
+      icon: 'fox-life',
       width: 660,
       height: 520,
       resizable: false
@@ -271,7 +271,7 @@ var MWO = MWO || {};
 
           // Title / Game Over Screen Overlay
           "<div id='fl-modal' style='position:absolute;inset:0;background:rgba(15,23,42,0.92);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;z-index:10'>" +
-            "<h2 id='fl-modal-title' style='margin:0 0 10px 0;color:#f97316;font-size:1.8em'>Fox Life 🦊</h2>" +
+            "<h2 id='fl-modal-title' style='margin:0 0 10px 0;color:#f97316;font-size:1.8em'>Fox Life Fox</h2>" +
             "<div id='fl-modal-body' style='color:#94a3b8;font-size:0.9em;margin-bottom:20px;text-align:center;max-width:400px'>" +
               "Survive as a wild fox. Hunt rabbits, drink from ponds, sleep in your den, find a mate, and raise cubs!" +
             "</div>" +
@@ -289,16 +289,16 @@ var MWO = MWO || {};
             "<div></div><button id='fl-btn-up' style='background:#1e293b;color:#fff;border:1px solid #334155;border-radius:4px'>▲</button><div></div>" +
             "<button id='fl-btn-left' style='background:#1e293b;color:#fff;border:1px solid #334155;border-radius:4px'>◀</button>" +
             "<button id='fl-btn-down' style='background:#1e293b;color:#fff;border:1px solid #334155;border-radius:4px'>▼</button>" +
-            "<button id='fl-btn-right' style='background:#1e293b;color:#fff;border:1px solid #334155;border-radius:4px'>▶</button>" +
+            "<button id='fl-btn-right' style='background:#1e293b;color:#fff;border:1px solid #334155;border-radius:4px'>Run</button>" +
           "</div>" +
 
           // Action Buttons
           "<div style='display:flex;gap:6px;flex-wrap:wrap;max-width:360px'>" +
-            "<button id='fl-act-eat' style='padding:8px 12px;background:#d97706;color:#fff;border:none;border-radius:6px;font-size:0.8em;font-weight:bold'>🍖 Eat/Hunt</button>" +
-            "<button id='fl-act-sleep' style='padding:8px 12px;background:#4f46e5;color:#fff;border:none;border-radius:6px;font-size:0.8em;font-weight:bold'>⛺ Sleep</button>" +
-            "<button id='fl-act-sniff' style='padding:8px 12px;background:#0284c7;color:#fff;border:none;border-radius:6px;font-size:0.8em;font-weight:bold'>🔍 Sniff</button>" +
-            "<button id='fl-act-groom' style='padding:8px 12px;background:#059669;color:#fff;border:none;border-radius:6px;font-size:0.8em;font-weight:bold'>🧼 Groom</button>" +
-            "<button id='fl-act-cuddle' style='padding:8px 12px;background:#db2777;color:#fff;border:none;border-radius:6px;font-size:0.8em;font-weight:bold'>❤️ Cuddle</button>" +
+ "<button id='fl-act-eat' style='padding:8px 12px;background:#d97706;color:#fff;border:none;border-radius:6px;font-size:0.8em;font-weight:bold'> Eat/Hunt</button>" +
+ "<button id='fl-act-sleep' style='padding:8px 12px;background:#4f46e5;color:#fff;border:none;border-radius:6px;font-size:0.8em;font-weight:bold'> Sleep</button>" +
+            "<button id='fl-act-sniff' style='padding:8px 12px;background:#0284c7;color:#fff;border:none;border-radius:6px;font-size:0.8em;font-weight:bold'> Sniff</button>" +
+ "<button id='fl-act-groom' style='padding:8px 12px;background:#059669;color:#fff;border:none;border-radius:6px;font-size:0.8em;font-weight:bold'> Groom</button>" +
+            "<button id='fl-act-cuddle' style='padding:8px 12px;background:#db2777;color:#fff;border:none;border-radius:6px;font-size:0.8em;font-weight:bold'>Heart Cuddle</button>" +
           "</div>" +
         "</div>" +
       "</div>";
@@ -447,7 +447,7 @@ var MWO = MWO || {};
       // Check berry bush
       if (map[ty] && map[ty][tx] === 3) {
         f.hunger = Math.min(100, f.hunger + 25);
-        showBanner('🍒 Ate berries (+25 Hunger)');
+ showBanner(' Ate berries (+25 Hunger)');
         playSound('eat');
         return;
       }
@@ -455,7 +455,7 @@ var MWO = MWO || {};
       if (tx === state.den.x && ty === state.den.y && state.den.food > 0) {
         state.den.food--;
         f.hunger = Math.min(100, f.hunger + 40);
-        showBanner('⛺ Ate stored food from Den (+40 Hunger)');
+ showBanner(' Ate stored food from Den (+40 Hunger)');
         playSound('eat');
         return;
       }
@@ -463,7 +463,7 @@ var MWO = MWO || {};
       if (f.inventory > 0) {
         f.inventory--;
         f.hunger = Math.min(100, f.hunger + 45);
-        showBanner('🍖 Ate carried prey (+45 Hunger)');
+ showBanner(' Ate carried prey (+45 Hunger)');
         playSound('eat');
         return;
       }
@@ -484,11 +484,11 @@ var MWO = MWO || {};
         }
         // Cubs growth
         state.cubs.forEach(function(c) { c.age++; });
-        showBanner('💤 Slept in Den. Morning arrives! Day ' + state.day);
+        showBanner('z Slept in Den. Morning arrives! Day ' + state.day);
         playSound('powerup');
         saveGameData('fox_life', state);
       } else {
-        showBanner('Must be at Den tile (⛺) to sleep!');
+ showBanner('Must be at Den tile () to sleep!');
       }
     };
 
@@ -496,20 +496,20 @@ var MWO = MWO || {};
       if (!state.active) return;
       state.sniffTimer = 180; // 3 sec arrow display
       playSound('hoot');
-      showBanner('🔍 Sniffing... Prey & Mate directions highlighted!');
+      showBanner(' Sniffing... Prey & Mate directions highlighted!');
     };
 
     win.querySelector('#fl-act-groom').onclick = function() {
       if (!state.active) return;
       state.fox.hp = Math.min(100, state.fox.hp + 5);
-      showBanner('🧼 Groomed coat (+5 HP)');
+ showBanner(' Groomed coat (+5 HP)');
       playSound('coin');
     };
 
     win.querySelector('#fl-act-cuddle').onclick = function() {
       if (!state.active) return;
       if (state.mate && state.mate.bonded) {
-        showBanner('❤️ Cuddled with Mate! Happiness restored.');
+        showBanner('Heart Cuddled with Mate! Happiness restored.');
         playSound('coin');
       } else {
         showBanner('Find a Mate first! Bring a rabbit as a gift.');
@@ -630,7 +630,7 @@ var MWO = MWO || {};
         if (mdist < 30 && f.inventory > 0) {
           f.inventory--;
           state.mate.bonded = true;
-          showBanner('❤️ Gave prey to Mate! Mate bonded & moved to Den!');
+          showBanner('Heart Gave prey to Mate! Mate bonded & moved to Den!');
           playSound('powerup');
         }
       }
@@ -662,13 +662,13 @@ var MWO = MWO || {};
           playSound('eat');
           if (tx === state.den.x && ty === state.den.y) {
             state.den.food++;
-            showBanner('⛺ Stored prey in Den!');
+ showBanner(' Stored prey in Den!');
           } else if (f.inventory < 2) {
             f.inventory++;
-            showBanner('🍖 Caught ' + p.type + '! (Carrying in mouth)');
+ showBanner(' Caught ' + p.type + '! (Carrying in mouth)');
           } else {
             f.hunger = Math.min(100, f.hunger + 35);
-            showBanner('🍖 Ate ' + p.type + ' (+35 Hunger)');
+ showBanner(' Ate ' + p.type + ' (+35 Hunger)');
           }
         }
       }
@@ -688,7 +688,7 @@ var MWO = MWO || {};
       // Death Check
       if (f.hp <= 0 || state.day > 28) {
         state.active = false;
-        win.querySelector('#fl-modal-title').textContent = 'Life Complete 🦊';
+        win.querySelector('#fl-modal-title').textContent = 'Life Complete Fox';
         win.querySelector('#fl-modal-body').innerHTML =
           "Days Survived: " + state.day + "<br>" +
           "Rabbits Caught: " + state.rabbitsCaught + "<br>" +
@@ -758,7 +758,7 @@ var MWO = MWO || {};
             ctx.fillRect(px, py, TILE_SZ, TILE_SZ);
             ctx.fillStyle = '#f59e0b';
             ctx.font = '14px sans-serif';
-            ctx.fillText('⛺', px + 6, py + 20);
+ ctx.fillText('', px + 6, py + 20);
           }
 
           ctx.strokeStyle = 'rgba(0,0,0,0.05)';
@@ -841,13 +841,13 @@ var MWO = MWO || {};
 
 
   // =========================================================================
-  // LIFE SIM 2: VILLAGE LIFE 🏘️
+ // LIFE SIM 2: VILLAGE LIFE 
   // =========================================================================
   function launchVillageLife() {
     var win = MWO.wm.create({
       id: 'village-life-' + Date.now(),
-      title: 'Village Life 🏘️',
-      icon: '🏘️',
+ title: 'Village Life ',
+      icon: 'village-life',
       width: 720,
       height: 520,
       resizable: false
@@ -861,7 +861,7 @@ var MWO = MWO || {};
           "<div style='display:flex;justify-content:space-between;align-items:center;background:#1e293b;padding:6px 12px;font-size:0.8em'>" +
             "<div><b>Village Life</b> | Day <span id='vl-day'>1</span></div>" +
             "<div style='display:flex;gap:4px'>" +
-              "<button id='vl-spd-0' style='padding:2px 8px;background:#334155;color:#fff;border:none;border-radius:3px'>⏸️</button>" +
+ "<button id='vl-spd-0' style='padding:2px 8px;background:#334155;color:#fff;border:none;border-radius:3px'>⏸</button>" +
               "<button id='vl-spd-1' style='padding:2px 8px;background:#0284c7;color:#fff;border:none;border-radius:3px'>1x</button>" +
               "<button id='vl-spd-2' style='padding:2px 8px;background:#334155;color:#fff;border:none;border-radius:3px'>2x</button>" +
               "<button id='vl-spd-4' style='padding:2px 8px;background:#334155;color:#fff;border:none;border-radius:3px'>4x</button>" +
@@ -875,9 +875,9 @@ var MWO = MWO || {};
 
           // Build Toolbar
           "<div style='display:flex;gap:6px;padding:8px;background:#1e293b;overflow-x:auto'>" +
-            "<button id='vl-bld-house' style='padding:6px 10px;background:#334155;color:#fff;border:none;border-radius:4px;font-size:0.75em'>🏠 House (10W,5S)</button>" +
-            "<button id='vl-bld-well' style='padding:6px 10px;background:#334155;color:#fff;border:none;border-radius:4px;font-size:0.75em'>🚰 Well (5W,10S)</button>" +
-            "<button id='vl-bld-bakery' style='padding:6px 10px;background:#334155;color:#fff;border:none;border-radius:4px;font-size:0.75em'>🍞 Bakery (15W,15S)</button>" +
+ "<button id='vl-bld-house' style='padding:6px 10px;background:#334155;color:#fff;border:none;border-radius:4px;font-size:0.75em'> House (10W,5S)</button>" +
+ "<button id='vl-bld-well' style='padding:6px 10px;background:#334155;color:#fff;border:none;border-radius:4px;font-size:0.75em'> Well (5W,10S)</button>" +
+ "<button id='vl-bld-bakery' style='padding:6px 10px;background:#334155;color:#fff;border:none;border-radius:4px;font-size:0.75em'> Bakery (15W,15S)</button>" +
           "</div>" +
         "</div>" +
 
@@ -887,12 +887,12 @@ var MWO = MWO || {};
           "<div style='background:#1e293b;padding:8px;border-radius:6px'>" +
             "<div style='font-weight:bold;margin-bottom:4px;color:#38bdf8'>Storehouse Resources</div>" +
             "<div style='display:grid;grid-template-columns:1fr 1fr;gap:4px'>" +
-              "<div>🪵 Wood: <b id='vl-res-wood'>20</b></div>" +
-              "<div>🪨 Stone: <b id='vl-res-stone'>10</b></div>" +
-              "<div>🫐 Berries: <b id='vl-res-berries'>15</b></div>" +
-              "<div>🌾 Wheat: <b id='vl-res-wheat'>0</b></div>" +
-              "<div>🍞 Bread: <b id='vl-res-bread'>0</b></div>" +
-              "<div>👨‍👩‍👧 Pop: <b id='vl-res-pop'>4/4</b></div>" +
+ "<div> Wood: <b id='vl-res-wood'>20</b></div>" +
+ "<div> Stone: <b id='vl-res-stone'>10</b></div>" +
+ "<div> Berries: <b id='vl-res-berries'>15</b></div>" +
+              "<div> Wheat: <b id='vl-res-wheat'>0</b></div>" +
+ "<div> Bread: <b id='vl-res-bread'>0</b></div>" +
+ "<div>‍‍ Pop: <b id='vl-res-pop'>4/4</b></div>" +
             "</div>" +
           "</div>" +
 
@@ -1079,17 +1079,17 @@ var MWO = MWO || {};
       if (state.time >= 120) {
         state.time = 0;
         state.day++;
-        addLog('🌅 Day ' + state.day + ' begins!');
+ addLog(' Day ' + state.day + ' begins!');
 
         // Night Fox Attack check
         if (Math.random() < 0.6) {
           var guards = state.villagers.filter(function(v) { return v.job === 'guard'; });
           if (guards.length > 0) {
-            addLog('🦊 Guard ' + guards[0].name + ' scared off a wild fox!');
+            addLog('Fox Guard ' + guards[0].name + ' scared off a wild fox!');
             playSound('hoot');
           } else if (state.res.berries > 2) {
             state.res.berries -= 2;
-            addLog('🦊 A fox stole 2 berries at night!');
+            addLog('Fox A fox stole 2 berries at night!');
           }
         }
       }
@@ -1210,9 +1210,9 @@ var MWO = MWO || {};
           ctx.strokeRect(px, py, tw, th);
 
           // Tile Labels
-          if (t.type === 'storehouse') { ctx.fillStyle = '#fff'; ctx.font = '10px sans-serif'; ctx.fillText('📦', px + 4, py + 14); }
-          else if (t.type === 'tree') { ctx.fillStyle = '#fff'; ctx.font = '10px sans-serif'; ctx.fillText('🌲', px + 4, py + 14); }
-          else if (t.type === 'house') { ctx.fillStyle = '#fff'; ctx.font = '10px sans-serif'; ctx.fillText('🏠', px + 4, py + 14); }
+          if (t.type === 'storehouse') { ctx.fillStyle = '#fff'; ctx.font = '10px sans-serif'; ctx.fillText('Box', px + 4, py + 14); }
+          else if (t.type === 'tree') { ctx.fillStyle = '#fff'; ctx.font = '10px sans-serif'; ctx.fillText('Tree', px + 4, py + 14); }
+ else if (t.type === 'house') { ctx.fillStyle = '#fff'; ctx.font = '10px sans-serif'; ctx.fillText('', px + 4, py + 14); }
         }
       }
 
@@ -1238,13 +1238,13 @@ var MWO = MWO || {};
 
 
   // =========================================================================
-  // LIFE SIM 3: PET LIFE 🐾
+ // LIFE SIM 3: PET LIFE 
   // =========================================================================
   function launchPetLife() {
     var win = MWO.wm.create({
       id: 'pet-life-' + Date.now(),
-      title: 'Pet Life 🐾',
-      icon: '🐾',
+ title: 'Pet Life ',
+      icon: 'pet-life',
       width: 440,
       height: 560,
       resizable: false
@@ -1255,7 +1255,7 @@ var MWO = MWO || {};
         // Top Room Canvas
         "<div style='position:relative;height:240px;background:#1e1b4b;overflow:hidden'>" +
           "<canvas id='pl-canvas' width='440' height='240' style='width:100%;height:100%'></canvas>" +
-          "<div id='pl-bubble' style='position:absolute;top:20px;left:50%;transform:translateX(-50%);background:rgba(255,255,255,0.9);color:#0f172a;padding:4px 12px;border-radius:12px;font-weight:bold;font-size:0.85em;box-shadow:0 2px 8px rgba(0,0,0,0.3)'>❤️ Feeling happy!</div>" +
+          "<div id='pl-bubble' style='position:absolute;top:20px;left:50%;transform:translateX(-50%);background:rgba(255,255,255,0.9);color:#0f172a;padding:4px 12px;border-radius:12px;font-weight:bold;font-size:0.85em;box-shadow:0 2px 8px rgba(0,0,0,0.3)'>Heart Feeling happy!</div>" +
         "</div>" +
 
         // Stat Bars Container
@@ -1268,10 +1268,10 @@ var MWO = MWO || {};
 
         // Interactive Action Controls
         "<div style='flex:1;background:#0f172a;padding:10px;display:grid;grid-template-columns:repeat(2,1fr);gap:8px'>" +
-          "<button id='pl-act-feed' style='padding:12px;background:#3b82f6;color:#fff;border:none;border-radius:8px;font-weight:bold;cursor:pointer'>🍖 Feed Meal</button>" +
-          "<button id='pl-act-play' style='padding:12px;background:#ec4899;color:#fff;border:none;border-radius:8px;font-weight:bold;cursor:pointer'>⚽ Play Ball</button>" +
-          "<button id='pl-act-bath' style='padding:12px;background:#06b6d4;color:#fff;border:none;border-radius:8px;font-weight:bold;cursor:pointer'>🧼 Bath & Brush</button>" +
-          "<button id='pl-act-sleep' style='padding:12px;background:#6366f1;color:#fff;border:none;border-radius:8px;font-weight:bold;cursor:pointer'>💤 Sleep</button>" +
+ "<button id='pl-act-feed' style='padding:12px;background:#3b82f6;color:#fff;border:none;border-radius:8px;font-weight:bold;cursor:pointer'> Feed Meal</button>" +
+ "<button id='pl-act-play' style='padding:12px;background:#ec4899;color:#fff;border:none;border-radius:8px;font-weight:bold;cursor:pointer'> Play Ball</button>" +
+ "<button id='pl-act-bath' style='padding:12px;background:#06b6d4;color:#fff;border:none;border-radius:8px;font-weight:bold;cursor:pointer'> Bath & Brush</button>" +
+          "<button id='pl-act-sleep' style='padding:12px;background:#6366f1;color:#fff;border:none;border-radius:8px;font-weight:bold;cursor:pointer'>z Sleep</button>" +
         "</div>" +
       "</div>";
 
@@ -1299,26 +1299,26 @@ var MWO = MWO || {};
     win.querySelector('#pl-act-feed').onclick = function() {
       state.hunger = Math.min(100, state.hunger + 25);
       state.happy = Math.min(100, state.happy + 10);
-      win.querySelector('#pl-bubble').textContent = '😋 Yum! Delicious!';
+ win.querySelector('#pl-bubble').textContent = ' Yum! Delicious!';
       playSound('eat');
     };
 
     win.querySelector('#pl-act-play').onclick = function() {
       state.happy = Math.min(100, state.happy + 30);
       state.energy = Math.max(0, state.energy - 15);
-      win.querySelector('#pl-bubble').textContent = '⚽ Yay! So fun!';
+ win.querySelector('#pl-bubble').textContent = ' Yay! So fun!';
       playSound('coin');
     };
 
     win.querySelector('#pl-act-bath').onclick = function() {
       state.hygiene = 100;
-      win.querySelector('#pl-bubble').textContent = '🧼 Squeaky clean!';
+ win.querySelector('#pl-bubble').textContent = ' Squeaky clean!';
       playSound('powerup');
     };
 
     win.querySelector('#pl-act-sleep').onclick = function() {
       state.asleep = !state.asleep;
-      win.querySelector('#pl-bubble').textContent = state.asleep ? '💤 Zzz...' : '☀️ Good morning!';
+ win.querySelector('#pl-bubble').textContent = state.asleep? 'z Zzz...': ' Good morning!';
       playSound('hoot');
     };
 
@@ -1376,13 +1376,13 @@ var MWO = MWO || {};
 
 
   // =========================================================================
-  // SHOOTER 1: ZOMBIE SIEGE 🧟
+ // SHOOTER 1: ZOMBIE SIEGE 
   // =========================================================================
   function launchZombieSiege() {
     var win = MWO.wm.create({
       id: 'zombie-siege-' + Date.now(),
-      title: 'Zombie Siege 🧟',
-      icon: '🧟',
+ title: 'Zombie Siege ',
+      icon: 'zombie-siege',
       width: 680,
       height: 520,
       resizable: false
@@ -1405,12 +1405,12 @@ var MWO = MWO || {};
           "<div id='zs-shop' style='position:absolute;inset:0;background:rgba(9,13,22,0.92);display:none;flex-direction:column;align-items:center;justify-content:center;padding:20px'>" +
             "<h2 style='color:#f59e0b;margin:0 0 10px 0'>Wave Cleared! Armory Shop</h2>" +
             "<div style='display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px'>" +
-              "<button id='zs-buy-hp' style='padding:10px;background:#1e293b;color:#fff;border:1px solid #374151;border-radius:6px'>❤️ Medkit (+50 HP) - $40</button>" +
-              "<button id='zs-buy-sg' style='padding:10px;background:#1e293b;color:#fff;border:1px solid #374151;border-radius:6px'>🔫 Shotgun Ammo (+30) - $30</button>" +
-              "<button id='zs-buy-smg' style='padding:10px;background:#1e293b;color:#fff;border:1px solid #374151;border-radius:6px'>⚡ SMG Ammo (+120) - $30</button>" +
-              "<button id='zs-buy-rep' style='padding:10px;background:#1e293b;color:#fff;border:1px solid #374151;border-radius:6px'>🧱 Repair Barricades - $60</button>" +
+              "<button id='zs-buy-hp' style='padding:10px;background:#1e293b;color:#fff;border:1px solid #374151;border-radius:6px'>Heart Medkit (+50 HP) - $40</button>" +
+ "<button id='zs-buy-sg' style='padding:10px;background:#1e293b;color:#fff;border:1px solid #374151;border-radius:6px'> Shotgun Ammo (+30) - $30</button>" +
+ "<button id='zs-buy-smg' style='padding:10px;background:#1e293b;color:#fff;border:1px solid #374151;border-radius:6px'> SMG Ammo (+120) - $30</button>" +
+ "<button id='zs-buy-rep' style='padding:10px;background:#1e293b;color:#fff;border:1px solid #374151;border-radius:6px'> Repair Barricades - $60</button>" +
             "</div>" +
-            "<button id='zs-next-btn' style='padding:10px 24px;background:#059669;color:#fff;border:none;border-radius:6px;font-weight:bold;cursor:pointer'>Start Next Wave ▶</button>" +
+            "<button id='zs-next-btn' style='padding:10px 24px;background:#059669;color:#fff;border:none;border-radius:6px;font-weight:bold;cursor:pointer'>Start Next Wave Run</button>" +
           "</div>" +
         "</div>" +
 
@@ -1421,7 +1421,7 @@ var MWO = MWO || {};
             "<button id='zs-wpn-2' style='padding:6px 10px;background:#374151;color:#fff;border:none;border-radius:4px;font-size:0.75em'>2: Shotgun</button>" +
             "<button id='zs-wpn-3' style='padding:6px 10px;background:#374151;color:#fff;border:none;border-radius:4px;font-size:0.75em'>3: SMG</button>" +
           "</div>" +
-          "<button id='zs-btn-repair' style='padding:6px 12px;background:#d97706;color:#fff;border:none;border-radius:4px;font-size:0.75em;font-weight:bold'>🧱 Repair (E)</button>" +
+ "<button id='zs-btn-repair' style='padding:6px 12px;background:#d97706;color:#fff;border:none;border-radius:4px;font-size:0.75em;font-weight:bold'> Repair (E)</button>" +
         "</div>" +
       "</div>";
 
@@ -1622,13 +1622,13 @@ var MWO = MWO || {};
 
 
   // =========================================================================
-  // SHOOTER 2: NEON STRIKE ⚡
+ // SHOOTER 2: NEON STRIKE 
   // =========================================================================
   function launchNeonStrike() {
     var win = MWO.wm.create({
       id: 'neon-strike-' + Date.now(),
-      title: 'Neon Strike ⚡',
-      icon: '⚡',
+ title: 'Neon Strike ',
+      icon: 'neon-strike',
       width: 680,
       height: 520,
       resizable: false
@@ -1795,9 +1795,9 @@ var MWO = MWO || {};
   // =========================================================================
   MWO.registerApp({
     id: 'fox-life',
-    name: 'Fox Life 🦊',
+    name: 'Fox Life Fox',
     description: 'Deep survival life sim',
-    icon: '🦊',
+    icon: 'fox-life',
     category: 'game',
     installed: false,
     launch: launchFoxLife
@@ -1805,9 +1805,9 @@ var MWO = MWO || {};
 
   MWO.registerApp({
     id: 'village-life',
-    name: 'Village Life 🏘️',
+ name: 'Village Life ',
     description: 'Top-down village management sim',
-    icon: '🏘️',
+    icon: 'village-life',
     category: 'game',
     installed: false,
     launch: launchVillageLife
@@ -1815,9 +1815,9 @@ var MWO = MWO || {};
 
   MWO.registerApp({
     id: 'pet-life',
-    name: 'Pet Life 🐾',
+ name: 'Pet Life ',
     description: 'Deep virtual pet simulation',
-    icon: '🐾',
+    icon: 'pet-life',
     category: 'game',
     installed: false,
     launch: launchPetLife
@@ -1825,9 +1825,9 @@ var MWO = MWO || {};
 
   MWO.registerApp({
     id: 'zombie-siege',
-    name: 'Zombie Siege 🧟',
+ name: 'Zombie Siege ',
     description: '2D top-down wave shooter',
-    icon: '🧟',
+    icon: 'zombie-siege',
     category: 'game',
     installed: false,
     launch: launchZombieSiege
@@ -1835,9 +1835,9 @@ var MWO = MWO || {};
 
   MWO.registerApp({
     id: 'neon-strike',
-    name: 'Neon Strike ⚡',
+ name: 'Neon Strike ',
     description: 'Twin-stick neon arcade shooter',
-    icon: '⚡',
+    icon: 'neon-strike',
     category: 'game',
     installed: false,
     launch: launchNeonStrike

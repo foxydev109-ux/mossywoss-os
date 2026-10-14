@@ -17,17 +17,17 @@ var MWO = MWO || {};
   }
 
   function getFileIcon(name, type) {
-    if (type === 'dir') return '📁';
+    if (type === 'dir') return 'Dir';
     const ext = (name || '').split('.').pop().toLowerCase();
     switch (ext) {
-      case 'txt': case 'md': case 'log': return '📄';
-      case 'jpg': case 'jpeg': case 'png': case 'gif': case 'svg': case 'webp': return '🖼️';
-      case 'mp3': case 'wav': case 'ogg': case 'flac': return '🎵';
-      case 'mp4': case 'webm': case 'mkv': case 'avi': return '🎬';
-      case 'js': case 'html': case 'css': case 'json': case 'py': return '💻';
-      case 'zip': case 'rar': case 'tar': case 'gz': return '📦';
-      case 'pdf': return '📕';
-      default: return '📄';
+      case 'txt': case 'md': case 'log': return 'Doc';
+ case 'jpg': case 'jpeg': case 'png': case 'gif': case 'svg': case 'webp': return '';
+      case 'mp3': case 'wav': case 'ogg': case 'flac': return '~';
+ case 'mp4': case 'webm': case 'mkv': case 'avi': return '';
+ case 'js': case 'html': case 'css': case 'json': case 'py': return '';
+      case 'zip': case 'rar': case 'tar': case 'gz': return 'Box';
+ case 'pdf': return '';
+      default: return 'Doc';
     }
   }
 
@@ -92,7 +92,7 @@ var MWO = MWO || {};
       const winBody = MWO.wm.create({
         id: 'bin-' + Date.now(),
         title: 'Recycle Bin',
-        icon: '🗑️',
+        icon: 'recycle-bin',
         width: 650,
         height: 480,
         resizable: true
@@ -128,7 +128,7 @@ var MWO = MWO || {};
       btnGroup.style.gap = '8px';
 
       const restoreAllBtn = document.createElement('button');
-      restoreAllBtn.textContent = '♻️ Restore All';
+ restoreAllBtn.textContent = ' Restore All';
       restoreAllBtn.className = 'btn';
       restoreAllBtn.style.padding = '6px 12px';
       restoreAllBtn.style.borderRadius = '6px';
@@ -140,7 +140,7 @@ var MWO = MWO || {};
       restoreAllBtn.style.fontWeight = '600';
 
       const emptyBtn = document.createElement('button');
-      emptyBtn.textContent = '🗑️ Empty Bin';
+ emptyBtn.textContent = ' Empty Bin';
       emptyBtn.className = 'btn';
       emptyBtn.style.padding = '6px 12px';
       emptyBtn.style.borderRadius = '6px';
@@ -152,7 +152,7 @@ var MWO = MWO || {};
       emptyBtn.style.fontWeight = '600';
 
       const refreshBtn = document.createElement('button');
-      refreshBtn.textContent = '🔄 Refresh';
+ refreshBtn.textContent = ' Refresh';
       refreshBtn.className = 'btn';
       refreshBtn.style.padding = '6px 12px';
       refreshBtn.style.borderRadius = '6px';
@@ -193,7 +193,7 @@ var MWO = MWO || {};
           emptyMsg.style.color = 'var(--text2, #a6adc8)';
           emptyMsg.style.fontSize = '1.1em';
           emptyMsg.style.gap = '10px';
-          emptyMsg.innerHTML = '<div style="font-size:3em;">🗑️</div><div>Recycle Bin is empty</div>';
+ emptyMsg.innerHTML = '<div style="font-size:3em;"></div><div>Recycle Bin is empty</div>';
           contentArea.appendChild(emptyMsg);
           return;
         }
@@ -266,7 +266,7 @@ var MWO = MWO || {};
           };
 
           const delBtn = document.createElement('button');
-          delBtn.textContent = '✕ Delete forever';
+          delBtn.textContent = 'Close Delete forever';
           delBtn.className = 'btn';
           delBtn.style.padding = '4px 8px';
           delBtn.style.borderRadius = '4px';
@@ -330,7 +330,7 @@ var MWO = MWO || {};
       id: 'bin',
       name: 'Recycle Bin',
       description: 'Deleted files live here until restored or emptied',
-      icon: '🗑️',
+      icon: 'recycle-bin',
       category: 'app',
       installed: true,
       launch: function() {

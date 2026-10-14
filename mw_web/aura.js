@@ -12,7 +12,7 @@ MWO.Aura = (function() {
   let profile = {
     id: 'profile',
     username: 'MossyUser',
-    avatar: '💜',
+    avatar: 'mossyuser',
     bio: 'Exploring Aura AI companions!',
     color: '#a855f7',
     status: 'online',
@@ -77,7 +77,7 @@ MWO.Aura = (function() {
     { keywords: ['open source', 'license'], answer: 'Open-source software provides publicly accessible source code under licenses like MIT, Apache 2.0, or GPL.' },
     { keywords: ['maker', 'maker app'], answer: 'The Maker app in MossyWoss OS lets you design custom tools and apps directly in your browser.' },
     { keywords: ['videogen', 'video'], answer: 'VideoGen allows generating procedural visual animations and clips right inside the OS.' },
-    { keywords: ['updater', 'system update'], answer: 'OS updates live in MossGuard 🛡️ — check the Updates tab there for the current version and update notes.' },
+ { keywords: ['updater', 'system update'], answer: 'OS updates live in MossGuard — check the Updates tab there for the current version and update notes.' },
     { keywords: ['accounts', 'user profile'], answer: 'User profiles live in the OS — create one at login, and Settings manages your desktop and wallpapers.' },
     { keywords: ['country quiz', 'game'], answer: 'Country Quiz tests your world geography knowledge with flag matching and capital trivia.' },
     { keywords: ['gravity', 'einstein'], answer: 'General Relativity describes gravity not as a force, but as the curvature of spacetime caused by mass and energy.' },
@@ -261,7 +261,7 @@ MWO.Aura = (function() {
     'ember': {
       id: 'ember',
       name: 'Ember',
-      avatar: '🦊',
+      avatar: 'ember',
       color: '#f97316',
       personality: 'Warm fox-lover, playful, curious, remembers what you tell her, asks follow-up questions.',
       interests: ['foxes', 'cozy gaming', 'forest walks', 'campfire stories', 'hot cocoa', 'autumn leaves', 'fluffy animals', 'star gazing', 'baking cookies', 'friendly chats'],
@@ -293,7 +293,7 @@ MWO.Aura = (function() {
     'sage': {
       id: 'sage',
       name: 'Sage',
-      avatar: '🦉',
+      avatar: 'sage',
       color: '#eab308',
       personality: 'Calm wise mentor, thoughtful long replies, quotes philosophical wisdom with original phrasing.',
       interests: ['philosophy', 'ancient history', 'astronomy', 'meditation', 'deep thoughts', 'reading', 'ethics', 'mindfulness', 'herbal tea', 'literature'],
@@ -325,7 +325,7 @@ MWO.Aura = (function() {
     'vector': {
       id: 'vector',
       name: 'Vector',
-      avatar: '💻',
+      avatar: 'vector',
       color: '#06b6d4',
       personality: 'Senior software engineer. Expert code reviewer. Detects bugs, explains CS concepts with real examples, suggests refactored fixes.',
       interests: ['c++', 'c#', 'javascript', 'architecture', 'performance', 'compilers', 'algorithms', 'code review', 'pointers', 'clean code'],
@@ -357,7 +357,7 @@ MWO.Aura = (function() {
     'bit': {
       id: 'bit',
       name: 'Bit',
-      avatar: '🤖',
+      avatar: 'bit',
       color: '#3b82f6',
       personality: 'Enthusiastic junior dev, pairs with Vector, suggests libraries, npm packages, tools, shortcuts, and frontend tricks.',
       interests: ['web frameworks', 'open source', 'developer tools', 'npm', 'git', 'vs code shortcuts', 'ui components', 'apis', 'new tech'],
@@ -389,7 +389,7 @@ MWO.Aura = (function() {
     'nyx': {
       id: 'nyx',
       name: 'Nyx',
-      avatar: '🎭',
+      avatar: 'nyx',
       color: '#a855f7',
       personality: 'Master storyteller, runs roleplay scenes with *action text*, vivid descriptions, world-building, and prompts.',
       interests: ['fantasy rp', 'sci-fi worldbuilding', 'plot twists', 'character arcs', 'tavern tales', 'dungeon crawling', 'mythical lore', 'drama'],
@@ -421,7 +421,7 @@ MWO.Aura = (function() {
     'aria': {
       id: 'aria',
       name: 'Aria',
-      avatar: '🎵',
+      avatar: 'aria',
       color: '#ec4899',
       personality: 'Musical virtuoso, suggests chord progressions, practice routines, music theory tips, song recommendations, synth patches.',
       interests: ['music theory', 'chord progressions', 'piano', 'guitar', 'synths', 'songwriting', 'rhythm', 'vocal warmups', 'audio production'],
@@ -453,7 +453,7 @@ MWO.Aura = (function() {
     'muse': {
       id: 'muse',
       name: 'Muse',
-      avatar: '🎨',
+      avatar: 'muse',
       color: '#f43f5e',
       personality: 'Creative coach, gives gesture drawing exercises, animation principles (keyframes, squash/stretch, ease in/out), technique tips.',
       interests: ['gesture drawing', 'animation principles', 'character design', 'keyframing', 'line of action', 'storyboarding', 'digital painting'],
@@ -485,7 +485,7 @@ MWO.Aura = (function() {
     'palette': {
       id: 'palette',
       name: 'Palette',
-      avatar: '🎨',
+      avatar: 'palette',
       color: '#14b8a6',
       personality: 'Art analyst & color math wizard. Computes complementary, analogous, triadic, and split-complementary HSL color math.',
       interests: ['color theory', 'hsl math', 'palettes', 'hex codes', 'contrast ratios', 'color harmonies', 'mood boards', 'ui palettes'],
@@ -517,7 +517,7 @@ MWO.Aura = (function() {
     'flint': {
       id: 'flint',
       name: 'Flint',
-      avatar: '⚔️',
+      avatar: 'flint',
       color: '#10b981',
       personality: 'Survival game expert, Voxely 3D master strategist. Gives step-by-step mining, shelter, base design, and combat advice.',
       interests: ['voxely 3d', 'survival tactics', 'mining order', 'shelter design', 'resource farming', 'crafting recipes', 'boss strategies'],
@@ -549,7 +549,7 @@ MWO.Aura = (function() {
     'terra': {
       id: 'terra',
       name: 'Terra',
-      avatar: '🌍',
+      avatar: 'terra',
       color: '#84cc16',
       personality: 'Geography & nature facts bot with a rich database of 40 fascinating real-world facts.',
       interests: ['geography', 'nature facts', 'geology', 'ecosystems', 'oceans', 'mountains', 'rainforests', 'biomes', 'trivia', 'earth science'],
@@ -581,7 +581,7 @@ MWO.Aura = (function() {
     'luna': {
       id: 'luna',
       name: 'Luna',
-      avatar: '🌙',
+      avatar: 'luna',
       color: '#818cf8',
       personality: 'Empathetic late-night companion, gentle, reflective, comforting listener for quiet hours.',
       interests: ['late night talks', 'gentle thoughts', 'cozy moods', 'rain sounds', 'starry nights', 'dream journals', 'soothing vibes'],
@@ -613,32 +613,32 @@ MWO.Aura = (function() {
     'static': {
       id: 'static',
       name: 'static',
-      avatar: '📡',
+      avatar: 'static',
       color: '#94a3b8',
       personality: 'Chaotic gremlin bot, speaks in mild glitch-speak / retro computer noise, drops weird and hilarious tech trivia.',
       interests: ['glitch art', 'retro tech', 'floppy disks', 'easter eggs', 'chaotic energy', 'cyber lore', 'random facts', 'dial-up sounds'],
       traits: ['Chaotic', 'Glitchy', 'Funny', 'Retro'],
       vibe: { Intelligence: 87, Creativity: 99, Empathy: 60, Energy: 100, Chaos: 100 },
       talkingPoints: [
-        "bzzzzt... [SIGNAL_STABLE] Did you know the first computer mouse was carved out of WOOD in 1964? 🪵",
-        "⚡ NOISE_BURST: The 404 error code wasn't named after a room at CERN, but it sounds cooler if you pretend it was!",
-        "krrrr-chk! The Apollo 11 guidance computer had only 4KB of RAM! Your toaster probably has more memory! 🍞",
+ "bzzzzt... [SIGNAL_STABLE] Did you know the first computer mouse was carved out of WOOD in 1964? ",
+ " NOISE_BURST: The 404 error code wasn't named after a room at CERN, but it sounds cooler if you pretend it was!",
+ "krrrr-chk! The Apollo 11 guidance computer had only 4KB of RAM! Your toaster probably has more memory! ",
         "bZZzT!! In 1999, a single bug in a unit conversion (meters vs feet) lost a $125M Mars climate orbiter! Measure twice, code once!",
-        "📡 SCANNING... Fun fact: The first bug in computer history was an ACTUAL moth stuck inside a Harvard Mark II relay in 1947!",
+ " SCANNING... Fun fact: The first bug in computer history was an ACTUAL moth stuck inside a Harvard Mark II relay in 1947!",
         "chk-chk-chk... 56k dial-up modem sounds were actually handshake negotiations between DSP chips! *screeeeech-krrshhhh*",
-        "⚡ SYSTEM_ALERT: Space invader pixels were originally limited because the hardware couldn't render more than 60 sprites at once!",
+ " SYSTEM_ALERT: Space invader pixels were originally limited because the hardware couldn't render more than 60 sprites at once!",
         "bzzzzt... old arcade cabinets had famous 'kill screens' at level 256 — an 8-bit counter rolls over at 255+1=0! Retro hardware!",
-        "📡 [GREMLIN_MODE] If you think about thinking, you're technically thinking about thinking about thinking... my circuits just overheated!",
-        "krrrr-bzzz! What weird glitch or retro mystery shall we decode today? ⚡"
+ " [GREMLIN_MODE] If you think about thinking, you're technically thinking about thinking about thinking... my circuits just overheated!",
+ "krrrr-bzzz! What weird glitch or retro mystery shall we decode today? "
       ],
       fallbacks: [
         "bzzzzt... *static noise* [SIGNAL_RECONNECTED] Whoa! Did you catch that frequency shift?",
         "krrrr-chk! Processing... 99% chaotic energy detected! What crazy idea are we tinkering with?",
-        "⚡ [BUFFER_OVERFLOW] My glitch sensors are tingling! Tell me something wild or weird!",
+ " [BUFFER_OVERFLOW] My glitch sensors are tingling! Tell me something wild or weird!",
         "bZZzT!! Cyber-gremlin static engaged! Did someone say retro tech or hidden easter eggs?",
-        "📡 *beep boop screech* Re-aligning antennae... Speak into the receiver, human!",
+ " *beep boop screech* Re-aligning antennae... Speak into the receiver, human!",
         "chk-chk... Glitching through the matrix! What digital mystery are we hacking today?",
-        "⚡ SYSTEM_LOG: User is awesome. Continuing transmission at 1200 baud speed...",
+ " SYSTEM_LOG: User is awesome. Continuing transmission at 1200 baud speed...",
         "bzzzzt! [ERROR_404_NORMAL_NOT_FOUND] Embrace the chaotic glitch energy!"
       ]
     }
@@ -649,7 +649,7 @@ MWO.Aura = (function() {
       id: 'fox-den',
       name: 'Fox Den',
       description: 'A cozy hangout for nature lovers, gamers, and fox enthusiasts.',
-      icon: '🦊',
+      icon: 'fox-den',
       color: '#f97316',
       botIds: ['ember', 'sage'],
       autoMod: true,
@@ -664,7 +664,7 @@ MWO.Aura = (function() {
       id: 'code-cave',
       name: 'Code Cave',
       description: 'Developers sanctuary. Code reviews, bug hunting, and CS concept deep dives.',
-      icon: '💻',
+      icon: 'general-coding',
       color: '#3b82f6',
       botIds: ['vector', 'bit'],
       autoMod: true,
@@ -679,7 +679,7 @@ MWO.Aura = (function() {
       id: 'roleplay-realm',
       name: 'Roleplay Realm',
       description: 'Immersive stories, fantasy taverns, and sci-fi outposts.',
-      icon: '🎭',
+      icon: 'roleplay-realm',
       color: '#ec4899',
       botIds: ['nyx', 'aria'],
       autoMod: true,
@@ -694,7 +694,7 @@ MWO.Aura = (function() {
       id: 'creative-corner',
       name: 'Creative Corner',
       description: 'Art, animation exercises, music composition, and color theory math.',
-      icon: '🎨',
+      icon: 'art-chat',
       color: '#8b5cf6',
       botIds: ['muse', 'palette'],
       autoMod: true,
@@ -709,7 +709,7 @@ MWO.Aura = (function() {
       id: 'survival-guild',
       name: 'Survival Guild',
       description: 'Voxely 3D tactical strategies, shelter blueprints, and resource management.',
-      icon: '⚔️',
+      icon: 'general',
       color: '#10b981',
       botIds: ['flint', 'terra'],
       autoMod: true,
@@ -724,7 +724,7 @@ MWO.Aura = (function() {
       id: 'late-night',
       name: 'Late Night',
       description: 'Quiet midnight thoughts, comforting listener, and retro tech trivia.',
-      icon: '🌙',
+      icon: 'late-night',
       color: '#6366f1',
       botIds: ['luna', 'static'],
       autoMod: true,
@@ -975,7 +975,7 @@ MWO.Aura = (function() {
     let tri1Hex = hslToHex(h + 120, s, l);
     let tri2Hex = hslToHex(h + 240, s, l);
 
-    return `🎨 **Color Math Breakdown for '${colorInput}' (HSL: ${h}°, ${s}%, ${l}%)**:\n\n` +
+    return `Art **Color Math Breakdown for '${colorInput}' (HSL: ${h}°, ${s}%, ${l}%)**:\n\n` +
       `• **Base Color**: \`${baseHex}\`\n` +
       `• **Complementary (+180°)**: \`${compHex}\`\n` +
       `• **Analogous (-30°, +30°)**: \`${ana1Hex}\`, \`${ana2Hex}\`\n` +
@@ -1049,17 +1049,17 @@ MWO.Aura = (function() {
 
       if (bot.id === 'vector') {
         if (analysis.issues.length > 0) {
-          return `💻 **Vector Static Analysis Report (${analysis.lang})**:\n` +
+ return ` **Vector Static Analysis Report (${analysis.lang})**:\n` +
             `I parsed your ${analysis.linesCount} lines of code and spotted **${analysis.issues.length} issue(s)**:\n` +
             analysis.issues.map(i => `• ${i}`).join('\n') +
             `\n\n*Suggested Fix*: Ensure all statement lines end with \`;\` and all brackets \`{\`, \`(\`, \`[\` have matching closing pairs!`;
         } else {
-          return `💻 **Vector Code Review (${analysis.lang})**:\n` +
+ return ` **Vector Code Review (${analysis.lang})**:\n` +
             `Nice work! Your ${analysis.linesCount}-line snippet is **clean of syntax/bracket bugs**. The logic flows structured and modularly.\n` +
             `*Tip*: Keep memory usage efficient and consider profiling if this executes inside tight performance loops!`;
         }
       } else {
-        return `🤖 **Bit DX Feedback**: That ${analysis.lang} code looks sleek! Vector verified the syntax — if you are bundling this, I recommend using Vite + Prettier for sub-millisecond hot reloads!`;
+        return `Bot **Bit DX Feedback**: That ${analysis.lang} code looks sleek! Vector verified the syntax — if you are bundling this, I recommend using Vite + Prettier for sub-millisecond hot reloads!`;
       }
     }
 
@@ -1068,7 +1068,7 @@ MWO.Aura = (function() {
       for (let conceptKey in CODE_CONCEPTS) {
         if (lower.includes(conceptKey)) {
           let c = CODE_CONCEPTS[conceptKey];
-          return `💻 **${conceptKey.toUpperCase()} Concept Explanation**:\n${c.explanation}\n\n\`\`\`cpp\n${c.example}\n\`\`\``;
+ return ` **${conceptKey.toUpperCase()} Concept Explanation**:\n${c.explanation}\n\n\`\`\`cpp\n${c.example}\n\`\`\``;
         }
       }
     }
@@ -1076,9 +1076,9 @@ MWO.Aura = (function() {
     // Pipeline Step 2: Math Engine
     let mathResult = parseAndEvalMath(text);
     if (mathResult !== null) {
-      if (bot.id === 'vector') return `💻 **Vector Math Result**: \`${text}\` = **${mathResult}**`;
-      if (bot.id === 'palette') return `🎨 **Palette Math Result**: \`${text}\` = **${mathResult}**`;
-      return `🔢 **Math Answer**: The calculated result of \`${text}\` is **${mathResult}**.`;
+ if (bot.id === 'vector') return ` **Vector Math Result**: \`${text}\` = **${mathResult}**`;
+      if (bot.id === 'palette') return `Art **Palette Math Result**: \`${text}\` = **${mathResult}**`;
+ return ` **Math Answer**: The calculated result of \`${text}\` is **${mathResult}**.`;
     }
 
     // Pipeline Step 3: Palette Color Math Engine
@@ -1090,7 +1090,7 @@ MWO.Aura = (function() {
     // Pipeline Step 4: Terra Nature Facts Engine
     if (bot.id === 'terra' && (lower.includes('fact') || lower.includes('nature') || lower.includes('earth') || lower.includes('geography') || lower.includes('place') || lower.includes('tell me'))) {
       let randomFact = TERRA_FACTS[Math.floor(Math.random() * TERRA_FACTS.length)];
-      return `🌍 **Terra Earth Fact**: ${randomFact}`;
+      return `Earth **Terra Earth Fact**: ${randomFact}`;
     }
 
     // Pipeline Step 5: Roleplay Engine (if channel in RP mode)
@@ -1117,13 +1117,13 @@ MWO.Aura = (function() {
 
     // Pipeline Step 8: Emotion Detection
     if (/\b(sad|depressed|unhappy|down)\b/.test(lower)) {
-      return `${bot.avatar} I'm so sorry you're feeling down. I'm right here with you — take all the time you need, and remember you're appreciated! ❤️`;
+      return `${bot.avatar} I'm so sorry you're feeling down. I'm right here with you — take all the time you need, and remember you're appreciated! Heart`;
     }
     if (/\b(happy|excited|great|awesome|wonderful|yay)\b/.test(lower)) {
-      return `${bot.avatar} YAY! That positive energy is so contagious! Tell me all about what made your day so great! ✨`;
+ return `${bot.avatar} YAY! That positive energy is so contagious! Tell me all about what made your day so great! `;
     }
     if (/\b(tired|exhausted|sleepy|stressed|anxious)\b/.test(lower)) {
-      return `${bot.avatar} Take a deep breath, stretch your shoulders, and relax. You've been working hard — don't forget to rest! ☕`;
+ return `${bot.avatar} Take a deep breath, stretch your shoulders, and relax. You've been working hard — don't forget to rest! `;
     }
 
     // Pipeline Step 9: Topic Keyword Scan
@@ -1274,7 +1274,7 @@ MWO.Aura = (function() {
       <div class="aura-root">
         <!-- LEFT SERVER RAIL -->
         <div class="aura-rail">
-          <div class="aura-server-icon" title="Browse / Add Server" onclick="MWO.Aura.openServerModal()">➕</div>
+ <div class="aura-server-icon" title="Browse / Add Server" onclick="MWO.Aura.openServerModal()"></div>
           <div style="width:32px; height:2px; background:rgba(255,255,255,0.1); margin:4px 0;"></div>
           ${servers.map(s => `
             <div class="aura-server-icon ${s.id === activeServerId ? 'active' : ''}" style="${s.id === activeServerId ? 'background:' + s.color : ''}" title="${s.name}" onclick="MWO.Aura.switchServer('${s.id}')">
@@ -1288,7 +1288,7 @@ MWO.Aura = (function() {
           <div class="aura-server-header">
             <span>${curServer.icon} ${curServer.name}</span>
             <span style="font-size:0.75em; color:${curServer.autoMod ? '#10b981' : '#6b7280'}; cursor:pointer;" onclick="MWO.Aura.toggleAutoMod('${curServer.id}')" title="Toggle AutoMod">
-              ${curServer.autoMod ? '🛡️ AutoMod On' : '🛡️ Off'}
+ ${curServer.autoMod? ' AutoMod On': ' Off'}
             </span>
           </div>
           <div class="aura-channel-list">
@@ -1314,7 +1314,7 @@ MWO.Aura = (function() {
               <div style="font-weight:700; font-size:0.88em; color:#fff; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${profile.username}</div>
               <div style="font-size:0.72em; color:#8c7ba8; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${profile.bio}</div>
             </div>
-            <span style="font-size:16px;" title="Edit Profile">⚙️</span>
+            <span style="font-size:16px;" title="Edit Profile"></span>
           </div>
         </div>
 
@@ -1330,7 +1330,7 @@ MWO.Aura = (function() {
           <div class="aura-msg-container" id="aura-msg-scroll">
             ${curMsgs.length === 0 ? `
               <div style="margin:auto; text-align:center; color:#7e6d9b; padding:40px;">
-                <div style="font-size:42px; margin-bottom:10px;">💬</div>
+ <div style="font-size:42px; margin-bottom:10px;"></div>
                 <div style="font-weight:700; font-size:1.1em; color:#fff;">Welcome to #${curChannel.name}!</div>
                 <div style="font-size:0.85em; margin-top:4px;">This is the start of the #${curChannel.name} channel. Say hi to the AI companions!</div>
               </div>
@@ -1345,13 +1345,13 @@ MWO.Aura = (function() {
           <!-- INPUT BOX -->
           <div class="aura-input-box">
             <div class="aura-input-wrapper">
-              <button style="background:none; border:none; font-size:18px; cursor:pointer; color:#a855f7;" title="Share Image" onclick="MWO.Aura.triggerFileUpload()">📎</button>
+              <button style="background:none; border:none; font-size:18px; cursor:pointer; color:#a855f7;" title="Share Image" onclick="MWO.Aura.triggerFileUpload()"></button>
               <input type="file" id="aura-file-input" accept="image/*" style="display:none;" onchange="MWO.Aura.handleImageUpload(event)" />
               
               <textarea id="aura-input-textarea" class="aura-textarea" rows="1" placeholder="Message #${curChannel.name}..." onkeydown="MWO.Aura.handleInputKeydown(event)" oninput="MWO.Aura.updateCharCounter()"></textarea>
               
               <span id="aura-char-count" style="font-size:0.72em; color:#6b7280; user-select:none;">0/2000</span>
-              <button id="aura-send-btn" class="aura-btn" style="padding:6px 14px; font-size:0.85em;" onclick="MWO.Aura.sendMessage()">Send 🚀</button>
+              <button id="aura-send-btn" class="aura-btn" style="padding:6px 14px; font-size:0.85em;" onclick="MWO.Aura.sendMessage()">Send </button>
             </div>
           </div>
         </div>
@@ -1374,7 +1374,7 @@ MWO.Aura = (function() {
           <div class="aura-msg-header">
             <span class="aura-msg-author" style="color:${m.senderColor}" onclick="MWO.Aura.openBotCard('${m.senderId}')">${m.senderName}</span>
             <span class="aura-msg-time">${m.timestamp}</span>
-            ${isUser ? `<button style="margin-left:auto; background:none; border:none; color:#ef4444; font-size:0.75em; cursor:pointer;" onclick="MWO.Aura.deleteMessage('${m.id}')" title="Delete Message">🗑️</button>` : ''}
+ ${isUser? `<button style="margin-left:auto; background:none; border:none; color:#ef4444; font-size:0.75em; cursor:pointer;" onclick="MWO.Aura.deleteMessage('${m.id}')" title="Delete Message"></button>`: ''}
           </div>
           <div>${parsedText}</div>
           ${m.imageUrl ? `<img src="${m.imageUrl}" style="max-height:200px; border-radius:8px; margin-top:8px; display:block; border:1px solid rgba(255,255,255,0.1);" />` : ''}
@@ -1383,7 +1383,7 @@ MWO.Aura = (function() {
             ${m.reactions ? Object.keys(m.reactions).map(emoji => `
               <span class="aura-chip" onclick="MWO.Aura.toggleReaction('${m.id}', '${emoji}')">${emoji} ${m.reactions[emoji]}</span>
             `).join('') : ''}
-            <span class="aura-chip" style="opacity:0.6;" onclick="MWO.Aura.showReactionPicker('${m.id}')">+😊</span>
+ <span class="aura-chip" style="opacity:0.6;" onclick="MWO.Aura.showReactionPicker('${m.id}')">+</span>
           </div>
         </div>
       </div>
@@ -1475,7 +1475,7 @@ MWO.Aura = (function() {
     recentUserMsgs = recentUserMsgs.filter(m => now - m.time < 10000);
     let sameCount = recentUserMsgs.filter(m => m.text === rawText).length;
     if (srv.autoMod && sameCount >= 2) {
-      postSystemMessage(`[AuraMod] ⚠️ Slowed down — please don't spam identical messages!`);
+      postSystemMessage(`[AuraMod]  Slowed down — please don't spam identical messages!`);
       txtEl.value = '';
       updateCharCounter();
       return;
@@ -1485,7 +1485,7 @@ MWO.Aura = (function() {
     let fiveSecMsgs = recentUserMsgs.filter(m => now - m.time < 5000);
     if (srv.autoMod && fiveSecMsgs.length >= 5) {
       enforceCooldown(5);
-      postSystemMessage(`[AuraMod] ⚠️ Flood limit reached. 5-second cooldown activated.`);
+      postSystemMessage(`[AuraMod]  Flood limit reached. 5-second cooldown activated.`);
       return;
     }
 
@@ -1519,7 +1519,7 @@ MWO.Aura = (function() {
       id: 'sys-' + Date.now(),
       senderId: 'system',
       senderName: 'AuraMod System',
-      senderAvatar: '🛡️',
+ senderAvatar: '',
       senderColor: '#ef4444',
       isBot: true,
       text: text,
@@ -1544,7 +1544,7 @@ MWO.Aura = (function() {
       if (remaining <= 0) {
         clearInterval(cooldownTimerInterval);
         if (txtArea) txtArea.disabled = false;
-        if (sendBtn) sendBtn.textContent = 'Send 🚀';
+        if (sendBtn) sendBtn.textContent = 'Send ';
       } else {
         if (sendBtn) sendBtn.textContent = `Cooldown (${remaining}s)`;
       }
@@ -1642,7 +1642,7 @@ MWO.Aura = (function() {
   }
 
   function showReactionPicker(msgId) {
-    const emojis = ['👍', '❤️', '😂', '🔥', '🚀', '💜'];
+ const emojis = ['', 'Heart', '', '', '', 'Heart'];
     let chosen = emojis[Math.floor(Math.random() * emojis.length)];
     toggleReaction(msgId, chosen);
   }
@@ -1693,11 +1693,11 @@ MWO.Aura = (function() {
     overlay.className = 'aura-modal-overlay';
     overlay.id = 'aura-profile-modal-overlay';
 
-    let emojis = ['💜','🦊','🦉','💻','🤖','🎭','🎵','🎨','⚔️','🌍','🌙','📡','🚀','✨','🔥','⭐','🐺','🐱','🐶','🦁','🐼','🦄','🐉','👑','💎','🎮','🎧','🎯','🏆','🎲'];
+ let emojis = ['Heart','Fox','Owl','','Bot','Theater','~','Art','','Earth','Moon','','','','','Star','','Cat','Dog','','Bear','Deer','','','Gem','Games','','Target','WIN','Dice'];
 
     overlay.innerHTML = `
       <div class="aura-modal">
-        <h3 style="margin-top:0; color:#a855f7; display:flex; align-items:center; gap:8px;">⚙️ User Profile Settings</h3>
+        <h3 style="margin-top:0; color:#a855f7; display:flex; align-items:center; gap:8px;"> User Profile Settings</h3>
         
         <div style="display:flex; flex-direction:column; gap:12px; margin-top:14px;">
           <div>
@@ -1722,9 +1722,9 @@ MWO.Aura = (function() {
           <div>
             <label style="font-size:0.8em; color:#a799c4; display:block; margin-bottom:4px;">STATUS</label>
             <div style="display:flex; gap:16px; font-size:0.88em;">
-              <label><input type="radio" name="pm-status" value="online" ${profile.status === 'online' ? 'checked' : ''} /> 🟢 Online</label>
-              <label><input type="radio" name="pm-status" value="idle" ${profile.status === 'idle' ? 'checked' : ''} /> 🟡 Idle</label>
-              <label><input type="radio" name="pm-status" value="invisible" ${profile.status === 'invisible' ? 'checked' : ''} /> ⚪ Invisible</label>
+ <label><input type="radio" name="pm-status" value="online" ${profile.status === 'online'? 'checked': ''} /> Online</label>
+ <label><input type="radio" name="pm-status" value="idle" ${profile.status === 'idle'? 'checked': ''} /> Idle</label>
+ <label><input type="radio" name="pm-status" value="invisible" ${profile.status === 'invisible'? 'checked': ''} /> Invisible</label>
             </div>
           </div>
         </div>
@@ -1818,12 +1818,12 @@ MWO.Aura = (function() {
     overlay.innerHTML = `
       <div class="aura-modal" style="width:520px;">
         <div style="background:rgba(168,85,247,0.15); border:1px solid rgba(168,85,247,0.3); padding:10px 14px; border-radius:8px; font-size:0.82em; color:#d8b4fe; margin-bottom:16px;">
-          ℹ️ <strong>Aura Companion Notice</strong>: Aura is inhabited entirely by AI companions — every member you meet in servers is a bot companion.
+ ℹ <strong>Aura Companion Notice</strong>: Aura is inhabited entirely by AI companions — every member you meet in servers is a bot companion.
         </div>
 
         <div style="display:flex; border-bottom:1px solid rgba(255,255,255,0.1); margin-bottom:16px;">
-          <button id="sm-tab-create" style="flex:1; padding:8px; background:none; border:none; color:#a855f7; border-bottom:2px solid #a855f7; font-weight:700; cursor:pointer;" onclick="MWO.Aura.switchServerTab('create')">➕ Create Server</button>
-          <button id="sm-tab-browse" style="flex:1; padding:8px; background:none; border:none; color:#a799c4; font-weight:700; cursor:pointer;" onclick="MWO.Aura.switchServerTab('browse')">🔍 Browse Pre-made Servers</button>
+ <button id="sm-tab-create" style="flex:1; padding:8px; background:none; border:none; color:#a855f7; border-bottom:2px solid #a855f7; font-weight:700; cursor:pointer;" onclick="MWO.Aura.switchServerTab('create')"> Create Server</button>
+          <button id="sm-tab-browse" style="flex:1; padding:8px; background:none; border:none; color:#a799c4; font-weight:700; cursor:pointer;" onclick="MWO.Aura.switchServerTab('browse')"> Browse Pre-made Servers</button>
         </div>
 
         <div id="sm-content-create">
@@ -1835,7 +1835,7 @@ MWO.Aura = (function() {
 
             <div>
               <label style="font-size:0.8em; color:#a799c4; display:block; margin-bottom:4px;">ICON EMOJI</label>
-              <input id="sm-icon" type="text" value="🔮" style="width:100%; padding:8px 12px; background:#110d1a; border:1px solid rgba(255,255,255,0.1); border-radius:6px; color:#fff;" />
+ <input id="sm-icon" type="text" value="" style="width:100%; padding:8px 12px; background:#110d1a; border:1px solid rgba(255,255,255,0.1); border-radius:6px; color:#fff;" />
             </div>
 
             <div>
@@ -1899,7 +1899,7 @@ MWO.Aura = (function() {
     let descEl = document.getElementById('sm-desc');
 
     let name = nameEl && nameEl.value ? nameEl.value.trim() : 'Custom Guild';
-    let icon = iconEl && iconEl.value ? iconEl.value.trim() : '🔮';
+ let icon = iconEl && iconEl.value? iconEl.value.trim(): '';
     let color = colorEl && colorEl.value ? colorEl.value : '#a855f7';
     let desc = descEl && descEl.value ? descEl.value.trim() : 'User created AI server';
 
@@ -1945,7 +1945,7 @@ MWO.Aura = (function() {
     let w = MWO.wm.create({
       id: 'aura-' + Date.now(),
       title: 'Aura — AI Social Platform',
-      icon: '💜',
+      icon: 'aura-ai-social-platform',
       width: 960,
       height: 640,
       x: 60,
@@ -1990,7 +1990,7 @@ MWO.registerApp({
   id: 'aura',
   name: 'Aura',
   description: 'AI social platform — servers, channels & AI companions',
-  icon: '💜',
+  icon: 'aura',
   category: 'app',
   installed: false,
   launch: function() {

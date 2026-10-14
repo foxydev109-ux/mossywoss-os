@@ -635,7 +635,7 @@ var MWO = MWO || {};
 
         const imgDiv = document.createElement('div');
         imgDiv.className = 'icn-img';
-        imgDiv.textContent = app.icon || '📱';
+ if (MWO.Icon) { imgDiv.textContent = ''; imgDiv.appendChild(MWO.Icon.tile(app.icon || 'app', 38)); } else { imgDiv.textContent = app.icon || ''; }
 
         const labelDiv = document.createElement('div');
         labelDiv.className = 'icn-label';
@@ -680,20 +680,20 @@ var MWO = MWO || {};
 
         MWO.ctx.show(e.clientX, e.clientY, [
           {
-            label: '🖼️ Change Wallpaper',
+ label: ' Change Wallpaper',
             action: () => this.showWallpaperPicker()
           },
           {
-            label: '➕ Add Desktop',
+ label: ' Add Desktop',
             action: () => this.addDesktop()
           },
           { separator: true },
           {
-            label: '⚙️ Settings',
+            label: ' Settings',
             action: () => MWO.launchApp('settings')
           },
           {
-            label: '🛒 Open Store',
+            label: ' Open Store',
             action: () => MWO.store.open()
           }
         ]);
@@ -744,7 +744,7 @@ var MWO = MWO || {};
       MWO.wm.create({
         id: 'wp-picker-win',
         title: 'Choose Wallpaper',
-        icon: '🖼️',
+        icon: 'choose-wallpaper',
         width: 360,
         height: 220,
         content: content,
@@ -819,7 +819,7 @@ var MWO = MWO || {};
 
       const iconSpan = document.createElement('span');
       iconSpan.className = 'w-icon';
-      iconSpan.textContent = opts.icon || '📱';
+ if (MWO.Icon) { iconSpan.textContent = ''; iconSpan.appendChild(MWO.Icon.tile(opts.icon || 'app', 16)); } else { iconSpan.textContent = opts.icon || ''; }
 
       const titleSpan = document.createElement('span');
       titleSpan.className = 'w-title';
@@ -840,7 +840,7 @@ var MWO = MWO || {};
 
       const closeBtn = document.createElement('div');
       closeBtn.className = 'w-btn close';
-      closeBtn.textContent = '✕';
+      closeBtn.textContent = 'Close';
       closeBtn.onclick = (e) => { e.stopPropagation(); this.close(id); };
 
       if (opts.maximizable === false) maxBtn.style.display = 'none';
@@ -877,7 +877,7 @@ var MWO = MWO || {};
       const winObj = {
         id,
         title: opts.title || 'Window',
-        icon: opts.icon || '📱',
+ icon: opts.icon || '',
         element: winEl,
         body: bodyDiv,
         desktopId,
@@ -1242,7 +1242,7 @@ var MWO = MWO || {};
         tab.className = 'taskbar-app' + (isActive ? ' active' : '');
         
         const icn = document.createElement('span');
-        icn.textContent = win.icon || '📱';
+ if (MWO.Icon) { icn.textContent = ''; icn.appendChild(MWO.Icon.tile(win.icon || 'app', 18)); } else { icn.textContent = win.icon || ''; }
         
         const title = document.createElement('span');
         title.textContent = win.title;
@@ -1383,7 +1383,7 @@ var MWO = MWO || {};
 
         const icn = document.createElement('div');
         icn.className = 'sm-icon';
-        icn.textContent = app.icon || '📱';
+ if (MWO.Icon) { icn.textContent = ''; icn.appendChild(MWO.Icon.tile(app.icon || 'app', 22)); } else { icn.textContent = app.icon || ''; }
 
         const text = document.createElement('div');
         text.className = 'sm-text';
@@ -1415,11 +1415,11 @@ var MWO = MWO || {};
 
     renderSystemTab(container) {
       const sysItems = [
-        { name: 'Settings', desc: 'System preferences & wallpapers', icon: '⚙️', action: () => MWO.launchApp('settings') },
-        { name: 'MossGuard', desc: 'Security scanner & OS updates', icon: '🛡️', action: () => MWO.launchApp('mossguard') },
-        { name: 'About MossyWoss OS', desc: 'System info and specs', icon: 'ℹ️', action: () => this.showAbout() },
-        { name: 'Lock Screen', desc: 'Lock session', icon: '🔒', action: () => MWO.lock.lock() },
-        { name: 'Shut Down', desc: 'Turn off system', icon: '🔌', action: () => MWO.shutdown.start() }
+        { name: 'Settings', desc: 'System preferences & wallpapers', icon: 'settings', action: () => MWO.launchApp('settings') },
+        { name: 'MossGuard', desc: 'Security scanner & OS updates', icon: 'mossguard', action: () => MWO.launchApp('mossguard') },
+        { name: 'About MossyWoss OS', desc: 'System info and specs', icon: 'lock-screen', action: () => this.showAbout() },
+        { name: 'Lock Screen', desc: 'Lock session', icon: 'lock-screen', action: () => MWO.lock.lock() },
+        { name: 'Shut Down', desc: 'Turn off system', icon: 'shut-down', action: () => MWO.shutdown.start() }
       ];
 
       sysItems.forEach(sys => {
@@ -1428,7 +1428,7 @@ var MWO = MWO || {};
 
         const icn = document.createElement('div');
         icn.className = 'sm-icon';
-        icn.textContent = sys.icon;
+        if (MWO.Icon) { icn.textContent = ''; icn.appendChild(MWO.Icon.tile(sys.icon || 'app', 16)); } else { icn.textContent = sys.icon; }
 
         const text = document.createElement('div');
         text.className = 'sm-text';
@@ -1475,7 +1475,7 @@ var MWO = MWO || {};
   const notifications = [];
 
   MWO.notif = {
-    show(title, body, icon = '🔔') {
+ show(title, body, icon = '') {
       const area = document.getElementById('notif-area');
       if (!area) return;
 
@@ -1559,7 +1559,7 @@ var MWO = MWO || {};
       MWO.wm.create({
         id: 'notif-panel-win',
         title: 'Notification Center',
-        icon: '🔔',
+        icon: 'notification-center',
         width: 320,
         height: 380,
         content: content,
@@ -1819,7 +1819,7 @@ var MWO = MWO || {};
     MWO.apps[appDef.id] = Object.assign({
       installed: true,
       category: 'app',
-      icon: '📱',
+      icon: 'app',
       description: ''
     }, appDef);
 
@@ -1853,7 +1853,7 @@ var MWO = MWO || {};
     id: 'terminal',
     name: 'Terminal',
     description: 'Interactive system shell & VFS CLI',
-    icon: '🐚',
+    icon: 'terminal',
     category: 'app',
     installed: true,
     launch() {
@@ -1944,7 +1944,7 @@ var MWO = MWO || {};
                   appendLog('(empty directory)');
                 } else {
                   items.forEach(it => {
-                    const mark = it.type === 'dir' ? '📁 ' : '📄 ';
+                    const mark = it.type === 'dir' ? 'Dir ' : 'Doc ';
                     appendLog(mark + it.name, it.type === 'dir' ? '#a5d6ff' : '#f0f6fc');
                   });
                 }
@@ -2019,7 +2019,7 @@ var MWO = MWO || {};
       MWO.wm.create({
         id: 'terminal-win',
         title: 'Terminal',
-        icon: '🐚',
+        icon: 'terminal',
         width: 600,
         height: 400,
         content: container
@@ -2034,7 +2034,7 @@ var MWO = MWO || {};
     id: 'mossy-ai',
     name: 'Mossy AI',
     description: 'Intelligent OS Assistant & AI Copilot',
-    icon: '🤖',
+    icon: 'mossy-ai',
     category: 'app',
     installed: true,
     launch() {
@@ -2132,7 +2132,7 @@ var MWO = MWO || {};
       MWO.wm.create({
         id: 'mossy-ai-win',
         title: 'Mossy AI Assistant',
-        icon: '🤖',
+        icon: 'mossy-ai-assistant',
         width: 500,
         height: 450,
         content: container
@@ -2145,7 +2145,7 @@ var MWO = MWO || {};
     id: 'browser',
     name: 'Web Browser',
     description: 'Lightweight internal web browser',
-    icon: '🌐',
+    icon: 'web-browser',
     category: 'app',
     installed: true,
     launch() {
@@ -2169,7 +2169,7 @@ var MWO = MWO || {};
       backBtn.style.borderRadius = '4px';
 
       const homeBtn = document.createElement('button');
-      homeBtn.textContent = '🏠';
+ homeBtn.textContent = '';
       homeBtn.style.padding = '6px 10px';
       homeBtn.style.background = 'rgba(255,255,255,0.08)';
       homeBtn.style.borderRadius = '4px';
@@ -2206,13 +2206,13 @@ var MWO = MWO || {};
         if (url.includes('home')) {
           frameBody.innerHTML = `
             <div style="text-align:center;padding:40px 20px;">
-              <h1 style="color:var(--accent);margin-bottom:10px;">🦊 MossyWoss Web</h1>
+              <h1 style="color:var(--accent);margin-bottom:10px;">Fox MossyWoss Web</h1>
               <p style="color:var(--text2);margin-bottom:30px;">Welcome to the single-file browser network</p>
               <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:16px;max-width:400px;margin:0 auto;">
-                <div style="background:rgba(255,255,255,0.05);padding:16px;border-radius:8px;cursor:pointer;">📰 News</div>
-                <div style="background:rgba(255,255,255,0.05);padding:16px;border-radius:8px;cursor:pointer;">🎮 Web Games</div>
-                <div style="background:rgba(255,255,255,0.05);padding:16px;border-radius:8px;cursor:pointer;">📖 Docs</div>
-                <div style="background:rgba(255,255,255,0.05);padding:16px;border-radius:8px;cursor:pointer;">🔍 Search</div>
+ <div style="background:rgba(255,255,255,0.05);padding:16px;border-radius:8px;cursor:pointer;"> News</div>
+                <div style="background:rgba(255,255,255,0.05);padding:16px;border-radius:8px;cursor:pointer;">Games Web Games</div>
+ <div style="background:rgba(255,255,255,0.05);padding:16px;border-radius:8px;cursor:pointer;"> Docs</div>
+                <div style="background:rgba(255,255,255,0.05);padding:16px;border-radius:8px;cursor:pointer;"> Search</div>
               </div>
             </div>
           `;
@@ -2233,7 +2233,7 @@ var MWO = MWO || {};
       MWO.wm.create({
         id: 'browser-win',
         title: 'Web Browser',
-        icon: '🌐',
+        icon: 'web-browser',
         width: 680,
         height: 480,
         content: container
@@ -2246,7 +2246,7 @@ var MWO = MWO || {};
     id: 'files',
     name: 'Files',
     description: 'IndexedDB Virtual File System Explorer',
-    icon: '📁',
+    icon: 'files',
     category: 'app',
     installed: true,
     launch() {
@@ -2271,14 +2271,14 @@ var MWO = MWO || {};
       pathLabel.textContent = currentDir;
 
       const newFolderBtn = document.createElement('button');
-      newFolderBtn.textContent = '📁 New Folder';
+      newFolderBtn.textContent = 'Dir New Folder';
       newFolderBtn.style.padding = '6px 12px';
       newFolderBtn.style.background = 'rgba(255,255,255,0.08)';
       newFolderBtn.style.borderRadius = '6px';
       newFolderBtn.style.fontSize = '0.82em';
 
       const newFileBtn = document.createElement('button');
-      newFileBtn.textContent = '📄 New File';
+      newFileBtn.textContent = 'Doc New File';
       newFileBtn.style.padding = '6px 12px';
       newFileBtn.style.background = 'var(--accent)';
       newFileBtn.style.color = '#fff';
@@ -2306,7 +2306,7 @@ var MWO = MWO || {};
         item.style.borderRadius = '6px';
         item.style.cursor = 'pointer';
         item.style.fontSize = '0.82em';
-        item.textContent = link === '/' ? '🏠 Root' : '📁 ' + link.replace('/', '');
+ item.textContent = link === '/'? ' Root': 'Dir ' + link.replace('/', '');
         item.onclick = () => loadDir(link);
         sidebar.appendChild(item);
       });
@@ -2351,7 +2351,7 @@ var MWO = MWO || {};
 
             const icn = document.createElement('div');
             icn.style.fontSize = '2em';
-            icn.textContent = it.type === 'dir' ? '📁' : '📄';
+            icn.textContent = it.type === 'dir' ? 'Dir' : 'Doc';
 
             const nm = document.createElement('div');
             nm.style.fontSize = '0.75em';
@@ -2406,7 +2406,7 @@ var MWO = MWO || {};
       MWO.wm.create({
         id: 'files-win',
         title: 'File Manager',
-        icon: '📁',
+        icon: 'file-manager',
         width: 640,
         height: 420,
         content: container
@@ -2419,7 +2419,7 @@ var MWO = MWO || {};
     id: 'settings',
     name: 'Settings',
     description: 'System preferences & theme customization',
-    icon: '⚙️',
+    icon: 'settings',
     category: 'app',
     installed: true,
     launch() {
@@ -2441,7 +2441,7 @@ var MWO = MWO || {};
       `;
 
       const wpBtn = document.createElement('button');
-      wpBtn.textContent = '🖼️ Change Wallpaper';
+ wpBtn.textContent = ' Change Wallpaper';
       wpBtn.style.padding = '10px 16px';
       wpBtn.style.background = 'var(--accent)';
       wpBtn.style.color = '#fff';
@@ -2456,7 +2456,7 @@ var MWO = MWO || {};
       MWO.wm.create({
         id: 'settings-win',
         title: 'Settings',
-        icon: '⚙️',
+        icon: 'settings',
         width: 400,
         height: 300,
         content: content
@@ -2527,7 +2527,7 @@ var MWO = MWO || {};
       bar.appendChild(search);
       if (MWO.Publisher && MWO.Publisher.open) {
         const pubBtn = document.createElement('button');
-        pubBtn.textContent = '📤 Publish your own';
+        pubBtn.textContent = 'Out Publish your own';
         pubBtn.style.padding = '8px 14px';
         pubBtn.style.borderRadius = '999px';
         pubBtn.style.border = '1px solid rgba(255,255,255,0.15)';
@@ -2581,7 +2581,7 @@ var MWO = MWO || {};
           top.style.gap = '10px';
           const icn = document.createElement('div');
           icn.style.fontSize = '2em';
-          icn.textContent = item.icon || '📦';
+          if (MWO.Icon) { icn.textContent = ''; icn.appendChild(MWO.Icon.tile(item.icon || 'app', 40)); } else { icn.textContent = item.icon || 'Box'; }
           const info = document.createElement('div');
           const nm = document.createElement('div');
           nm.style.fontWeight = 'bold';
@@ -2683,7 +2683,7 @@ var MWO = MWO || {};
               top.style.gap = '10px';
               const icn = document.createElement('div');
               icn.style.fontSize = '2em';
-              icn.textContent = p.icon || '📦';
+              if (MWO.Icon) { icn.textContent = ''; icn.appendChild(MWO.Icon.tile(p.icon || 'app', 40)); } else { icn.textContent = p.icon || 'Box'; }
               const info = document.createElement('div');
               const nm = document.createElement('div');
               nm.style.fontWeight = 'bold';
@@ -2703,7 +2703,7 @@ var MWO = MWO || {};
               desc.style.flex = '1';
               desc.textContent = p.description || '';
               const runBtn = document.createElement('button');
-              runBtn.textContent = '▶ Run';
+              runBtn.textContent = 'Run Run';
               runBtn.style.padding = '9px';
               runBtn.style.borderRadius = '6px';
               runBtn.style.border = 'none';
@@ -2723,7 +2723,7 @@ var MWO = MWO || {};
       search.oninput = renderGrid;
       renderGrid();
 
-      const body = MWO.wm.create({ id: 'store-win', title: 'Store', icon: '🛒', width: 880, height: 620, resizable: true });
+      const body = MWO.wm.create({ id: 'store-win', title: 'Store', icon: 'store', width: 880, height: 620, resizable: true });
       body.style.overflow = 'auto';
       body.appendChild(container);
       return body;

@@ -34,8 +34,8 @@ var MWO=MWO||{};
   /* --------------------------------------------------------------------
    * 1. CHESS
    * -------------------------------------------------------------------- */
-  reg('mp-chess', 'Chess', 'Full-rule chess vs AI with check/checkmate detect', '♟️', 'game', function(){
-    var w = MWO.wm.create({id:'mp-chess-'+Date.now(), title:'Chess', icon:'♟️', width:540, height:480, resizable:false});
+  reg('mp-chess', 'Chess', 'Full-rule chess vs AI with check/checkmate detect', 'chess', 'game', function(){
+    var w = MWO.wm.create({id:'mp-chess-'+Date.now(), title:'Chess', icon:'chess', width:540, height:480, resizable:false});
     w.innerHTML = "<div style='display:flex;height:100%;background:#1b1b2f;color:#e0e0e0;font-family:sans-serif;box-sizing:border-box;padding:8px;gap:10px'>" +
       "<div style='display:flex;flex-direction:column;align-items:center;justify-content:center'>" +
         "<div id='c-board' style='display:grid;grid-template-columns:repeat(8,48px);grid-template-rows:repeat(8,48px);border:2px solid #444;border-radius:4px;overflow:hidden;box-shadow:0 4px 10px rgba(0,0,0,0.5)'></div>" +
@@ -65,8 +65,8 @@ var MWO=MWO||{};
     ];
 
     var SYMBOLS = {
-      'K':'♔','Q':'♕','R':'♖','B':'♗','N':'♘','P':'♙',
-      'k':'♚','q':'♛','r':'♜','b':'♝','n':'♞','p':'♟'
+      'K':'K','Q':'Q','R':'R','B':'B','N':'N','P':'P',
+      'k':'k','q':'q','r':'r','b':'b','n':'n','p':'p'
     };
 
     var board = [], turn = 'W', sel = null, legalMoves = [], history = [];
@@ -332,8 +332,8 @@ var MWO=MWO||{};
   /* --------------------------------------------------------------------
    * 2. CHECKERS
    * -------------------------------------------------------------------- */
-  reg('mp-checkers', 'Checkers', 'Classic checkers with forced captures & kinging', '🔴', 'game', function(){
-    var w = MWO.wm.create({id:'mp-chk-'+Date.now(), title:'Checkers', icon:'🔴', width:520, height:480, resizable:false});
+  reg('mp-checkers', 'Checkers', 'Classic checkers with forced captures & kinging', 'checkers', 'game', function(){
+    var w = MWO.wm.create({id:'mp-chk-'+Date.now(), title:'Checkers', icon:'checkers', width:520, height:480, resizable:false});
     w.innerHTML = "<div style='display:flex;height:100%;background:#111;color:#eee;font-family:sans-serif;padding:10px;gap:10px;box-sizing:border-box'>" +
       "<div style='display:flex;flex-direction:column;align-items:center'>" +
         "<div id='chk-board' style='display:grid;grid-template-columns:repeat(8,48px);grid-template-rows:repeat(8,48px);border:2px solid #555;border-radius:4px;overflow:hidden;'></div>" +
@@ -449,7 +449,7 @@ var MWO=MWO||{};
               disc.style.background = 'radial-gradient(circle at 30% 30%, #555, #111)';
               disc.style.boxShadow = '0 3px 5px rgba(0,0,0,0.5)';
             }
-            if (p === 'R' || p === 'B') disc.textContent = '♔';
+            if (p === 'R' || p === 'B') disc.textContent = 'K';
             cell.appendChild(disc);
           }
 
@@ -560,8 +560,8 @@ var MWO=MWO||{};
   /* --------------------------------------------------------------------
    * 3. CONNECT FOUR
    * -------------------------------------------------------------------- */
-  reg('mp-connect4', 'Connect Four', '7x6 drop grid with smart AI opponent', '🟡', 'game', function(){
-    var w = MWO.wm.create({id:'mp-c4-'+Date.now(), title:'Connect Four', icon:'🟡', width:420, height:420, resizable:false});
+  reg('mp-connect4', 'Connect Four', '7x6 drop grid with smart AI opponent', 'connect4', 'game', function(){
+    var w = MWO.wm.create({id:'mp-c4-'+Date.now(), title:'Connect Four', icon:'connect4', width:420, height:420, resizable:false});
     w.innerHTML = "<div style='display:flex;flex-direction:column;align-items:center;height:100%;background:#0f172a;color:#fff;padding:10px;box-sizing:border-box'>" +
       "<div id='c4-status' style='font-size:1.1em;font-weight:bold;margin-bottom:8px;color:#38bdf8'>Your Turn (Red)</div>" +
       "<div id='c4-grid' style='display:grid;grid-template-columns:repeat(7,48px);grid-template-rows:repeat(6,48px);gap:6px;background:#1e293b;padding:8px;border-radius:8px;box-shadow:0 4px 10px rgba(0,0,0,0.5);cursor:pointer'></div>" +
@@ -615,7 +615,7 @@ var MWO=MWO||{};
 
       if (checkWin(board, p)) {
         gameOver = true;
-        statusEl.textContent = p === 1 ? "YOU WIN! 🎉" : "AI WINS!";
+        statusEl.textContent = p === 1 ? "YOU WIN!" : "AI WINS!";
         playTone(p === 1 ? 600 : 150, 0.3, 'triangle', 0.2);
         return;
       }
@@ -702,20 +702,20 @@ var MWO=MWO||{};
   /* --------------------------------------------------------------------
    * 4. SOLITAIRE (Klondike)
    * -------------------------------------------------------------------- */
-  reg('mp-solitaire', 'Solitaire', 'Klondike Solitaire card game with drag & tap', '🃏', 'game', function(){
-    var w = MWO.wm.create({id:'mp-sol-'+Date.now(), title:'Solitaire', icon:'🃏', width:620, height:480, resizable:false});
+  reg('mp-solitaire', 'Solitaire', 'Klondike Solitaire card game with drag & tap', 'solitaire', 'game', function(){
+    var w = MWO.wm.create({id:'mp-sol-'+Date.now(), title:'Solitaire', icon:'solitaire', width:620, height:480, resizable:false});
     w.innerHTML = "<div style='display:flex;flex-direction:column;height:100%;background:#065f46;color:#fff;padding:10px;box-sizing:border-box;font-family:sans-serif;user-select:none'>" +
       "<div style='display:flex;justify-content:space-between;margin-bottom:10px'>" +
         "<div style='display:flex;gap:10px'>" +
-          "<div id='sol-stock' style='width:50px;height:70px;border:2px dashed #047857;border-radius:4px;display:flex;align-items:center;justify-content:center;cursor:pointer;background:#064e3b'>🂠</div>" +
+          "<div id='sol-stock' style='width:50px;height:70px;border:2px dashed #047857;border-radius:4px;display:flex;align-items:center;justify-content:center;cursor:pointer;background:#064e3b'>Deck</div>" +
           "<div id='sol-waste' style='width:50px;height:70px;border:1px solid #047857;border-radius:4px;display:flex;align-items:center;justify-content:center;'></div>" +
         "</div>" +
         "<div id='sol-status' style='font-size:0.9em;color:#fde047;align-self:center;font-weight:bold'>Tap cards to move</div>" +
         "<div style='display:flex;gap:8px'>" +
-          "<div id='sol-f0' class='sol-f' style='width:50px;height:70px;border:2px dashed #047857;border-radius:4px;display:flex;align-items:center;justify-content:center;'>♠</div>" +
-          "<div id='sol-f1' class='sol-f' style='width:50px;height:70px;border:2px dashed #047857;border-radius:4px;display:flex;align-items:center;justify-content:center;'>♥</div>" +
-          "<div id='sol-f2' class='sol-f' style='width:50px;height:70px;border:2px dashed #047857;border-radius:4px;display:flex;align-items:center;justify-content:center;'>♣</div>" +
-          "<div id='sol-f3' class='sol-f' style='width:50px;height:70px;border:2px dashed #047857;border-radius:4px;display:flex;align-items:center;justify-content:center;'>♦</div>" +
+          "<div id='sol-f0' class='sol-f' style='width:50px;height:70px;border:2px dashed #047857;border-radius:4px;display:flex;align-items:center;justify-content:center;'>S</div>" +
+          "<div id='sol-f1' class='sol-f' style='width:50px;height:70px;border:2px dashed #047857;border-radius:4px;display:flex;align-items:center;justify-content:center;'>H</div>" +
+          "<div id='sol-f2' class='sol-f' style='width:50px;height:70px;border:2px dashed #047857;border-radius:4px;display:flex;align-items:center;justify-content:center;'>C</div>" +
+          "<div id='sol-f3' class='sol-f' style='width:50px;height:70px;border:2px dashed #047857;border-radius:4px;display:flex;align-items:center;justify-content:center;'>D</div>" +
         "</div>" +
       "</div>" +
       "<div id='sol-tableau' style='flex:1;display:grid;grid-template-columns:repeat(7,1fr);gap:6px;'></div>" +
@@ -724,7 +724,7 @@ var MWO=MWO||{};
 
     var stockEl = w.querySelector('#sol-stock'), wasteEl = w.querySelector('#sol-waste'), statusEl = w.querySelector('#sol-status'), resetBtn = w.querySelector('#sol-reset'), tableauEl = w.querySelector('#sol-tableau');
 
-    var SUITS = ['S','H','C','D'], SUIT_SYM = {'S':'♠','H':'♥','C':'♣','D':'♦'}, RANKS = ['A','2','3','4','5','6','7','8','9','10','J','Q','K'];
+    var SUITS = ['S','H','C','D'], SUIT_SYM = {'S':'S','H':'H','C':'C','D':'D'}, RANKS = ['A','2','3','4','5','6','7','8','9','10','J','Q','K'];
     var deck = [], stock = [], waste = [], foundations = [[],[],[],[]], tableau = [[],[],[],[],[],[],[]];
     var selCard = null, selLoc = null;
 
@@ -769,7 +769,7 @@ var MWO=MWO||{};
       if (!card.faceUp) {
         el.style.background = 'linear-gradient(135deg, #1e3a8a, #3b82f6)';
         el.style.border = '1px solid #60a5fa';
-        el.textContent = '🂠';
+        el.textContent = '[Deck]';
       } else {
         el.style.background = '#ffffff';
         el.style.color = card.color === 'red' ? '#dc2626' : '#111827';
@@ -781,7 +781,7 @@ var MWO=MWO||{};
 
     function render() {
       // Stock & Waste
-      stockEl.textContent = stock.length > 0 ? '🂠 (' + stock.length + ')' : '🔄';
+      stockEl.textContent = stock.length > 0 ? 'Deck (' + stock.length + ')' : 'Reset';
       wasteEl.innerHTML = '';
       if (waste.length > 0) {
         var topW = waste[waste.length - 1];
@@ -913,7 +913,7 @@ var MWO=MWO||{};
     function checkWin() {
       var total = foundations.reduce(function(acc, p){ return acc + p.length; }, 0);
       if (total === 52) {
-        statusEl.textContent = 'YOU WIN SOLITAIRE! 🎉';
+        statusEl.textContent = 'YOU WIN SOLITAIRE!';
         playTone(800, 0.5, 'sine', 0.2);
       }
     }
@@ -925,8 +925,8 @@ var MWO=MWO||{};
   /* --------------------------------------------------------------------
    * 5. WORD GUESS
    * -------------------------------------------------------------------- */
-  reg('mp-wordle', 'Word Guess', '5-letter word guess game with dynamic keyboard', '🟩', 'game', function(){
-    var w = MWO.wm.create({id:'mp-wordle-'+Date.now(), title:'Word Guess', icon:'🟩', width:380, height:480, resizable:false});
+  reg('mp-wordle', 'Word Guess', '5-letter word guess game with dynamic keyboard', 'wordle', 'game', function(){
+    var w = MWO.wm.create({id:'mp-wordle-'+Date.now(), title:'Word Guess', icon:'wordle', width:380, height:480, resizable:false});
     w.innerHTML = "<div style='display:flex;flex-direction:column;align-items:center;height:100%;background:#121213;color:#fff;padding:10px;box-sizing:border-box;font-family:sans-serif'>" +
       "<div style='font-size:1.2em;font-weight:bold;letter-spacing:2px;margin-bottom:8px'>WORD GUESS</div>" +
       "<div id='wd-grid' style='display:grid;grid-template-rows:repeat(6,1fr);gap:4px;margin-bottom:10px'></div>" +
@@ -1051,22 +1051,11 @@ var MWO=MWO||{};
   /* --------------------------------------------------------------------
    * 6. HANGMAN
    * -------------------------------------------------------------------- */
-  reg('mp-hangman', 'Hangman', 'Word guessing game with SVG gallows drawing', '😵', 'game', function(){
-    var w = MWO.wm.create({id:'mp-hang-'+Date.now(), title:'Hangman', icon:'😵', width:420, height:440, resizable:false});
+  reg('mp-hangman', 'Hangman', 'Word guessing game with gallows drawing', 'hangman', 'game', function(){
+    var w = MWO.wm.create({id:'mp-hang-'+Date.now(), title:'Hangman', icon:'hangman', width:420, height:440, resizable:false});
     w.innerHTML = "<div style='display:flex;flex-direction:column;align-items:center;height:100%;background:#1e1e2e;color:#cdd6f4;padding:10px;box-sizing:border-box;font-family:sans-serif'>" +
       "<div style='display:flex;gap:20px;align-items:center;width:100%;justify-content:center'>" +
-        "<svg id='hang-svg' width='120' height='140' style='background:#11111b;border-radius:6px;border:1px solid #313244'>" +
-          "<line x1='10' y1='130' x2='110' y2='130' stroke='#89b4fa' stroke-width='4'/>" +
-          "<line x1='30' y1='130' x2='30' y2='10' stroke='#89b4fa' stroke-width='4'/>" +
-          "<line x1='30' y1='10' x2='80' y2='10' stroke='#89b4fa' stroke-width='4'/>" +
-          "<line x1='80' y1='10' x2='80' y2='25' stroke='#f38ba8' stroke-width='3'/>" +
-          "<circle id='h-head' cx='80' cy='38' r='12' stroke='#f38ba8' stroke-width='3' fill='none' style='display:none'/>" +
-          "<line id='h-body' x1='80' y1='50' x2='80' y2='85' stroke='#f38ba8' stroke-width='3' style='display:none'/>" +
-          "<line id='h-larm' x1='80' y1='60' x2='60' y2='75' stroke='#f38ba8' stroke-width='3' style='display:none'/>" +
-          "<line id='h-rarm' x1='80' y1='60' x2='100' y2='75' stroke='#f38ba8' stroke-width='3' style='display:none'/>" +
-          "<line id='h-lleg' x1='80' y1='85' x2='65' y2='110' stroke='#f38ba8' stroke-width='3' style='display:none'/>" +
-          "<line id='h-rleg' x1='80' y1='85' x2='95' y2='110' stroke='#f38ba8' stroke-width='3' style='display:none'/>" +
-        "</svg>" +
+        "<canvas id='hang-canvas' width='120' height='140' style='background:#11111b;border-radius:6px;border:1px solid #313244'></canvas>" +
         "<div style='display:flex;flex-direction:column;gap:6px'>" +
           "<div id='hang-cat' style='font-size:0.8em;color:#a6adc8'>Category: Animals</div>" +
           "<div id='hang-word' style='font-size:1.4em;letter-spacing:4px;font-family:monospace;font-weight:bold;color:#a6e3a1'>_ _ _ _</div>" +
@@ -1083,16 +1072,33 @@ var MWO=MWO||{};
       {word:'VOLCANO',cat:'Nature'},{word:'PENGUIN',cat:'Animals'},{word:'TELESCOPE',cat:'Space'}
     ];
 
-    var svg = w.querySelector('#hang-svg'), wordEl = w.querySelector('#hang-word'), catEl = w.querySelector('#hang-cat'), wrongEl = w.querySelector('#hang-wrong'), kbdEl = w.querySelector('#hang-kbd'), resetBtn = w.querySelector('#hang-reset');
+    var hangCv = w.querySelector('#hang-canvas'), wordEl = w.querySelector('#hang-word'), catEl = w.querySelector('#hang-cat'), wrongEl = w.querySelector('#hang-wrong'), kbdEl = w.querySelector('#hang-kbd'), resetBtn = w.querySelector('#hang-reset');
     var secretObj = {}, guessed = [], wrongCount = 0, gameOver = false;
-    var parts = ['#h-head', '#h-body', '#h-larm', '#h-rarm', '#h-lleg', '#h-rleg'];
+
+    function drawGallows(wrong) {
+      if (!hangCv) return;
+      var ctx = hangCv.getContext('2d');
+      ctx.clearRect(0, 0, 120, 140);
+      ctx.strokeStyle = '#89b4fa'; ctx.lineWidth = 4;
+      ctx.beginPath(); ctx.moveTo(10, 130); ctx.lineTo(110, 130); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(30, 130); ctx.lineTo(30, 10); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(30, 10); ctx.lineTo(80, 10); ctx.stroke();
+      ctx.strokeStyle = '#f38ba8'; ctx.lineWidth = 3;
+      ctx.beginPath(); ctx.moveTo(80, 10); ctx.lineTo(80, 25); ctx.stroke();
+      if (wrong >= 1) { ctx.beginPath(); ctx.arc(80, 38, 12, 0, Math.PI*2); ctx.stroke(); }
+      if (wrong >= 2) { ctx.beginPath(); ctx.moveTo(80, 50); ctx.lineTo(80, 85); ctx.stroke(); }
+      if (wrong >= 3) { ctx.beginPath(); ctx.moveTo(80, 60); ctx.lineTo(60, 75); ctx.stroke(); }
+      if (wrong >= 4) { ctx.beginPath(); ctx.moveTo(80, 60); ctx.lineTo(100, 75); ctx.stroke(); }
+      if (wrong >= 5) { ctx.beginPath(); ctx.moveTo(80, 85); ctx.lineTo(65, 110); ctx.stroke(); }
+      if (wrong >= 6) { ctx.beginPath(); ctx.moveTo(80, 85); ctx.lineTo(95, 110); ctx.stroke(); }
+    }
 
     function initGame() {
       secretObj = WORDS[Math.floor(Math.random() * WORDS.length)];
       guessed = []; wrongCount = 0; gameOver = false;
       catEl.textContent = 'Category: ' + secretObj.cat;
       wrongEl.textContent = 'Wrong: 0 / 6';
-      parts.forEach(function(p){ var el = svg.querySelector(p); if (el) el.style.display = 'none'; });
+      drawGallows(0);
       renderWord();
       renderKbd();
     }
@@ -1109,7 +1115,7 @@ var MWO=MWO||{};
 
       if (win && !gameOver) {
         gameOver = true;
-        wrongEl.textContent = 'YOU SAVED HIM! 🎉';
+        wrongEl.textContent = 'YOU SAVED HIM!';
         wrongEl.style.color = '#a6e3a1';
         playTone(600, 0.3, 'sine', 0.2);
       }
@@ -1166,8 +1172,8 @@ var MWO=MWO||{};
   /* --------------------------------------------------------------------
    * 7. SIMON SAYS
    * -------------------------------------------------------------------- */
-  reg('mp-simon', 'Simon Says', 'Memory sequence playback with Web Audio tones', '🔔', 'game', function(){
-    var w = MWO.wm.create({id:'mp-simon-'+Date.now(), title:'Simon Says', icon:'🔔', width:360, height:420, resizable:false});
+  reg('mp-simon', 'Simon Says', 'Memory sequence playback with Web Audio tones', 'simon', 'game', function(){
+    var w = MWO.wm.create({id:'mp-simon-'+Date.now(), title:'Simon Says', icon:'simon', width:360, height:420, resizable:false});
     w.innerHTML = "<div style='display:flex;flex-direction:column;align-items:center;height:100%;background:#0f172a;color:#fff;padding:12px;box-sizing:border-box;font-family:sans-serif'>" +
       "<div style='display:flex;justify-content:space-between;width:100%;margin-bottom:10px'>" +
         "<div id='sim-score' style='font-size:1.1em;font-weight:bold;color:#38bdf8'>Score: 0</div>" +
@@ -1254,8 +1260,8 @@ var MWO=MWO||{};
   /* --------------------------------------------------------------------
    * 8. TYPING SPEED TEST
    * -------------------------------------------------------------------- */
-  reg('mp-typing', 'Typing Speed Test', 'Live WPM & accuracy test with live highlighting', '⌨️', 'game', function(){
-    var w = MWO.wm.create({id:'mp-type-'+Date.now(), title:'Typing Test', icon:'⌨️', width:520, height:380, resizable:false});
+  reg('mp-typing', 'Typing Speed Test', 'Live WPM & accuracy test with live highlighting', 'typing', 'game', function(){
+    var w = MWO.wm.create({id:'mp-type-'+Date.now(), title:'Typing Test', icon:'typing', width:520, height:380, resizable:false});
     w.innerHTML = "<div style='display:flex;flex-direction:column;height:100%;background:#0d1117;color:#c9d1d9;padding:12px;box-sizing:border-box;font-family:monospace'>" +
       "<div style='display:flex;justify-content:space-between;margin-bottom:10px;background:#161b22;padding:8px 12px;border-radius:6px'>" +
         "<div>Timer: <span id='typ-timer' style='color:#58a6ff;font-weight:bold'>60s</span></div>" +
@@ -1342,8 +1348,8 @@ var MWO=MWO||{};
   /* --------------------------------------------------------------------
    * 9. FLASHCARDS
    * -------------------------------------------------------------------- */
-  reg('mp-flashcards', 'Flashcards', 'Create, study, and flip card decks saved to VFS', '🎴', 'app', function(){
-    var w = MWO.wm.create({id:'mp-flash-'+Date.now(), title:'Flashcards', icon:'🎴', width:480, height:400, resizable:false});
+  reg('mp-flashcards', 'Flashcards', 'Create, study, and flip card decks saved to VFS', 'flashcards', 'app', function(){
+    var w = MWO.wm.create({id:'mp-flash-'+Date.now(), title:'Flashcards', icon:'flashcards', width:480, height:400, resizable:false});
     w.innerHTML = "<div style='display:flex;flex-direction:column;height:100%;background:#1e1e2e;color:#cdd6f4;padding:12px;box-sizing:border-box;font-family:sans-serif'>" +
       "<div style='display:flex;justify-content:space-between;align-items:center;margin-bottom:10px'>" +
         "<div style='font-size:1.1em;font-weight:bold;color:#89b4fa'>Flashcard Decks</div>" +
@@ -1414,8 +1420,8 @@ var MWO=MWO||{};
   /* --------------------------------------------------------------------
    * 10. POMODORO TIMER
    * -------------------------------------------------------------------- */
-  reg('mp-pomodoro', 'Pomodoro Timer', '25/5 work/break timer with canvas arc ring & Web Audio chime', '⏱️', 'app', function(){
-    var w = MWO.wm.create({id:'mp-pomo-'+Date.now(), title:'Pomodoro Timer', icon:'⏱️', width:340, height:420, resizable:false});
+  reg('mp-pomodoro', 'Pomodoro Timer', '25/5 work/break timer with canvas arc ring & Web Audio chime', 'pomodoro', 'app', function(){
+    var w = MWO.wm.create({id:'mp-pomo-'+Date.now(), title:'Pomodoro Timer', icon:'pomodoro', width:340, height:420, resizable:false});
     w.innerHTML = "<div style='display:flex;flex-direction:column;align-items:center;height:100%;background:#181825;color:#cdd6f4;padding:12px;box-sizing:border-box;font-family:sans-serif'>" +
       "<div id='pm-mode' style='font-size:1.1em;font-weight:bold;color:#f38ba8;margin-bottom:8px'>WORK SESSION</div>" +
       "<canvas id='pm-cv' width='200' height='200' style='margin-bottom:12px'></canvas>" +
@@ -1424,7 +1430,7 @@ var MWO=MWO||{};
         "<button id='pm-pause' style='padding:8px 16px;background:#f9e2af;color:#11111b;border:none;border-radius:6px;cursor:pointer;font-weight:bold'>Pause</button>" +
         "<button id='pm-reset' style='padding:8px 16px;background:#f38ba8;color:#11111b;border:none;border-radius:6px;cursor:pointer;font-weight:bold'>Reset</button>" +
       "</div>" +
-      "<div id='pm-count' style='font-size:0.85em;color:#a6adc8'>Completed Pomodoros: 🍅 0</div>" +
+      "<div id='pm-count' style='font-size:0.85em;color:#a6adc8'>Completed Pomodoros: 0</div>" +
     "</div>";
 
     var cv = w.querySelector('#pm-cv'), cx = cv.getContext('2d'), modeEl = w.querySelector('#pm-mode'), countEl = w.querySelector('#pm-count'), startBtn = w.querySelector('#pm-start'), pauseBtn = w.querySelector('#pm-pause'), resetBtn = w.querySelector('#pm-reset');
@@ -1464,7 +1470,7 @@ var MWO=MWO||{};
           playTone(800, 0.5, 'sine', 0.3);
           if (isWork) {
             sessions++;
-            countEl.textContent = 'Completed Pomodoros: 🍅 ' + sessions;
+            countEl.textContent = 'Completed Pomodoros: ' + sessions;
             MWO.notif.show('Pomodoro', 'Work phase done! Take a break.');
             isWork = false; totalTime = breakTime; timeLeft = breakTime;
             modeEl.textContent = 'BREAK TIME'; modeEl.style.color = '#89b4fa';
@@ -1494,8 +1500,8 @@ var MWO=MWO||{};
   /* --------------------------------------------------------------------
    * 11. METRONOME
    * -------------------------------------------------------------------- */
-  reg('mp-metronome', 'Metronome', 'BPM slider, tap tempo, visual pendulum & Web Audio click', '🎵', 'app', function(){
-    var w = MWO.wm.create({id:'mp-metro-'+Date.now(), title:'Metronome', icon:'🎵', width:340, height:380, resizable:false});
+  reg('mp-metronome', 'Metronome', 'BPM slider, tap tempo, visual pendulum & Web Audio click', 'metronome', 'app', function(){
+    var w = MWO.wm.create({id:'mp-metro-'+Date.now(), title:'Metronome', icon:'metronome', width:340, height:380, resizable:false});
     w.innerHTML = "<div style='display:flex;flex-direction:column;align-items:center;height:100%;background:#111827;color:#f9fafb;padding:12px;box-sizing:border-box;font-family:sans-serif'>" +
       "<div style='font-size:2em;font-weight:bold;color:#60a5fa;' id='met-bpm-txt'>120 BPM</div>" +
       "<canvas id='met-cv' width='200' height='120' style='margin:8px 0;'></canvas>" +
@@ -1585,8 +1591,8 @@ var MWO=MWO||{};
   /* --------------------------------------------------------------------
    * 12. UNIT CONVERTER
    * -------------------------------------------------------------------- */
-  reg('mp-converter', 'Unit Converter', 'Length, mass, temp, speed, volume, data live converter', '📐', 'utility', function(){
-    var w = MWO.wm.create({id:'mp-conv-'+Date.now(), title:'Unit Converter', icon:'📐', width:420, height:360, resizable:false});
+  reg('mp-converter', 'Unit Converter', 'Length, mass, temp, speed, volume, data live converter', 'converter', 'utility', function(){
+    var w = MWO.wm.create({id:'mp-conv-'+Date.now(), title:'Unit Converter', icon:'converter', width:420, height:360, resizable:false});
     w.innerHTML = "<div style='display:flex;flex-direction:column;height:100%;background:#0f172a;color:#f8fafc;padding:12px;box-sizing:border-box;font-family:sans-serif'>" +
       "<select id='cnv-cat' style='padding:8px;background:#1e293b;color:#38bdf8;border:1px solid #334155;border-radius:6px;font-weight:bold;margin-bottom:12px'>" +
         "<option value='length'>Length (Meters, Miles, Feet...)</option>" +
@@ -1664,8 +1670,8 @@ var MWO=MWO||{};
   /* --------------------------------------------------------------------
    * 13. DICE ROLLER
    * -------------------------------------------------------------------- */
-  reg('mp-diceroller', 'Dice Roller', 'D4/D6/D8/D10/D12/D20/D100 & D&D stat roller', '🎲', 'utility', function(){
-    var w = MWO.wm.create({id:'mp-dice-'+Date.now(), title:'Dice Roller', icon:'🎲', width:420, height:420, resizable:false});
+  reg('mp-diceroller', 'Dice Roller', 'D4/D6/D8/D10/D12/D20/D100 & D&D stat roller', 'diceroller', 'utility', function(){
+    var w = MWO.wm.create({id:'mp-dice-'+Date.now(), title:'Dice Roller', icon:'diceroller', width:420, height:420, resizable:false});
     w.innerHTML = "<div style='display:flex;flex-direction:column;height:100%;background:#1e1e2e;color:#cdd6f4;padding:12px;box-sizing:border-box;font-family:sans-serif'>" +
       "<div style='display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:10px'>" +
         "<button class='d-btn' data-d='4' style='padding:8px;background:#89b4fa;color:#11111b;border:none;border-radius:4px;font-weight:bold;cursor:pointer'>D4</button>" +
@@ -1723,8 +1729,8 @@ var MWO=MWO||{};
   /* --------------------------------------------------------------------
    * 14. PASSWORD GENERATOR
    * -------------------------------------------------------------------- */
-  reg('mp-passgen', 'Password Generator', 'Crypto random password generator with entropy meter', '🔑', 'utility', function(){
-    var w = MWO.wm.create({id:'mp-pass-'+Date.now(), title:'Password Generator', icon:'🔑', width:400, height:360, resizable:false});
+  reg('mp-passgen', 'Password Generator', 'Crypto random password generator with entropy meter', 'passgen', 'utility', function(){
+    var w = MWO.wm.create({id:'mp-pass-'+Date.now(), title:'Password Generator', icon:'passgen', width:400, height:360, resizable:false});
     w.innerHTML = "<div style='display:flex;flex-direction:column;height:100%;background:#0f172a;color:#f8fafc;padding:12px;box-sizing:border-box;font-family:sans-serif'>" +
       "<div style='display:flex;gap:6px;margin-bottom:12px'>" +
         "<input id='pg-out' type='text' readonly style='flex:1;padding:10px;background:#1e293b;border:1px solid #334155;color:#38bdf8;border-radius:6px;font-family:monospace;font-size:1.1em;font-weight:bold'/>" +
@@ -1791,8 +1797,8 @@ var MWO=MWO||{};
   /* --------------------------------------------------------------------
    * 15. CALCULATOR+
    * -------------------------------------------------------------------- */
-  reg('mp-calcplus', 'Calculator+', 'Scientific calculator with Shunting-yard evaluator', '🧮', 'utility', function(){
-    var w = MWO.wm.create({id:'mp-calc-'+Date.now(), title:'Calculator+', icon:'🧮', width:340, height:440, resizable:false});
+  reg('mp-calcplus', 'Calculator+', 'Scientific calculator with Shunting-yard evaluator', 'calcplus', 'utility', function(){
+    var w = MWO.wm.create({id:'mp-calc-'+Date.now(), title:'Calculator+', icon:'calcplus', width:340, height:440, resizable:false});
     w.innerHTML = "<div style='display:flex;flex-direction:column;height:100%;background:#090d16;color:#fff;padding:10px;box-sizing:border-box;font-family:sans-serif'>" +
       "<div style='background:#131c2e;padding:10px;border-radius:6px;margin-bottom:10px;text-align:right'>" +
         "<div id='cl-expr' style='font-size:0.85em;color:#64748b;min-height:18px'></div>" +
@@ -1883,8 +1889,8 @@ var MWO=MWO||{};
   /* --------------------------------------------------------------------
    * 16. ASTEROIDS
    * -------------------------------------------------------------------- */
-  reg('mp-asteroids', 'Asteroids', 'Canvas space shooter with physics & asteroid splitting', '🚀', 'game', function(){
-    var w = MWO.wm.create({id:'mp-ast-'+Date.now(), title:'Asteroids', icon:'🚀', width:480, height:420, resizable:false});
+  reg('mp-asteroids', 'Asteroids', 'Canvas space shooter with physics & asteroid splitting', 'asteroids', 'game', function(){
+    var w = MWO.wm.create({id:'mp-ast-'+Date.now(), title:'Asteroids', icon:'asteroids', width:480, height:420, resizable:false});
     w.innerHTML = "<div style='display:flex;flex-direction:column;align-items:center;height:100%;background:#000;color:#fff;padding:4px;box-sizing:border-box'>" +
       "<div style='display:flex;justify-content:space-between;width:100%;padding:4px 8px;font-family:monospace;font-size:0.9em'>" +
         "<div>Score: <span id='ast-sc' style='color:#4ecca3'>0</span></div>" +
@@ -1993,8 +1999,8 @@ var MWO=MWO||{};
   /* --------------------------------------------------------------------
    * 17. STAR BLASTERS
    * -------------------------------------------------------------------- */
-  reg('mp-spaceinvaders', 'Star Blasters', 'Canvas 5x11 alien march with destructible barriers', '👾', 'game', function(){
-    var w = MWO.wm.create({id:'mp-inv-'+Date.now(), title:'Star Blasters', icon:'👾', width:480, height:420, resizable:false});
+  reg('mp-spaceinvaders', 'Star Blasters', 'Canvas 5x11 alien march with destructible barriers', 'starblasters', 'game', function(){
+    var w = MWO.wm.create({id:'mp-inv-'+Date.now(), title:'Star Blasters', icon:'starblasters', width:480, height:420, resizable:false});
     w.innerHTML = "<div style='display:flex;flex-direction:column;align-items:center;height:100%;background:#000;color:#00ff00;padding:4px;box-sizing:border-box'>" +
       "<div style='display:flex;justify-content:space-between;width:100%;padding:4px 8px;font-family:monospace;font-size:0.9em;color:#fff'>" +
         "<div>Score: <span id='inv-sc' style='color:#00ff00'>0</span></div>" +
@@ -2092,8 +2098,8 @@ var MWO=MWO||{};
   /* --------------------------------------------------------------------
    * 18. DOODLE JUMP CLONE
    * -------------------------------------------------------------------- */
-  reg('mp-doodlejump', 'Doodle Jump', 'Canvas auto-bounce platformer with moving platforms', '🦒', 'game', function(){
-    var w = MWO.wm.create({id:'mp-dood-'+Date.now(), title:'Doodle Jump', icon:'🦒', width:360, height:460, resizable:false});
+  reg('mp-doodlejump', 'Doodle Jump', 'Canvas auto-bounce platformer with moving platforms', 'doodlejump', 'game', function(){
+    var w = MWO.wm.create({id:'mp-dood-'+Date.now(), title:'Doodle Jump', icon:'doodlejump', width:360, height:460, resizable:false});
     w.innerHTML = "<div style='display:flex;flex-direction:column;align-items:center;height:100%;background:#111;color:#fff;padding:4px;box-sizing:border-box'>" +
       "<div style='font-family:sans-serif;font-size:1.1em;font-weight:bold;color:#facc15;margin-bottom:4px'>Height: <span id='dood-sc'>0</span></div>" +
       "<canvas id='dood-cv' width='340' height='380' style='border:1px solid #333;border-radius:4px'></canvas>" +
@@ -2173,8 +2179,8 @@ var MWO=MWO||{};
   /* --------------------------------------------------------------------
    * 19. SNAKE BATTLE
    * -------------------------------------------------------------------- */
-  reg('mp-snakebattle', 'Snake Battle', '2-Player local battle: WASD vs Arrows', '🐍', 'game', function(){
-    var w = MWO.wm.create({id:'mp-snb-'+Date.now(), title:'Snake Battle', icon:'🐍', width:480, height:420, resizable:false});
+  reg('mp-snakebattle', 'Snake Battle', '2-Player local battle: WASD vs Arrows', 'snakebattle', 'game', function(){
+    var w = MWO.wm.create({id:'mp-snb-'+Date.now(), title:'Snake Battle', icon:'snakebattle', width:480, height:420, resizable:false});
     w.innerHTML = "<div style='display:flex;flex-direction:column;align-items:center;height:100%;background:#090d16;color:#fff;padding:8px;box-sizing:border-box'>" +
       "<div style='display:flex;justify-content:space-between;width:100%;font-weight:bold;margin-bottom:6px;font-family:sans-serif'>" +
         "<div style='color:#22c55e'>P1 (WASD): <span id='snb-p1'>0</span></div>" +
@@ -2242,8 +2248,8 @@ var MWO=MWO||{};
   /* --------------------------------------------------------------------
    * 20. BATTLESHIP
    * -------------------------------------------------------------------- */
-  reg('mp-battleship', 'Battleship', '10x10 naval strategy vs targeted hunting AI', '⚓', 'game', function(){
-    var w = MWO.wm.create({id:'mp-bat-'+Date.now(), title:'Battleship', icon:'⚓', width:520, height:420, resizable:false});
+  reg('mp-battleship', 'Battleship', '10x10 naval strategy vs targeted hunting AI', 'battleship', 'game', function(){
+    var w = MWO.wm.create({id:'mp-bat-'+Date.now(), title:'Battleship', icon:'battleship', width:520, height:420, resizable:false});
     w.innerHTML = "<div style='display:flex;flex-direction:column;height:100%;background:#0f172a;color:#fff;padding:8px;box-sizing:border-box;font-family:sans-serif'>" +
       "<div id='bat-status' style='font-size:1em;font-weight:bold;color:#38bdf8;text-align:center;margin-bottom:8px'>Tap AI grid to fire salvo!</div>" +
       "<div style='display:flex;justify-content:space-around;flex:1'>" +
@@ -2353,8 +2359,8 @@ var MWO=MWO||{};
   /* --------------------------------------------------------------------
    * 21. WORD SEARCH
    * -------------------------------------------------------------------- */
-  reg('mp-wordsearch', 'Word Search', '10x10 word search with drag selection & list greying', '🔍', 'game', function(){
-    var w = MWO.wm.create({id:'mp-ws-'+Date.now(), title:'Word Search', icon:'🔍', width:440, height:420, resizable:false});
+  reg('mp-wordsearch', 'Word Search', '10x10 word search with drag selection & list greying', 'wordsearch', 'game', function(){
+    var w = MWO.wm.create({id:'mp-ws-'+Date.now(), title:'Word Search', icon:'wordsearch', width:440, height:420, resizable:false});
     w.innerHTML = "<div style='display:flex;height:100%;background:#1e1e2e;color:#cdd6f4;padding:8px;box-sizing:border-box;font-family:sans-serif;gap:10px'>" +
       "<div id='ws-grid' style='display:grid;grid-template-columns:repeat(10,28px);grid-template-rows:repeat(10,28px);gap:3px;background:#313244;padding:6px;border-radius:6px;cursor:pointer'></div>" +
       "<div style='flex:1;display:flex;flex-direction:column;gap:6px;background:#181825;padding:8px;border-radius:6px'>" +
@@ -2440,12 +2446,12 @@ var MWO=MWO||{};
   /* --------------------------------------------------------------------
    * 22. IDLE FOX GROVE
    * -------------------------------------------------------------------- */
-  reg('mp-foxgrove', 'Idle Fox Grove', 'Clicker idler with upgrade shop & VFS offline progress', '🦊', 'game', function(){
-    var w = MWO.wm.create({id:'mp-fox-'+Date.now(), title:'Idle Fox Grove', icon:'🦊', width:420, height:440, resizable:false});
+  reg('mp-foxgrove', 'Idle Fox Grove', 'Clicker idler with upgrade shop & VFS offline progress', 'foxgrove', 'game', function(){
+    var w = MWO.wm.create({id:'mp-fox-'+Date.now(), title:'Idle Fox Grove', icon:'foxgrove', width:420, height:440, resizable:false});
     w.innerHTML = "<div style='display:flex;flex-direction:column;align-items:center;height:100%;background:#1c1917;color:#fef3c7;padding:12px;box-sizing:border-box;font-family:sans-serif'>" +
-      "<div style='font-size:1.6em;font-weight:bold;color:#f59e0b' id='fx-coins'>🦊 0 Coins</div>" +
+      "<div style='font-size:1.6em;font-weight:bold;color:#f59e0b' id='fx-coins'>0 Coins</div>" +
       "<div style='font-size:0.85em;color:#a8a29e;margin-bottom:12px' id='fx-rate'>0 coins/sec</div>" +
-      "<div id='fx-tree' style='width:100px;height:100px;border-radius:50%;background:radial-gradient(circle,#f59e0b,#b45309);display:flex;align-items:center;justify-content:center;font-size:48px;cursor:pointer;box-shadow:0 4px 15px rgba(245,158,11,0.4);user-select:none;margin-bottom:16px'>🦊</div>" +
+      "<div id='fx-tree' style='width:100px;height:100px;border-radius:50%;background:radial-gradient(circle,#f59e0b,#b45309);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:bold;color:#fff;cursor:pointer;box-shadow:0 4px 15px rgba(245,158,11,0.4);user-select:none;margin-bottom:16px'>GROVE</div>" +
       "<div style='flex:1;width:100%;overflow-y:auto;display:flex;flex-direction:column;gap:6px' id='fx-shop'></div>" +
     "</div>";
 
@@ -2469,7 +2475,7 @@ var MWO=MWO||{};
         var earned = offlineSec * coinsPerSec;
         if (earned > 0) {
           coins += earned;
-          MWO.notif.show('Idle Fox Grove', 'Offline Earnings: 🦊 ' + earned + ' coins!');
+          MWO.notif.show('Idle Fox Grove', 'Offline Earnings: ' + earned + ' coins!');
         }
       } catch(e) {}
       render();
@@ -2481,7 +2487,7 @@ var MWO=MWO||{};
     }
 
     function render() {
-      coinsEl.textContent = '🦊 ' + Math.floor(coins) + ' Coins';
+      coinsEl.textContent = '' + Math.floor(coins) + ' Coins';
       calcCps();
       shopEl.innerHTML = '';
       upgrades.forEach(function(u) {

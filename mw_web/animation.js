@@ -255,7 +255,7 @@ MWO.Animation = (function() {
     var w = MWO.wm.create({
       id: 'animation-' + Date.now(),
       title: 'Animation Studio',
-      icon: '🎬',
+      icon: 'animation-studio',
       width: 980,
       height: 660,
       x: 40,
@@ -306,28 +306,28 @@ MWO.Animation = (function() {
       <div style="display:flex;flex-direction:column;height:100%;background:#14161f;color:#eee;font-family:var(--font, sans-serif);user-select:none;overflow:hidden">
         <!-- TOP TOOLBAR -->
         <div style="display:flex;align-items:center;padding:6px 12px;gap:8px;background:#1e2230;border-bottom:1px solid rgba(255,255,255,0.08);flex-wrap:wrap">
-          <span style="font-weight:bold;font-size:0.95em;margin-right:6px;display:flex;align-items:center;gap:4px">🎬 Animation Studio</span>
-          <button class="mw-btn" id="anim-btn-new" style="font-size:0.78em;padding:4px 10px">📄 New</button>
-          <button class="mw-btn" id="anim-btn-open" style="font-size:0.78em;padding:4px 10px">📂 Open</button>
-          <button class="mw-btn" id="anim-btn-save" style="font-size:0.78em;padding:4px 10px">💾 Save</button>
-          <button class="mw-btn primary" id="anim-btn-export" style="font-size:0.78em;padding:4px 12px">📽️ Export Video</button>
+ <span style="font-weight:bold;font-size:0.95em;margin-right:6px;display:flex;align-items:center;gap:4px"> Animation Studio</span>
+          <button class="mw-btn" id="anim-btn-new" style="font-size:0.78em;padding:4px 10px">Doc New</button>
+          <button class="mw-btn" id="anim-btn-open" style="font-size:0.78em;padding:4px 10px">Dir Open</button>
+ <button class="mw-btn" id="anim-btn-save" style="font-size:0.78em;padding:4px 10px"> Save</button>
+ <button class="mw-btn primary" id="anim-btn-export" style="font-size:0.78em;padding:4px 12px"> Export Video</button>
           <div style="height:18px;border-left:1px solid rgba(255,255,255,0.12);margin:0 4px"></div>
-          <button class="mw-btn" id="anim-btn-mode3d" style="font-size:0.78em;padding:4px 10px;background:rgba(255,255,255,0.06)">🧊 Mode: 2D</button>
-          <button class="mw-btn" id="anim-btn-onionskin" style="font-size:0.78em;padding:4px 10px">🧅 Onion Skin: OFF</button>
-          <button class="mw-btn" id="anim-btn-resetview" style="font-size:0.78em;padding:4px 8px">🔍 Reset View</button>
+ <button class="mw-btn" id="anim-btn-mode3d" style="font-size:0.78em;padding:4px 10px;background:rgba(255,255,255,0.06)"> Mode: 2D</button>
+ <button class="mw-btn" id="anim-btn-onionskin" style="font-size:0.78em;padding:4px 10px"> Onion Skin: OFF</button>
+          <button class="mw-btn" id="anim-btn-resetview" style="font-size:0.78em;padding:4px 8px"> Reset View</button>
         </div>
 
         <!-- MAIN WORKSPACE -->
         <div style="display:flex;flex:1;overflow:hidden;position:relative">
           <!-- LEFT TOOLBAR -->
           <div style="width:48px;background:#181a26;border-right:1px solid rgba(255,255,255,0.08);display:flex;flex-direction:column;align-items:center;padding:8px 2px;gap:6px;z-index:2">
-            <button class="anim-tool-btn active" id="tool-select" title="Select / Transform (Arrow)" style="width:36px;height:36px;border-radius:6px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.12);color:#fff;cursor:pointer;font-size:1.1em">↖️</button>
-            <button class="anim-tool-btn" id="tool-rect" title="Rectangle" style="width:36px;height:36px;border-radius:6px;border:1px solid rgba(255,255,255,0.05);background:transparent;color:#ccc;cursor:pointer;font-size:1.1em">🔲</button>
-            <button class="anim-tool-btn" id="tool-ellipse" title="Ellipse / Circle" style="width:36px;height:36px;border-radius:6px;border:1px solid rgba(255,255,255,0.05);background:transparent;color:#ccc;cursor:pointer;font-size:1.1em">⚪</button>
-            <button class="anim-tool-btn" id="tool-line" title="Line" style="width:36px;height:36px;border-radius:6px;border:1px solid rgba(255,255,255,0.05);background:transparent;color:#ccc;cursor:pointer;font-size:1.1em">➖</button>
-            <button class="anim-tool-btn" id="tool-text" title="Text" style="width:36px;height:36px;border-radius:6px;border:1px solid rgba(255,255,255,0.05);background:transparent;color:#ccc;cursor:pointer;font-size:1.1em">🔤</button>
-            <button class="anim-tool-btn" id="tool-star" title="Star" style="width:36px;height:36px;border-radius:6px;border:1px solid rgba(255,255,255,0.05);background:transparent;color:#ccc;cursor:pointer;font-size:1.1em">⭐</button>
-            <button class="anim-tool-btn" id="tool-orbit" title="3D Orbit Camera" style="width:36px;height:36px;border-radius:6px;border:1px solid rgba(255,255,255,0.05);background:transparent;color:#ccc;cursor:pointer;font-size:1.1em;display:none">🌐</button>
+ <button class="anim-tool-btn active" id="tool-select" title="Select / Transform (Arrow)" style="width:36px;height:36px;border-radius:6px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.12);color:#fff;cursor:pointer;font-size:1.1em"></button>
+ <button class="anim-tool-btn" id="tool-rect" title="Rectangle" style="width:36px;height:36px;border-radius:6px;border:1px solid rgba(255,255,255,0.05);background:transparent;color:#ccc;cursor:pointer;font-size:1.1em"></button>
+ <button class="anim-tool-btn" id="tool-ellipse" title="Ellipse / Circle" style="width:36px;height:36px;border-radius:6px;border:1px solid rgba(255,255,255,0.05);background:transparent;color:#ccc;cursor:pointer;font-size:1.1em"></button>
+ <button class="anim-tool-btn" id="tool-line" title="Line" style="width:36px;height:36px;border-radius:6px;border:1px solid rgba(255,255,255,0.05);background:transparent;color:#ccc;cursor:pointer;font-size:1.1em"></button>
+ <button class="anim-tool-btn" id="tool-text" title="Text" style="width:36px;height:36px;border-radius:6px;border:1px solid rgba(255,255,255,0.05);background:transparent;color:#ccc;cursor:pointer;font-size:1.1em"></button>
+            <button class="anim-tool-btn" id="tool-star" title="Star" style="width:36px;height:36px;border-radius:6px;border:1px solid rgba(255,255,255,0.05);background:transparent;color:#ccc;cursor:pointer;font-size:1.1em">Star</button>
+            <button class="anim-tool-btn" id="tool-orbit" title="3D Orbit Camera" style="width:36px;height:36px;border-radius:6px;border:1px solid rgba(255,255,255,0.05);background:transparent;color:#ccc;cursor:pointer;font-size:1.1em;display:none"></button>
           </div>
 
           <!-- CENTER STAGE / CANVAS -->
@@ -354,10 +354,10 @@ MWO.Animation = (function() {
         <div style="height:210px;background:#161823;border-top:1px solid rgba(255,255,255,0.08);display:flex;flex-direction:column;z-index:2">
           <!-- TIMELINE CONTROLS -->
           <div style="padding:6px 12px;background:#1c1f2e;display:flex;align-items:center;gap:10px;border-bottom:1px solid rgba(255,255,255,0.06);flex-wrap:wrap">
-            <button class="mw-btn primary" id="anim-play-btn" style="font-size:0.8em;padding:4px 12px;min-width:65px">▶ Play</button>
+            <button class="mw-btn primary" id="anim-play-btn" style="font-size:0.8em;padding:4px 12px;min-width:65px">Run Play</button>
             <button class="mw-btn" id="anim-stop-btn" style="font-size:0.8em;padding:4px 10px">⏹ Stop</button>
-            <button class="mw-btn" id="anim-loop-btn" style="font-size:0.8em;padding:4px 10px;background:rgba(255,255,255,0.1)">🔁 Loop: ON</button>
-            <button class="mw-btn" id="anim-keyframe-btn" title="Set Keyframe for selected shape at current time" style="font-size:0.8em;padding:4px 10px;background:#2d3550;color:#50e0e0;border:1px solid #50e0e0">⬥ Keyframe</button>
+ <button class="mw-btn" id="anim-loop-btn" style="font-size:0.8em;padding:4px 10px;background:rgba(255,255,255,0.1)"> Loop: ON</button>
+ <button class="mw-btn" id="anim-keyframe-btn" title="Set Keyframe for selected shape at current time" style="font-size:0.8em;padding:4px 10px;background:#2d3550;color:#50e0e0;border:1px solid #50e0e0"> Keyframe</button>
             
             <div style="height:16px;border-left:1px solid rgba(255,255,255,0.12)"></div>
             <span id="anim-time-display" style="font-family:var(--mono,monospace);font-size:0.82em;color:#4f4;min-width:140px">0.0s / 10.0s (F: 0)</span>
@@ -412,7 +412,7 @@ MWO.Animation = (function() {
 
     document.getElementById('anim-btn-mode3d').onclick = function() {
       is3D = !is3D;
-      this.textContent = is3D ? '🧊 Mode: 3D' : '🧊 Mode: 2D';
+ this.textContent = is3D? ' Mode: 3D': ' Mode: 2D';
       this.style.background = is3D ? '#3d2e50' : 'rgba(255,255,255,0.06)';
       document.getElementById('tool-orbit').style.display = is3D ? 'block' : 'none';
       document.getElementById('anim-stage-badge').textContent = is3D ? '3D Stage | Orbit: Right-Drag or Orbit Tool' : '2D Stage | 800x480';
@@ -422,7 +422,7 @@ MWO.Animation = (function() {
 
     document.getElementById('anim-btn-onionskin').onclick = function() {
       onionSkin = !onionSkin;
-      this.textContent = onionSkin ? '🧅 Onion Skin: ON' : '🧅 Onion Skin: OFF';
+ this.textContent = onionSkin? ' Onion Skin: ON': ' Onion Skin: OFF';
       this.style.background = onionSkin ? '#2d4530' : 'transparent';
       renderCanvas();
     };
@@ -478,7 +478,7 @@ MWO.Animation = (function() {
     var loopBtn = document.getElementById('anim-loop-btn');
     loopBtn.onclick = function() {
       isLooping = !isLooping;
-      loopBtn.textContent = isLooping ? '🔁 Loop: ON' : '🔁 Loop: OFF';
+ loopBtn.textContent = isLooping? ' Loop: ON': ' Loop: OFF';
       loopBtn.style.background = isLooping ? 'rgba(255,255,255,0.1)' : 'transparent';
     };
 
@@ -1323,8 +1323,8 @@ MWO.Animation = (function() {
         ` : ''}
 
         <div style="display:flex;gap:6px;margin-top:10px">
-          <button class="mw-btn" id="prop-btn-setkf" style="flex:1;font-size:0.8em;padding:6px;background:#2d3550;color:#50e0e0;border:1px solid #50e0e0">⬥ Set Keyframe</button>
-          <button class="mw-btn danger" id="prop-btn-del" style="font-size:0.8em;padding:6px">🗑️</button>
+ <button class="mw-btn" id="prop-btn-setkf" style="flex:1;font-size:0.8em;padding:6px;background:#2d3550;color:#50e0e0;border:1px solid #50e0e0"> Set Keyframe</button>
+ <button class="mw-btn danger" id="prop-btn-del" style="font-size:0.8em;padding:6px"></button>
         </div>
 
         <!-- Keyframes List -->
@@ -1334,8 +1334,8 @@ MWO.Animation = (function() {
             ${(shape.keyframes || []).map(function(kf) {
               return `
                 <div style="display:flex;align-items:center;justify-content:space-between;background:rgba(0,0,0,0.2);padding:2px 6px;border-radius:4px;font-family:var(--mono,monospace)">
-                  <span style="cursor:pointer" onclick="MWO.Animation.seekTime(${kf.time})">⏱️ ${kf.time.toFixed(1)}s</span>
-                  <button class="mw-btn danger" style="padding:0 4px;font-size:0.7em" onclick="MWO.Animation.deleteKeyframe('${shape.id}', ${kf.time})">✕</button>
+ <span style="cursor:pointer" onclick="MWO.Animation.seekTime(${kf.time})">⏱ ${kf.time.toFixed(1)}s</span>
+                  <button class="mw-btn danger" style="padding:0 4px;font-size:0.7em" onclick="MWO.Animation.deleteKeyframe('${shape.id}', ${kf.time})">Close</button>
                 </div>
               `;
             }).join('')}
@@ -1448,12 +1448,12 @@ MWO.Animation = (function() {
       var isAct = layer.id === activeLayerId;
       return `
         <div style="display:flex;align-items:center;padding:4px 6px;gap:4px;height:32px;background:${isAct ? '#23283b' : 'transparent'};border-bottom:1px solid rgba(255,255,255,0.05);font-size:0.78em">
-          <button class="mw-btn" style="padding:0 3px;font-size:0.9em;background:transparent;border:none" onclick="MWO.Animation.toggleLayerVis('${layer.id}')">${layer.visible ? '👁️' : '🙈'}</button>
-          <button class="mw-btn" style="padding:0 3px;font-size:0.9em;background:transparent;border:none" onclick="MWO.Animation.toggleLayerLock('${layer.id}')">${layer.locked ? '🔒' : '🔓'}</button>
+ <button class="mw-btn" style="padding:0 3px;font-size:0.9em;background:transparent;border:none" onclick="MWO.Animation.toggleLayerVis('${layer.id}')">${layer.visible? '': ''}</button>
+          <button class="mw-btn" style="padding:0 3px;font-size:0.9em;background:transparent;border:none" onclick="MWO.Animation.toggleLayerLock('${layer.id}')">${layer.locked ? 'Lock' : ''}</button>
           <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:pointer;color:${isAct ? '#50e0e0' : '#eee'}" onclick="MWO.Animation.selectLayer('${layer.id}')">${layer.name}</span>
           <button class="mw-btn" style="padding:0 2px;font-size:0.7em" onclick="MWO.Animation.moveLayer('${layer.id}', -1)">▲</button>
           <button class="mw-btn" style="padding:0 2px;font-size:0.7em" onclick="MWO.Animation.moveLayer('${layer.id}', 1)">▼</button>
-          <button class="mw-btn danger" style="padding:0 3px;font-size:0.7em" onclick="MWO.Animation.deleteLayer('${layer.id}')">🗑️</button>
+ <button class="mw-btn danger" style="padding:0 3px;font-size:0.7em" onclick="MWO.Animation.deleteLayer('${layer.id}')"></button>
         </div>
       `;
     }).join('');
@@ -1613,7 +1613,7 @@ MWO.Animation = (function() {
     isPlaying = false;
     var playBtn = document.getElementById('anim-play-btn');
     if (playBtn) {
-      playBtn.textContent = '▶ Play';
+      playBtn.textContent = 'Run Play';
       playBtn.classList.add('primary');
     }
   }
@@ -1788,7 +1788,7 @@ MWO.Animation = (function() {
         currentTime = 0;
 
         document.getElementById('anim-input-duration').value = duration;
-        document.getElementById('anim-btn-mode3d').textContent = is3D ? '🧊 Mode: 3D' : '🧊 Mode: 2D';
+ document.getElementById('anim-btn-mode3d').textContent = is3D? ' Mode: 3D': ' Mode: 2D';
 
         updateTimelineUI();
         updatePropsPanel();
@@ -1871,7 +1871,7 @@ MWO.registerApp({
   id: 'animation',
   name: 'Animation Studio',
   description: '2D & 3D animation — timeline, keyframes, tweening',
-  icon: '🎬',
+  icon: 'animation-studio',
   category: 'app',
   installed: false,
   launch: function() { MWO.Animation.launch(); }

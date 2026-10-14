@@ -137,9 +137,9 @@ MWO.MediaImport = (function() {
         transition: opacity 0.2s ease;
       `;
       overlay.innerHTML = `
-        <div style="font-size:4.5em;margin-bottom:12px;filter:drop-shadow(0 4px 12px rgba(0,0,0,0.4))">📥</div>
+        <div style="font-size:4.5em;margin-bottom:12px;filter:drop-shadow(0 4px 12px rgba(0,0,0,0.4))">In</div>
         <div style="font-size:1.6em;font-weight:bold;color:#ffffff;text-shadow:0 2px 10px rgba(0,0,0,0.8);font-family:system-ui,sans-serif">Drop files to import into MossyWoss OS</div>
-        <div style="font-size:0.95em;color:#d0f8e0;margin-top:8px;text-shadow:0 1px 4px rgba(0,0,0,0.8);font-family:system-ui,sans-serif">Photos → /Pictures | Videos → /Videos | Music → /Music | Documents → /Documents</div>
+ <div style="font-size:0.95em;color:#d0f8e0;margin-top:8px;text-shadow:0 1px 4px rgba(0,0,0,0.8);font-family:system-ui,sans-serif">Photos /Pictures | Videos /Videos | Music /Music | Documents /Documents</div>
       `;
       document.body.appendChild(overlay);
     }
@@ -211,7 +211,7 @@ MWO.MediaImport = (function() {
       const importBtn = document.createElement('button');
       importBtn.className = 'mw-btn primary mw-import-btn';
       importBtn.style.cssText = 'padding:4px 10px;font-size:0.85em;background:#00b894;color:#fff;border:none;border-radius:4px;cursor:pointer;display:inline-flex;align-items:center;gap:4px';
-      importBtn.innerHTML = '📥 Import';
+      importBtn.innerHTML = 'In Import';
 
       importBtn.onclick = () => {
         const currentFolder = pathInput ? pathInput.value : '/Documents';
@@ -373,7 +373,7 @@ MWO.MediaImport = (function() {
       id: 'importer',
       name: 'Import Files',
       description: 'Import photos, videos, music & documents',
-      icon: '📥',
+      icon: 'import-files',
       category: 'app',
       installed: true,
       launch: function() { pick(); }

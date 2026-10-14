@@ -67,9 +67,67 @@ python3 mw_assemble.py
 cd tests && node smoketest.js
 ```
 
+## Architecture
+
+Deep dive into every subsystem (VFS, zip engine, icon tiles, responsive shell,
+MossGuard, interpreter, APK shell, CI) with ASCII diagrams:
+[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
+
+## What this really is (honest scope)
+
+MossyWoss OS is a **web-based operating system simulation**: a complete desktop
+environment, apps, games, file system, and store implemented in HTML/CSS/JS and
+running inside a browser tab (or the Android WebView app). It is NOT a native
+bootable OS — it does not run at the hardware level, replace your real OS, or
+run desktop programs like native Windows/Linux software. Everything inside it is
+its own real, working software (the games really play, the C interpreter really
+executes your code, the zip extraction really decompresses), but it all runs in
+the browser sandbox. Claims in this README only cover what the code actually does.
+
+- **Android APK**: the same web OS wrapped in a native WebView shell (secure
+  in-app origin, so saves and the virtual file system work). It is not a native
+  re-write of every app.
+- **Windows/Linux "installers"**: they place the single HTML file and open it in
+  your browser. The Linux installer adds a command and menu entry; it never
+  touches system directories or needs root.
+- **The C interpreter**: a real interpreter for a practical C/C++/C# subset
+  (variables, expressions, control flow, functions, arrays, pointers basics,
+  console I/O) — not a full hosted C compiler.
+
+## Separation from your device
+
+- **Nothing on this page touches your real files.** The OS stores everything in
+  the browser's own site storage (IndexedDB/localStorage) — one sandboxed bucket
+  per browser. It cannot read or modify your device's files unless YOU import
+  them through the OS's import pickers, and exports only go where you choose.
+- The Windows zip contains one HTML file — no .exe, no installer, no registry
+  changes, nothing installed to your PC. Delete the folder and it is gone.
+- The Linux installer only writes to `~/.local/` for your user, and `uninstall.sh`
+  removes exactly what it added.
+- The Android app runs in a WebView sandbox with only INTERNET, CAMERA and
+  MICROPHONE permissions (camera/mic only for the OS's own camera and recorder
+  apps, requested at first use).
+
+## Icons
+
+The UI uses a pure-CSS icon system (gradient monogram tiles) — no emoji, no SVG,
+no image files.
+
+## Disclaimer
+
+MOSSYWOSS OS IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED. In no event shall the author be liable for any claim, damages, or other
+liability arising from the use of this software. The virtual environment, apps,
+and games are for personal use. Published apps/games (via Publish Studio) are
+user content under user responsibility; the built-in MossGuard scanner performs
+local static analysis only and no scanner can guarantee 100% detection of
+malicious content. Back up anything you care about — browser storage can be
+cleared by the browser at any time.
+
 ## Rules this project follows
 
 - Personal, offline, local-first. Nothing is uploaded to any server.
 - All content free — no paywalls, subscriptions, or commercial posting.
 - No brand names or copyrighted material anywhere in the OS.
 - No placeholders, mock-ups, or simulated behavior — everything is real.
+- No emoji, no SVG icons — pure-CSS icon tiles throughout.

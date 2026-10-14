@@ -22,7 +22,7 @@ MWO.CodeStudio = (function() {
     var w = MWO.wm.create({
       id: 'codestudio-' + Date.now(),
       title: 'Code Studio',
-      icon: '💻',
+      icon: 'code-studio',
       width: 800, height: 600,
       x: 80, y: 40,
       resizable: true
@@ -41,7 +41,7 @@ MWO.CodeStudio = (function() {
           <button class="mw-btn" onclick="MWO.CodeStudio.newFile()" style="font-size:0.78em;padding:6px 12px">New</button>
           <button class="mw-btn" onclick="MWO.CodeStudio.openFile()" style="font-size:0.78em;padding:6px 12px">Open</button>
           <button class="mw-btn" onclick="MWO.CodeStudio.saveFile()" style="font-size:0.78em;padding:6px 12px">Save</button>
-          <button class="mw-btn primary" onclick="MWO.CodeStudio.run()" style="font-size:0.78em;padding:6px 14px">▶ Run</button>
+          <button class="mw-btn primary" onclick="MWO.CodeStudio.run()" style="font-size:0.78em;padding:6px 14px">Run Run</button>
           <div style="flex:1"></div>
           <span id="cs-status" style="font-size:0.72em;color:var(--text2)">Line 1, Col 1 | 1 lines | Runs practical C/C++/C# subset (pointers out of scope)</span>
         </div>
@@ -223,7 +223,7 @@ MWO.CodeStudio = (function() {
         var pretty = JSON.stringify(parsed, null, 2);
         var html = '<!DOCTYPE html><html><head><style>body{font-family:monospace;padding:16px;background:#1a1a2e;color:#e0e0e0;white-space:pre}</style></head><body>' + escapeHtml(pretty) + '</body></html>';
         iframe.srcdoc = html;
-        consoleEl.innerHTML = '<span style="color:#4f4">Valid JSON ✓</span>';
+        consoleEl.innerHTML = '<span style="color:#4f4">Valid JSON [ok]</span>';
       } catch(e) {
         consoleEl.innerHTML = '<span style="color:#f44">Invalid JSON: ' + escapeHtml(e.message) + '</span>';
       }

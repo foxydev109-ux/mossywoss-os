@@ -117,16 +117,16 @@ var MWO = MWO || {};
     id: 'dreamdecoder',
     name: 'Dream Decoder',
     description: 'Analyze dream narratives, generate dream art, and decode psychological symbols.',
-    icon: '🌀',
+    icon: 'win-dreamdecoder',
     category: 'app',
     installed: false,
     launch: function() {
-      var win = MWO.wm.create({ id: 'win-dreamdecoder-' + Date.now(), title: 'Dream Decoder', icon: '🌀', width: 460, height: 540, resizable: true });
+      var win = MWO.wm.create({ id: 'win-dreamdecoder-' + Date.now(), title: 'Dream Decoder', icon: 'dream-decoder', width: 460, height: 540, resizable: true });
       win.style.background = '#0f172a';
       win.style.padding = '10px';
 
       win.innerHTML = '<div class="mwo-flex-col">' +
-        '<div style="font-weight:bold;color:#f8fafc;">🌀 Dream Decoder & Art Generator</div>' +
+ '<div style="font-weight:bold;color:#f8fafc;"> Dream Decoder & Art Generator</div>' +
         '<textarea class="mwo-inp dream-inp" placeholder="Describe your dream... (e.g. flying over a dark forest near a stormy ocean)" style="height:70px;resize:none;"></textarea>' +
         '<div style="display:flex;gap:6px;"><button class="mwo-btn btn-dec" style="flex:1;background:#6366f1;color:#fff;">Decode & Render</button><button class="mwo-btn btn-hist" style="background:#334155;color:#fff;">History</button></div>' +
         '<canvas class="dream-cvs" width="440" height="150" style="width:100%;height:150px;background:#020617;border-radius:8px;border:1px solid #1e293b;"></canvas>' +
@@ -264,7 +264,7 @@ var MWO = MWO || {};
           item.style.background = '#27272a';
           item.style.borderColor = '#3f3f46';
 
-          var statusTxt = isUnlocked ? '<span style="color:#22c55e;">🔓 Unlocked</span>' : '<span style="color:#eab308;">🔒 Sealed: ' + cap.date + '</span>';
+          var statusTxt = isUnlocked ? '<span style="color:#22c55e;"> Unlocked</span>' : '<span style="color:#eab308;">Lock Sealed: ' + cap.date + '</span>';
 
           item.innerHTML = '<div style="display:flex;justify-content:space-between;font-size:12px;font-weight:bold;">' +
             '<span>' + cap.title + '</span>' + statusTxt + '</div>' +
@@ -313,11 +313,11 @@ var MWO = MWO || {};
     id: 'soundgarden',
     name: 'Sound Garden',
     description: 'Plant melodic seeds that grow into procedural pentatonic flowers.',
-    icon: '🌱',
+    icon: 'win-soundgarden',
     category: 'app',
     installed: false,
     launch: function() {
-      var win = MWO.wm.create({ id: 'win-soundgarden-' + Date.now(), title: 'Sound Garden', icon: '🌱', width: 480, height: 520, resizable: true });
+      var win = MWO.wm.create({ id: 'win-soundgarden-' + Date.now(), title: 'Sound Garden', icon: 'sound-garden', width: 480, height: 520, resizable: true });
       win.style.background = '#064e3b';
       win.style.padding = '10px';
 
@@ -325,7 +325,7 @@ var MWO = MWO || {};
 
       win.innerHTML = '<div class="mwo-flex-col">' +
         '<div style="display:flex;justify-content:space-between;align-items:center;color:#ecfdf5;">' +
-        '<b style="font-size:15px;">🌱 Sound Garden</b>' +
+        '<b style="font-size:15px;"> Sound Garden</b>' +
         '<div class="tools-bar" style="display:flex;gap:4px;"></div>' +
         '</div>' +
         '<div style="font-size:11px;color:#a7f3d0;display:flex;justify-content:space-between;">' +
@@ -333,7 +333,7 @@ var MWO = MWO || {};
         '<span>Water: <b class="water-lbl" style="color:#38bdf8;">5/5</b></span>' +
         '</div>' +
         '<div class="grid-plots" style="display:grid;grid-template-columns:repeat(6,1fr);gap:6px;flex:1;background:#022c22;padding:8px;border-radius:8px;border:1px solid #047857;align-content:start;"></div>' +
-        '<button class="mwo-btn btn-wind" style="background:#10b981;color:#000;padding:8px;">🌬️ Play Wind Chime (All Flowers)</button>' +
+ '<button class="mwo-btn btn-wind" style="background:#10b981;color:#000;padding:8px;"> Play Wind Chime (All Flowers)</button>' +
         '</div>';
 
       var toolsDiv = win.querySelector('.tools-bar');
@@ -343,12 +343,12 @@ var MWO = MWO || {};
       var windBtn = win.querySelector('.btn-wind');
 
       var tools = [
-        { id: 'bell', name: 'Bell 🔔' },
-        { id: 'pluck', name: 'Pluck 🪕' },
-        { id: 'pad', name: 'Pad 🌊' },
-        { id: 'chime', name: 'Chime ✨' },
-        { id: 'bass', name: 'Bass 🥁' },
-        { id: 'water', name: 'Water 💧' }
+ { id: 'bell', name: 'Bell ' },
+ { id: 'pluck', name: 'Pluck ' },
+ { id: 'pad', name: 'Pad ' },
+ { id: 'chime', name: 'Chime ' },
+ { id: 'bass', name: 'Bass ' },
+        { id: 'water', name: 'Water ' }
       ];
 
       var activeTool = 'bell';
@@ -417,11 +417,11 @@ var MWO = MWO || {};
           el.style.display = 'flex'; el.style.flexDirection = 'column'; el.style.alignItems = 'center'; el.style.justifyContent = 'center'; el.style.cursor = 'pointer';
 
           if (!p.inst) {
-            el.innerHTML = '<span style="font-size:14px;opacity:0.3;">🟤</span><span style="font-size:8px;color:#059669;">Empty</span>';
+ el.innerHTML = '<span style="font-size:14px;opacity:0.3;"></span><span style="font-size:8px;color:#059669;">Empty</span>';
           } else {
             var hrs = (now - p.plantedAt) / 3600000;
             var growth = Math.min(100, Math.floor(hrs * 20 + p.waterBonus));
-            var stage = growth >= 70 ? '🌸' : (growth >= 30 ? '🌿' : '🌱');
+            var stage = growth >= 70 ? 'Blossom' : (growth >= 30 ? '▲' : '');
             el.innerHTML = '<span style="font-size:18px;">' + stage + '</span><span style="font-size:8px;color:#6ee7b7;">' + growth + '%</span>';
           }
 
@@ -465,18 +465,18 @@ var MWO = MWO || {};
     id: 'cosmicradio',
     name: 'Cosmic Radio',
     description: 'Tune into deep space frequencies and procedural radio static.',
-    icon: '📡',
+    icon: 'cosmic-radio',
     category: 'app',
     installed: false,
     launch: function() {
-      var win = MWO.wm.create({ id: 'win-cosmicradio-' + Date.now(), title: 'Cosmic Radio', icon: '📡', width: 460, height: 480, resizable: true });
+      var win = MWO.wm.create({ id: 'win-cosmicradio-' + Date.now(), title: 'Cosmic Radio', icon: 'cosmic-radio', width: 460, height: 480, resizable: true });
       win.style.background = '#09090b';
       win.style.padding = '10px';
 
       var audioCtx = createAudioCtx(win);
 
       win.innerHTML = '<div class="mwo-flex-col">' +
-        '<div style="font-weight:bold;color:#fafafa;">📡 Cosmic Radio Receiver</div>' +
+ '<div style="font-weight:bold;color:#fafafa;"> Cosmic Radio Receiver</div>' +
         '<div class="mwo-box" style="background:#18181b;border-color:#27272a;display:flex;flex-direction:column;gap:6px;">' +
         '<div style="display:flex;justify-content:space-between;align-items:center;">' +
         '<span style="font-size:11px;color:#a1a1aa;">Dial:</span><b class="freq-lbl" style="font-family:monospace;font-size:16px;color:#38bdf8;">98.5 MHz</b>' +
@@ -570,16 +570,16 @@ var MWO = MWO || {};
     id: 'moodweather',
     name: 'Mood Weather',
     description: 'Log moods rendered as an emotional weather station and forecast.',
-    icon: '🌦️',
+    icon: 'mood-weather',
     category: 'app',
     installed: false,
     launch: function() {
-      var win = MWO.wm.create({ id: 'win-moodweather-' + Date.now(), title: 'Mood Weather', icon: '🌦️', width: 460, height: 520, resizable: true });
+      var win = MWO.wm.create({ id: 'win-moodweather-' + Date.now(), title: 'Mood Weather', icon: 'mood-weather', width: 460, height: 520, resizable: true });
       win.style.background = '#0f172a';
       win.style.padding = '10px';
 
       win.innerHTML = '<div class="mwo-flex-col">' +
-        '<div style="font-weight:bold;color:#f8fafc;">🌦️ Mood Weather Station</div>' +
+ '<div style="font-weight:bold;color:#f8fafc;"> Mood Weather Station</div>' +
         '<div class="mood-btns" style="display:grid;grid-template-columns:repeat(4,1fr);gap:4px;"></div>' +
         '<canvas class="sky-cvs" width="440" height="140" style="width:100%;height:140px;background:#020617;border-radius:8px;border:1px solid #1e293b;"></canvas>' +
         '<div class="fcast-box mwo-box" style="font-size:12px;line-height:1.4;">Forecast loading...</div>' +
@@ -594,14 +594,14 @@ var MWO = MWO || {};
       var chartCtx = chartCvs.getContext('2d');
 
       var MOODS = [
-        { id: 'joyful', name: 'Joyful ☀️', color: '#f59e0b' },
-        { id: 'calm', name: 'Calm 🌤️', color: '#38bdf8' },
-        { id: 'energetic', name: 'Energetic ⚡', color: '#eab308' },
-        { id: 'sad', name: 'Sad 🌧️', color: '#6366f1' },
-        { id: 'anxious', name: 'Anxious 🌩️', color: '#a855f7' },
-        { id: 'angry', name: 'Angry 🌋', color: '#ef4444' },
-        { id: 'tired', name: 'Tired 🌫️', color: '#64748b' },
-        { id: 'content', name: 'Content 🌈', color: '#10b981' }
+ { id: 'joyful', name: 'Joyful ', color: '#f59e0b' },
+ { id: 'calm', name: 'Calm ', color: '#38bdf8' },
+ { id: 'energetic', name: 'Energetic ', color: '#eab308' },
+ { id: 'sad', name: 'Sad ', color: '#6366f1' },
+ { id: 'anxious', name: 'Anxious ', color: '#a855f7' },
+ { id: 'angry', name: 'Angry ', color: '#ef4444' },
+ { id: 'tired', name: 'Tired ', color: '#64748b' },
+        { id: 'content', name: 'Content ', color: '#10b981' }
       ];
 
       var curMood = 'calm', history = [];
@@ -679,18 +679,18 @@ var MWO = MWO || {};
     id: 'ideaforge',
     name: 'Idea Forge',
     description: 'Combine concepts and constraints into mechanical invention pitches.',
-    icon: '⚒️',
+    icon: 'idea-forge',
     category: 'app',
     installed: false,
     launch: function() {
-      var win = MWO.wm.create({ id: 'win-ideaforge-' + Date.now(), title: 'Idea Forge', icon: '⚒️', width: 480, height: 520, resizable: true });
+      var win = MWO.wm.create({ id: 'win-ideaforge-' + Date.now(), title: 'Idea Forge', icon: 'idea-forge', width: 480, height: 520, resizable: true });
       win.style.background = '#1c1917';
       win.style.padding = '10px';
 
       win.innerHTML = '<div class="mwo-flex-col">' +
-        '<div style="font-weight:bold;color:#f5f5f4;">⚒️ Invention Forge</div>' +
+ '<div style="font-weight:bold;color:#f5f5f4;"> Invention Forge</div>' +
         '<div style="display:flex;gap:6px;">' +
-        '<button class="mwo-btn btn-forge" style="flex:1;background:#f97316;color:#000;">🔥 Forge Invention</button>' +
+ '<button class="mwo-btn btn-forge" style="flex:1;background:#f97316;color:#000;"> Forge Invention</button>' +
         '<button class="mwo-btn btn-saved" style="background:#292524;color:#fff;">Saved Ideas</button>' +
         '</div>' +
         '<canvas class="sketch-cvs" width="460" height="140" style="width:100%;height:140px;background:#0c0a09;border-radius:8px;border:1px solid #292524;"></canvas>' +
@@ -756,16 +756,16 @@ var MWO = MWO || {};
     id: 'whisperwall',
     name: 'Whisper Wall',
     description: 'Post anonymous ephemeral sticky notes that dissolve over 48 hours.',
-    icon: '📜',
+    icon: 'win-whisperwall',
     category: 'app',
     installed: false,
     launch: function() {
-      var win = MWO.wm.create({ id: 'win-whisperwall-' + Date.now(), title: 'Whisper Wall', icon: '📜', width: 480, height: 520, resizable: true });
+      var win = MWO.wm.create({ id: 'win-whisperwall-' + Date.now(), title: 'Whisper Wall', icon: 'whisper-wall', width: 480, height: 520, resizable: true });
       win.style.background = '#1e1b4b';
       win.style.padding = '10px';
 
       win.innerHTML = '<div class="mwo-flex-col">' +
-        '<div style="font-weight:bold;color:#e0e7ff;">📜 Whisper Wall</div>' +
+ '<div style="font-weight:bold;color:#e0e7ff;"> Whisper Wall</div>' +
         '<div style="display:flex;gap:6px;">' +
         '<input type="text" class="mwo-inp whisp-inp" maxlength="140" placeholder="Whisper something..." style="flex:1;">' +
         '<button class="mwo-btn btn-whisp" style="background:#818cf8;color:#000;">Post</button>' +
@@ -822,24 +822,24 @@ var MWO = MWO || {};
     id: 'reversequiz',
     name: 'Reverse Quiz',
     description: 'Deduce the secret concept from warm/cold tag similarity hints.',
-    icon: '🔄',
+    icon: 'reverse-quiz',
     category: 'app',
     installed: false,
     launch: function() {
-      var win = MWO.wm.create({ id: 'win-reversequiz-' + Date.now(), title: 'Reverse Quiz', icon: '🔄', width: 460, height: 500, resizable: true });
+      var win = MWO.wm.create({ id: 'win-reversequiz-' + Date.now(), title: 'Reverse Quiz', icon: 'reverse-quiz', width: 460, height: 500, resizable: true });
       win.style.background = '#0f172a';
       win.style.padding = '10px';
 
       win.innerHTML = '<div class="mwo-flex-col">' +
         '<div style="display:flex;justify-content:space-between;color:#f8fafc;font-weight:bold;">' +
-        '<span>🔄 Reverse Quiz</span><span>Score: <b class="score-lbl" style="color:#38bdf8;">0</b></span>' +
+ '<span> Reverse Quiz</span><span>Score: <b class="score-lbl" style="color:#38bdf8;">0</b></span>' +
         '</div>' +
         '<div style="display:flex;gap:6px;">' +
         '<input type="text" class="mwo-inp guess-inp" placeholder="Type guess..." style="flex:1;">' +
         '<button class="mwo-btn btn-guess" style="background:#38bdf8;color:#000;">Submit</button>' +
         '</div>' +
         '<div class="log-box mwo-box mw-scroll" style="flex:1;overflow-y:auto;font-size:12px;"></div>' +
-        '<button class="mwo-btn btn-next" style="background:#22c55e;color:#000;display:none;">Next Round ➔</button>' +
+ '<button class="mwo-btn btn-next" style="background:#22c55e;color:#000;display:none;">Next Round </button>' +
         '</div>';
 
       var scoreLbl = win.querySelector('.score-lbl');
@@ -873,13 +873,13 @@ var MWO = MWO || {};
         if (g === cur.toLowerCase()) {
           score += Math.max(1, 10 - guesses);
           scoreLbl.textContent = score;
-          log.innerHTML += '<div style="color:#22c55e;font-weight:bold;margin-top:4px;">🎉 Correct! Answer: ' + cur + '</div>';
+          log.innerHTML += '<div style="color:#22c55e;font-weight:bold;margin-top:4px;">! Correct! Answer: ' + cur + '</div>';
           btn.disabled = true; nextBtn.style.display = 'block';
           return;
         }
 
         var hint = guesses >= 4 ? ' (First letter: ' + cur.charAt(0).toUpperCase() + ')' : '';
-        log.innerHTML += '<div style="margin-top:4px;">Guess #' + guesses + ': ' + inp.value + ' ➔ ❄️ Cold' + hint + '</div>';
+ log.innerHTML += '<div style="margin-top:4px;">Guess #' + guesses + ': ' + inp.value + ' Cold' + hint + '</div>';
         inp.value = '';
       };
 
@@ -896,16 +896,16 @@ var MWO = MWO || {};
     id: 'emotioncanvas',
     name: 'Emotion Canvas',
     description: 'Generative vector artwork derived from emotion intensity sliders.',
-    icon: '🎨',
+    icon: 'win-emotioncanvas',
     category: 'app',
     installed: false,
     launch: function() {
-      var win = MWO.wm.create({ id: 'win-emotioncanvas-' + Date.now(), title: 'Emotion Canvas', icon: '🎨', width: 480, height: 520, resizable: true });
+      var win = MWO.wm.create({ id: 'win-emotioncanvas-' + Date.now(), title: 'Emotion Canvas', icon: 'emotion-canvas', width: 480, height: 520, resizable: true });
       win.style.background = '#09090b';
       win.style.padding = '10px';
 
       win.innerHTML = '<div class="mwo-flex-col">' +
-        '<div style="font-weight:bold;color:#fafafa;">🎨 Emotion Canvas</div>' +
+        '<div style="font-weight:bold;color:#fafafa;">Art Emotion Canvas</div>' +
         '<div style="display:flex;gap:6px;align-items:center;">' +
         '<select class="mwo-inp emo-sel"><option>Joy</option><option>Serenity</option><option>Melancholy</option><option>Fury</option><option>Wonder</option></select>' +
         '<input type="range" class="int-slider" min="1" max="100" value="50" style="flex:1;">' +
@@ -970,16 +970,16 @@ var MWO = MWO || {};
     id: 'labyrinthjournal',
     name: 'Labyrinth Journal',
     description: 'Transform journal entries into solvable mazes with hidden word chips.',
-    icon: '🗝️',
+    icon: 'win-labyrinthjournal',
     category: 'app',
     installed: false,
     launch: function() {
-      var win = MWO.wm.create({ id: 'win-labyrinthjournal-' + Date.now(), title: 'Labyrinth Journal', icon: '🗝️', width: 480, height: 520, resizable: true });
+      var win = MWO.wm.create({ id: 'win-labyrinthjournal-' + Date.now(), title: 'Labyrinth Journal', icon: 'labyrinth-journal', width: 480, height: 520, resizable: true });
       win.style.background = '#0f172a';
       win.style.padding = '10px';
 
       win.innerHTML = '<div class="mwo-flex-col">' +
-        '<div style="font-weight:bold;color:#f8fafc;">🗝️ Labyrinth Journal</div>' +
+ '<div style="font-weight:bold;color:#f8fafc;"> Labyrinth Journal</div>' +
         '<textarea class="mwo-inp jour-txt" placeholder="Write journal entry..." style="height:50px;resize:none;"></textarea>' +
         '<button class="mwo-btn btn-gen" style="background:#38bdf8;color:#000;">Generate Maze</button>' +
         '<div style="display:flex;gap:8px;flex:1;">' +
@@ -987,7 +987,7 @@ var MWO = MWO || {};
         '<canvas class="maze-cvs" width="220" height="220" style="background:#020617;border-radius:8px;border:1px solid #1e293b;"></canvas>' +
         '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:2px;width:90px;">' +
         '<div></div><button class="mwo-btn btn-u" style="padding:4px;">▲</button><div></div>' +
-        '<button class="mwo-btn btn-l" style="padding:4px;">◀</button><div></div><button class="mwo-btn btn-r" style="padding:4px;">▶</button>' +
+        '<button class="mwo-btn btn-l" style="padding:4px;">◀</button><div></div><button class="mwo-btn btn-r" style="padding:4px;">Run</button>' +
         '<div></div><button class="mwo-btn btn-d" style="padding:4px;">▼</button><div></div>' +
         '</div></div>' +
         '<div class="chips-box mwo-box mw-scroll" style="flex:1;overflow-y:auto;font-size:11px;">Collected words will appear here.</div>' +
@@ -1063,20 +1063,20 @@ var MWO = MWO || {};
     id: 'fortunepond',
     name: 'Fortune Pond',
     description: 'Cast a line into tranquil waters to reel in insightful philosophical fortunes.',
-    icon: '🐟',
+    icon: 'win-fortunepond',
     category: 'app',
     installed: false,
     launch: function() {
-      var win = MWO.wm.create({ id: 'win-fortunepond-' + Date.now(), title: 'Fortune Pond', icon: '🐟', width: 480, height: 520, resizable: true });
+      var win = MWO.wm.create({ id: 'win-fortunepond-' + Date.now(), title: 'Fortune Pond', icon: 'fortune-pond', width: 480, height: 520, resizable: true });
       win.style.background = '#0284c7';
       win.style.padding = '10px';
 
       win.innerHTML = '<div class="mwo-flex-col">' +
-        '<div style="font-weight:bold;color:#f0f9ff;">🐟 Fortune Pond</div>' +
+        '<div style="font-weight:bold;color:#f0f9ff;">Fish Fortune Pond</div>' +
         '<canvas class="pond-cvs" width="460" height="180" style="width:100%;height:180px;background:#0369a1;border-radius:8px;border:1px solid #0284c7;"></canvas>' +
         '<div style="display:flex;gap:6px;">' +
         '<button class="mwo-btn btn-cast" style="flex:1;background:#f59e0b;color:#000;">Hold to Charge & Release to Cast</button>' +
-        '<button class="mwo-btn btn-reel" style="background:#ef4444;color:#fff;display:none;">🎣 REEL IN!</button>' +
+ '<button class="mwo-btn btn-reel" style="background:#ef4444;color:#fff;display:none;"> REEL IN!</button>' +
         '</div>' +
         '<div class="status-lbl" style="font-size:11px;text-align:center;color:#bae6fd;">Ready to cast...</div>' +
         '<div class="log-box mwo-box mw-scroll" style="flex:1;background:#0c4a6e;border-color:#0284c7;overflow-y:auto;font-size:11px;"><b>Fortunes Log:</b></div>' +
@@ -1165,7 +1165,7 @@ var MWO = MWO || {};
         state = 'cast'; statusLbl.textContent = 'Line cast! Waiting for a bite...';
         timer = setTimeout(function() {
           if (!win.isConnected || state !== 'cast') return;
-          state = 'bite'; statusLbl.textContent = '🐟 BITE! REEL IN!'; reelBtn.style.display = 'block';
+          state = 'bite'; statusLbl.textContent = 'Fish BITE! REEL IN!'; reelBtn.style.display = 'block';
           reactTimer = setTimeout(function() {
             if (state === 'bite') { state = 'idle'; statusLbl.textContent = 'Got away!'; reelBtn.style.display = 'none'; }
           }, 900);
@@ -1175,7 +1175,7 @@ var MWO = MWO || {};
       reelBtn.onclick = async function() {
         if (state !== 'bite') return;
         clearTimeout(reactTimer); state = 'idle'; reelBtn.style.display = 'none';
-        var f = "📜 " + FORTUNES[Math.floor(Math.random() * FORTUNES.length)];
+ var f = " " + FORTUNES[Math.floor(Math.random() * FORTUNES.length)];
         statusLbl.textContent = f;
         var log = await dbLoad('fortunepond') || []; log.unshift(f);
         await dbSave('fortunepond', log);
@@ -1192,21 +1192,21 @@ var MWO = MWO || {};
     id: 'infinitycookie',
     name: 'Infinity Cookie',
     description: 'An existential clicker game featuring a 10-stage narrative.',
-    icon: '🍪',
+    icon: 'infinity-cookie',
     category: 'app',
     installed: false,
     launch: function() {
-      var win = MWO.wm.create({ id: 'win-infinitycookie-' + Date.now(), title: 'Infinity Cookie', icon: '🍪', width: 480, height: 540, resizable: true });
+      var win = MWO.wm.create({ id: 'win-infinitycookie-' + Date.now(), title: 'Infinity Cookie', icon: 'infinity-cookie', width: 480, height: 540, resizable: true });
       win.style.background = '#27272a';
       win.style.padding = '10px';
 
       win.innerHTML = '<div class="mwo-flex-col">' +
         '<div style="font-weight:bold;color:#f4f4f5;display:flex;justify-content:space-between;">' +
-        '<span>🍪 Infinity Cookie</span><span style="font-size:11px;color:#a1a1aa;">Per Sec: <b class="cps-lbl" style="color:#eab308;">0</b></span>' +
+ '<span> Infinity Cookie</span><span style="font-size:11px;color:#a1a1aa;">Per Sec: <b class="cps-lbl" style="color:#eab308;">0</b></span>' +
         '</div>' +
         '<div style="text-align:center;background:#18181b;padding:8px;border-radius:8px;">' +
         '<div style="font-size:24px;font-weight:bold;color:#eab308;"><span class="crumbs-lbl">0</span> Crumbs</div>' +
-        '<button class="btn-cookie" style="background:none;border:none;font-size:64px;cursor:pointer;">🍪</button>' +
+ '<button class="btn-cookie" style="background:none;border:none;font-size:64px;cursor:pointer;"></button>' +
         '</div>' +
         '<div class="story-box mwo-box" style="background:#3f3f46;border-color:#eab308;color:#fef08a;font-size:11px;line-height:1.4;min-height:50px;">' +
         'Click the cookie to begin...' +
@@ -1223,10 +1223,10 @@ var MWO = MWO || {};
       var crumbs = 0, total = 0, unlockedStage = -1;
 
       var UPGRADES = [
-        { id: 'cursor', name: 'Autoclicker 👆', base: 15, cps: 1, count: 0 },
-        { id: 'oven', name: 'Grandma Oven 👵', base: 100, cps: 5, count: 0 },
-        { id: 'factory', name: 'Cookie Factory 🏭', base: 1100, cps: 25, count: 0 },
-        { id: 'portal', name: 'Cosmic Portal 🌌', base: 12000, cps: 100, count: 0 }
+ { id: 'cursor', name: 'Autoclicker ', base: 15, cps: 1, count: 0 },
+ { id: 'oven', name: 'Grandma Oven ', base: 100, cps: 5, count: 0 },
+ { id: 'factory', name: 'Cookie Factory ', base: 1100, cps: 25, count: 0 },
+ { id: 'portal', name: 'Cosmic Portal ', base: 12000, cps: 100, count: 0 }
       ];
 
       var STAGES = [

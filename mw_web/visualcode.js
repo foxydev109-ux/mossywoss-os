@@ -136,7 +136,7 @@ MWO.VisualCode = (function() {
     const win = MWO.wm.create({
       id: 'visualcode-' + Date.now(),
       title: 'Visual Code Studio',
-      icon: '🧩',
+      icon: 'visual-code-studio',
       width: 880,
       height: 600,
       resizable: true
@@ -165,7 +165,7 @@ MWO.VisualCode = (function() {
       visible: true,
       color: '#ff9f43',
       speech: '',
-      emoji: '🦊'
+      emoji: 'Fox'
     };
 
     // Workspace Program AST
@@ -174,7 +174,7 @@ MWO.VisualCode = (function() {
         id: 'b_start',
         type: 'event_start',
         category: 'events',
-        label: 'When ▶ clicked',
+        label: 'When Run clicked',
         next: 'b_say',
         x: 30,
         y: 30
@@ -213,9 +213,9 @@ MWO.VisualCode = (function() {
 
     // Blueprint Nodes State
     let blueprintNodes = [
-      { id: 'n_start', type: 'Start', x: 40, y: 50, title: '▶ Start' },
-      { id: 'n_say', type: 'Say', x: 220, y: 50, title: '💬 Say', text: 'Hello MossyWoss!' },
-      { id: 'n_move', type: 'MoveSprite', x: 400, y: 50, title: '🏃 Move', dx: 20, dy: 0 }
+      { id: 'n_start', type: 'Start', x: 40, y: 50, title: 'Run Start' },
+ { id: 'n_say', type: 'Say', x: 220, y: 50, title: ' Say', text: 'Hello MossyWoss!' },
+ { id: 'n_move', type: 'MoveSprite', x: 400, y: 50, title: ' Move', dx: 20, dy: 0 }
     ];
     let blueprintWires = [
       { from: 'n_start', to: 'n_say' },
@@ -225,15 +225,15 @@ MWO.VisualCode = (function() {
     body.innerHTML = `
       <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:#181832;border-bottom:1px solid rgba(255,255,255,0.08)">
         <div style="display:flex;gap:6px">
-          <button class="vc-tab active" data-mode="blocks">🧩 Blocks</button>
-          <button class="vc-tab" data-mode="blueprint">🔷 Blueprint</button>
+ <button class="vc-tab active" data-mode="blocks"> Blocks</button>
+ <button class="vc-tab" data-mode="blueprint"> Blueprint</button>
           <button class="vc-tab" data-mode="export">&lt;/&gt; JavaScript</button>
         </div>
         <div style="display:flex;gap:8px;align-items:center">
-          <button id="vc-btn-run" class="mw-btn" style="padding:5px 14px;background:#2ecc71;color:#fff;border:none;border-radius:6px;font-weight:bold;cursor:pointer">▶ Run</button>
+          <button id="vc-btn-run" class="mw-btn" style="padding:5px 14px;background:#2ecc71;color:#fff;border:none;border-radius:6px;font-weight:bold;cursor:pointer">Run Run</button>
           <button id="vc-btn-stop" class="mw-btn" style="padding:5px 14px;background:#e74c3c;color:#fff;border:none;border-radius:6px;font-weight:bold;cursor:pointer">⏹ Stop</button>
-          <button id="vc-btn-save" class="mw-btn" style="padding:5px 10px;font-size:0.85em">💾 Save</button>
-          <button id="vc-btn-load" class="mw-btn" style="padding:5px 10px;font-size:0.85em">📂 Load</button>
+ <button id="vc-btn-save" class="mw-btn" style="padding:5px 10px;font-size:0.85em"> Save</button>
+          <button id="vc-btn-load" class="mw-btn" style="padding:5px 10px;font-size:0.85em">Dir Load</button>
         </div>
       </div>
 
@@ -246,7 +246,7 @@ MWO.VisualCode = (function() {
         <div id="vc-workspace" style="flex:1;position:relative;background:#0b0b18;overflow:hidden;touch-action:none">
           <div id="vc-blocks-canvas" style="width:100%;height:100%;position:relative;overflow:auto;padding:20px"></div>
           <div id="vc-blueprint-canvas" style="display:none;width:100%;height:100%;position:relative;overflow:hidden;background-image:radial-gradient(rgba(255,255,255,0.1) 1px, transparent 1px);background-size:20px 20px">
-            <svg id="vc-svg-layer" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none"></svg>
+            <canvas id="vc-wire-layer" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none"></canvas>
             <div id="vc-nodes-container" style="position:absolute;inset:0"></div>
           </div>
           <textarea id="vc-export-code" style="display:none;width:100%;height:100%;background:#090912;color:#00ff99;font-family:monospace;padding:16px;border:none;outline:none;resize:none;font-size:0.9em" readonly></textarea>
@@ -262,7 +262,7 @@ MWO.VisualCode = (function() {
           <div style="flex:1;display:flex;flex-direction:column;gap:6px;background:#181832;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.05);overflow-y:auto">
             <div style="font-size:0.8em;font-weight:bold;color:#3498db">INSPECTOR & VARIABLES</div>
             <div id="vc-inspector-info" style="font-size:0.75em;color:#aaa;line-height:1.4">
-              Sprite: 🦊 Fox | X: <span id="vc-sp-x">200</span> Y: <span id="vc-sp-y">150</span>
+              Sprite: Fox Fox | X: <span id="vc-sp-x">200</span> Y: <span id="vc-sp-y">150</span>
             </div>
             <div style="display:flex;align-items:center;justify-content:space-between;margin-top:6px">
               <span style="font-size:0.78em;font-weight:600;color:#aaa">Scope Variables</span>
@@ -288,7 +288,8 @@ MWO.VisualCode = (function() {
     const loadBtn = body.querySelector('#vc-btn-load');
     const varsListEl = body.querySelector('#vc-vars-list');
     const addVarBtn = body.querySelector('#vc-add-var-btn');
-    const svgLayer = body.querySelector('#vc-svg-layer');
+    const wireCanvas = body.querySelector('#vc-wire-layer');
+    const wireCtx = wireCanvas.getContext('2d');
     const nodesContainer = body.querySelector('#vc-nodes-container');
 
     // Render Stage Canvas
@@ -370,7 +371,7 @@ MWO.VisualCode = (function() {
       if (currentMode === 'blocks') {
         const categories = [
           { name: 'Events', color: 'events', items: [
-            { type: 'event_start', label: 'When ▶ clicked' },
+            { type: 'event_start', label: 'When Run clicked' },
             { type: 'event_keypress', label: 'When [space] pressed' }
           ]},
           { name: 'Motion', color: 'motion', items: [
@@ -424,9 +425,9 @@ MWO.VisualCode = (function() {
         });
       } else if (currentMode === 'blueprint') {
         const nodeTypes = [
-          { type: 'Start', title: '▶ Start' },
-          { type: 'Say', title: '💬 Say' },
-          { type: 'MoveSprite', title: '🏃 Move' },
+          { type: 'Start', title: 'Run Start' },
+ { type: 'Say', title: ' Say' },
+ { type: 'MoveSprite', title: ' Move' },
           { type: 'Wait', title: '⏱ Wait' }
         ];
 
@@ -536,7 +537,7 @@ MWO.VisualCode = (function() {
     // Render Blueprint Nodes & SVG Wires
     function renderBlueprintNodes() {
       nodesContainer.innerHTML = '';
-      svgLayer.innerHTML = '';
+      wireCtx.clearRect(0, 0, wireCanvas.width, wireCanvas.height);
 
       blueprintNodes.forEach(node => {
         const nodeEl = document.createElement('div');
@@ -594,7 +595,7 @@ MWO.VisualCode = (function() {
 
     // Draw SVG bezier wires between Blueprint nodes
     function drawWires() {
-      svgLayer.innerHTML = '';
+      wireCtx.clearRect(0, 0, wireCanvas.width, wireCanvas.height);
       blueprintWires.forEach(w => {
         const fromNode = blueprintNodes.find(n => n.id === w.from);
         const toNode = blueprintNodes.find(n => n.id === w.to);
@@ -608,12 +609,12 @@ MWO.VisualCode = (function() {
           const cx1 = x1 + 40;
           const cx2 = x2 - 40;
 
-          const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-          path.setAttribute('d', `M ${x1} ${y1} C ${cx1} ${y1}, ${cx2} ${y2}, ${x2} ${y2}`);
-          path.setAttribute('stroke', '#00b894');
-          path.setAttribute('stroke-width', '3');
-          path.setAttribute('fill', 'none');
-          svgLayer.appendChild(path);
+          wireCtx.strokeStyle = '#00b894';
+          wireCtx.lineWidth = 3;
+          wireCtx.beginPath();
+          wireCtx.moveTo(x1, y1);
+          wireCtx.bezierCurveTo(cx1, y1, cx2, y2, x2, y2);
+          wireCtx.stroke();
         }
       });
     }
@@ -773,7 +774,7 @@ MWO.VisualCode = (function() {
       id: 'visualcode',
       name: 'Visual Code',
       description: 'Block coding & blueprint node programming',
-      icon: '🧩',
+      icon: 'visual-code',
       category: 'app',
       installed: false,
       launch: launch

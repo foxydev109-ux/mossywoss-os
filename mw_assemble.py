@@ -29,7 +29,7 @@ def assemble():
         return False
     
     # Read all JS files in order
-    js_files = ['three.min.js', 'assets.js', 'countries.js', 'core.js', 'recyclebin.js', 'videogen.js', 'cinterp.js', 'codestudio.js', 
+    js_files = ['three.min.js', 'assets.js', 'countries.js', 'core.js', 'icons.js', 'recyclebin.js', 'videogen.js', 'cinterp.js', 'codestudio.js', 
                 'maker.js', 'voxely3d.js',
                 'apps.js', 'browser.js', 'sec.js', 'publisher.js', 'games.js', 'animation.js', 'aura.js',
                 'recorder.js', 'mediaimport.js', 'visualcode.js',
@@ -87,7 +87,7 @@ def assemble():
     for k, v in features.items():
         print(f"    {k}: {v}")
     
-    print(f"\n  MossyWoss OS assembled — personal build ready! 🦊")
+    print(f"\n  MossyWoss OS assembled — personal build ready!")
     return True
 
 if __name__ == '__main__':

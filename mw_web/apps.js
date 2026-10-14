@@ -96,11 +96,11 @@
     id: 'terminal',
     name: 'Terminal',
     description: 'Full-featured command-line terminal emulator.',
-    icon: '💻',
+    icon: 'terminal',
     category: 'System',
     installed: true,
     launch: function() {
-      var win = MWO.wm.create({ id: 'term-' + Date.now(), title: 'Terminal', icon: '💻', width: 720, height: 480, resizable: true });
+      var win = MWO.wm.create({ id: 'term-' + Date.now(), title: 'Terminal', icon: 'terminal', width: 720, height: 480, resizable: true });
       var body = getWinBody(win);
       var cwd = '/home/user';
       var history = [];
@@ -285,11 +285,11 @@
     id: 'mossy_ai',
     name: 'Mossy AI',
     description: 'AI assistant chatbot inside OS.',
-    icon: '🦊',
+    icon: 'mossy-ai',
     category: 'System',
     installed: true,
     launch: function() {
-      var win = MWO.wm.create({ id: 'mossy-ai-' + Date.now(), title: 'Mossy AI', icon: '🦊', width: 440, height: 560, resizable: true });
+      var win = MWO.wm.create({ id: 'mossy-ai-' + Date.now(), title: 'Mossy AI', icon: 'mossy-ai', width: 440, height: 560, resizable: true });
       var body = getWinBody(win);
       var chatHistory = JSON.parse(localStorage.getItem('mwo_mossy_chat') || '[]');
 
@@ -300,7 +300,7 @@
 
       body.innerHTML = `
         <div style="padding:10px 14px;background:#0f3460;display:flex;align-items:center;gap:10px;border-bottom:1px solid rgba(255,255,255,0.08)">
-          <span style="font-size:1.5em">🦊</span>
+          <span style="font-size:1.5em">Fox</span>
           <div>
             <div style="font-weight:600;font-size:0.95em">Mossy AI</div>
             <div style="font-size:0.75em;color:#999">Your friendly fox OS companion</div>
@@ -353,7 +353,7 @@
         typing.style.alignSelf = 'flex-start';
         typing.style.fontSize = '0.85em';
         typing.style.color = '#aaa';
-        typing.textContent = 'Mossy is thinking... 🦊';
+        typing.textContent = 'Mossy is thinking... Fox';
         msgArea.appendChild(typing);
         msgArea.scrollTop = msgArea.scrollHeight;
       }
@@ -364,7 +364,7 @@
       }
 
       if (chatHistory.length === 0) {
-        chatHistory.push({ sender: 'mossy', text: "Heya! I'm Mossy 🦊. How can I help you today?" });
+        chatHistory.push({ sender: 'mossy', text: "Heya! I'm Mossy Fox. How can I help you today?" });
       }
       chatHistory.forEach(m => appendMsg(m.sender, m.text));
 
@@ -431,11 +431,11 @@
     id: 'files',
     name: 'Files',
     description: 'VFS directory explorer and file manager.',
-    icon: '📁',
+    icon: 'files',
     category: 'System',
     installed: true,
     launch: function() {
-      var win = MWO.wm.create({ id: 'files-' + Date.now(), title: 'Files', icon: '📁', width: 750, height: 500, resizable: true });
+      var win = MWO.wm.create({ id: 'files-' + Date.now(), title: 'Files', icon: 'files', width: 750, height: 500, resizable: true });
       var body = getWinBody(win);
       var currentPath = '/Documents';
 
@@ -445,16 +445,16 @@
       body.innerHTML = `
         <div style="width:180px;background:#0f3460;padding:10px;border-right:1px solid rgba(255,255,255,0.06);display:flex;flex-direction:column;gap:6px">
           <div style="font-size:0.75em;color:#999;text-transform:uppercase;margin-bottom:4px">Favorites</div>
-          <div class="fm-side" data-p="/Desktop" style="padding:6px 10px;border-radius:6px;cursor:pointer;font-size:0.85em">🖥️ Desktop</div>
-          <div class="fm-side" data-p="/Documents" style="padding:6px 10px;border-radius:6px;cursor:pointer;font-size:0.85em">📝 Documents</div>
-          <div class="fm-side" data-p="/Downloads" style="padding:6px 10px;border-radius:6px;cursor:pointer;font-size:0.85em">📥 Downloads</div>
-          <div class="fm-side" data-p="/Pictures" style="padding:6px 10px;border-radius:6px;cursor:pointer;font-size:0.85em">🖼️ Pictures</div>
-          <div class="fm-side" data-p="/Music" style="padding:6px 10px;border-radius:6px;cursor:pointer;font-size:0.85em">🎵 Music</div>
-          <div class="fm-side" data-p="/Videos" style="padding:6px 10px;border-radius:6px;cursor:pointer;font-size:0.85em">🎬 Videos</div>
+ <div class="fm-side" data-p="/Desktop" style="padding:6px 10px;border-radius:6px;cursor:pointer;font-size:0.85em"> Desktop</div>
+ <div class="fm-side" data-p="/Documents" style="padding:6px 10px;border-radius:6px;cursor:pointer;font-size:0.85em"> Documents</div>
+          <div class="fm-side" data-p="/Downloads" style="padding:6px 10px;border-radius:6px;cursor:pointer;font-size:0.85em">In Downloads</div>
+ <div class="fm-side" data-p="/Pictures" style="padding:6px 10px;border-radius:6px;cursor:pointer;font-size:0.85em"> Pictures</div>
+          <div class="fm-side" data-p="/Music" style="padding:6px 10px;border-radius:6px;cursor:pointer;font-size:0.85em">~ Music</div>
+ <div class="fm-side" data-p="/Videos" style="padding:6px 10px;border-radius:6px;cursor:pointer;font-size:0.85em"> Videos</div>
         </div>
         <div style="flex:1;display:flex;flex-direction:column">
           <div style="padding:8px 12px;background:#16213e;display:flex;align-items:center;gap:8px;border-bottom:1px solid rgba(255,255,255,0.06)">
-            <button id="fm-back" class="mw-btn" style="padding:4px 10px">⬆ Up</button>
+ <button id="fm-back" class="mw-btn" style="padding:4px 10px"> Up</button>
             <input id="fm-path" class="mw-input" type="text" readonly style="flex:1;padding:4px 10px;font-size:0.85em" />
             <button id="fm-new-folder" class="mw-btn">+ Folder</button>
             <button id="fm-new-file" class="mw-btn primary">+ File</button>
@@ -488,7 +488,7 @@
           div.style.background = 'rgba(255,255,255,0.03)';
 
           div.innerHTML = `
-            <div style="font-size:2em">${isDir ? '📁' : '📄'}</div>
+            <div style="font-size:2em">${isDir ? 'Dir' : 'Doc'}</div>
             <div style="font-size:0.75em;text-align:center;margin-top:4px;word-break:break-all">${item}</div>
           `;
 
@@ -552,7 +552,7 @@
   // ========================================================================
   // 5. SERPENT (Game)
   // ========================================================================
-  registerGame('snake', 'Serpent', '🐍', 'Classic arcade serpent game.', function(body) {
+  registerGame('snake', 'Serpent', 'Snake', 'Classic arcade serpent game.', function(body) {
     body.style.background = '#0a0a1a';
     body.style.display = 'flex';
     body.style.flexDirection = 'column';
@@ -627,7 +627,7 @@
   // ========================================================================
   // 6. 2048 (Game)
   // ========================================================================
-  registerGame('game_2048', '2048', '🔢', 'Slide and merge tiles to get 2048.', function(body) {
+ registerGame('game_2048', '2048', '', 'Slide and merge tiles to get 2048.', function(body) {
     body.style.background = '#1a1a2e';
     body.style.display = 'flex';
     body.style.flexDirection = 'column';
@@ -679,7 +679,7 @@
   // ========================================================================
   // 7. MINEFIELD (Game)
   // ========================================================================
-  registerGame('minesweeper', 'Minefield', '💣', 'Classic minefield puzzle.', function(body) {
+  registerGame('minesweeper', 'Minefield', '■', 'Classic minefield puzzle.', function(body) {
     body.style.background = '#16213e';
     body.style.display = 'flex';
     body.style.flexDirection = 'column';
@@ -706,7 +706,7 @@
   // ========================================================================
   // 8. TIC-TAC-TOE (Game)
   // ========================================================================
-  registerGame('tictactoe', 'Tic-Tac-Toe', '❌', 'Unbeatable AI Tic-Tac-Toe game.', function(body) {
+  registerGame('tictactoe', 'Tic-Tac-Toe', '[FAIL]', 'Unbeatable AI Tic-Tac-Toe game.', function(body) {
     body.style.background = '#1a1a2e';
     body.style.display = 'flex';
     body.style.flexDirection = 'column';
@@ -742,7 +742,7 @@
   // ========================================================================
   // 9. PADDLE DUEL (Game)
   // ========================================================================
-  registerGame('pong', 'Paddle Duel', '🏓', 'Retro paddle vs AI arcade game.', function(body) {
+ registerGame('pong', 'Paddle Duel', '', 'Retro paddle vs AI arcade game.', function(body) {
     body.style.background = '#000';
     body.style.display = 'flex';
     body.style.flexDirection = 'column';
@@ -755,7 +755,7 @@
   // ========================================================================
   // 10. BREAKOUT (Game)
   // ========================================================================
-  registerGame('breakout', 'Breakout', '🧱', 'Destroy colorful bricks with ball & paddle.', function(body) {
+ registerGame('breakout', 'Breakout', '', 'Destroy colorful bricks with ball & paddle.', function(body) {
     body.style.background = '#0a0a1a';
     body.style.display = 'flex';
     body.style.flexDirection = 'column';
@@ -768,7 +768,7 @@
   // ========================================================================
   // 11. MEMORY MATCH (Game)
   // ========================================================================
-  registerGame('memory', 'Memory Match', '🃏', 'Card matching memory game.', function(body) {
+ registerGame('memory', 'Memory Match', '', 'Card matching memory game.', function(body) {
     body.style.background = '#16213e';
     body.style.display = 'flex';
     body.style.flexDirection = 'column';
@@ -781,7 +781,7 @@
   // ========================================================================
   // 12. FOX FLIGHT (Game)
   // ========================================================================
-  registerGame('flappyfox', 'Fox Flight', '🦊', 'Tap to flap and avoid pipes.', function(body) {
+  registerGame('flappyfox', 'Fox Flight', 'Fox', 'Tap to flap and avoid pipes.', function(body) {
     body.style.background = '#0a0a1a';
     body.style.display = 'flex';
     body.style.flexDirection = 'column';
@@ -794,7 +794,7 @@
   // ========================================================================
   // 13. SUDOKU (Game)
   // ========================================================================
-  registerGame('sudoku', 'Sudoku', '🧩', 'Classic 9x9 Sudoku puzzle.', function(body) {
+ registerGame('sudoku', 'Sudoku', '', 'Classic 9x9 Sudoku puzzle.', function(body) {
     body.style.background = '#1a1a2e';
     body.style.display = 'flex';
     body.style.flexDirection = 'column';
@@ -807,7 +807,7 @@
   // ========================================================================
   // 14. BLOCKFALL (Game)
   // ========================================================================
-  registerGame('tetris', 'Blockfall', '🕹️', 'Falling block puzzle arcade game.', function(body) {
+ registerGame('tetris', 'Blockfall', '', 'Falling block puzzle arcade game.', function(body) {
     body.style.background = '#0a0a1a';
     body.style.display = 'flex';
     body.style.flexDirection = 'column';
@@ -824,11 +824,11 @@
     id: 'calculator',
     name: 'Calculator',
     description: 'Standard utility calculator.',
-    icon: '🧮',
+    icon: 'calculator',
     category: 'Utilities',
     installed: false,
     launch: function() {
-      var win = MWO.wm.create({ id: 'calc-' + Date.now(), title: 'Calculator', icon: '🧮', width: 320, height: 420, resizable: false });
+      var win = MWO.wm.create({ id: 'calc-' + Date.now(), title: 'Calculator', icon: 'calculator', width: 320, height: 420, resizable: false });
       var body = getWinBody(win);
 
       body.style.background = '#16213e';
@@ -871,11 +871,11 @@
     id: 'paint',
     name: 'Paint Pad',
     description: 'Canvas drawing studio.',
-    icon: '🎨',
+    icon: 'paint-pad',
     category: 'Creative',
     installed: false,
     launch: function() {
-      var win = MWO.wm.create({ id: 'paint-' + Date.now(), title: 'Paint Pad', icon: '🎨', width: 680, height: 480, resizable: true });
+      var win = MWO.wm.create({ id: 'paint-' + Date.now(), title: 'Paint Pad', icon: 'paint-pad', width: 680, height: 480, resizable: true });
       var body = getWinBody(win);
 
       body.style.display = 'flex';
@@ -935,11 +935,11 @@
     id: 'notes',
     name: 'Notes',
     description: 'Text editor synced with VFS.',
-    icon: '📝',
+    icon: 'notes',
     category: 'Utilities',
     installed: false,
     launch: function() {
-      var win = MWO.wm.create({ id: 'notes-' + Date.now(), title: 'Notes', icon: '📝', width: 600, height: 440, resizable: true });
+      var win = MWO.wm.create({ id: 'notes-' + Date.now(), title: 'Notes', icon: 'notes', width: 600, height: 440, resizable: true });
       var body = getWinBody(win);
 
       body.style.display = 'flex';
@@ -970,11 +970,11 @@
     id: 'taskmgr',
     name: 'Task Manager',
     description: 'Monitor system processes.',
-    icon: '📊',
+    icon: 'task-manager',
     category: 'System',
     installed: false,
     launch: function() {
-      var win = MWO.wm.create({ id: 'taskmgr-' + Date.now(), title: 'Task Manager', icon: '📊', width: 500, height: 400, resizable: true });
+      var win = MWO.wm.create({ id: 'taskmgr-' + Date.now(), title: 'Task Manager', icon: 'task-manager', width: 500, height: 400, resizable: true });
       var body = getWinBody(win);
 
       body.style.background = '#16213e';
@@ -999,14 +999,14 @@
     id: 'codestudio',
     name: 'Code Studio',
     description: 'Multi-language code editor.',
-    icon: '💻',
+    icon: 'code-studio',
     category: 'Development',
     installed: false,
     launch: function() {
       if (MWO.CodeStudio && MWO.CodeStudio.launch) {
         MWO.CodeStudio.launch();
       } else {
-        var win = MWO.wm.create({ id: 'cs-' + Date.now(), title: 'Code Studio', icon: '💻', width: 700, height: 500, resizable: true });
+        var win = MWO.wm.create({ id: 'cs-' + Date.now(), title: 'Code Studio', icon: 'code-studio', width: 700, height: 500, resizable: true });
         var body = getWinBody(win);
         body.innerHTML = `<textarea class="mw-input" style="width:100%;height:100%;font-family:monospace">// Code Studio loaded</textarea>`;
       }
@@ -1020,11 +1020,11 @@
     id: 'nodeeditor',
     name: 'Node Editor',
     description: 'Visual node graph logic editor.',
-    icon: '🔀',
+    icon: 'node-editor',
     category: 'Development',
     installed: false,
     launch: function() {
-      var win = MWO.wm.create({ id: 'ne-' + Date.now(), title: 'Node Editor', icon: '🔀', width: 700, height: 500, resizable: true });
+      var win = MWO.wm.create({ id: 'ne-' + Date.now(), title: 'Node Editor', icon: 'node-editor', width: 700, height: 500, resizable: true });
       var body = getWinBody(win);
       body.style.background = '#0a0a1a';
       body.innerHTML = `<div style="padding:20px;color:#aaa">Visual Node Editor Canvas</div>`;
@@ -1038,11 +1038,11 @@
     id: 'videoai',
     name: 'Video AI Generator',
     description: 'Procedural video & Web Audio music generator.',
-    icon: '🎬',
+    icon: 'video-ai-generator',
     category: 'Creative',
     installed: false,
     launch: function() {
-      var win = MWO.wm.create({ id: 'vg-' + Date.now(), title: 'Video AI Generator', icon: '🎬', width: 780, height: 580, resizable: true });
+      var win = MWO.wm.create({ id: 'vg-' + Date.now(), title: 'Video AI Generator', icon: 'video-ai-generator', width: 780, height: 580, resizable: true });
       var body = getWinBody(win);
 
       body.style.display = 'flex';
@@ -1089,11 +1089,11 @@
     id: 'musicmaker',
     name: 'Music Maker',
     description: 'Audio step sequencer synth.',
-    icon: '🎵',
+    icon: 'music-maker',
     category: 'Creative',
     installed: false,
     launch: function() {
-      var win = MWO.wm.create({ id: 'mm-' + Date.now(), title: 'Music Maker', icon: '🎵', width: 600, height: 420, resizable: true });
+      var win = MWO.wm.create({ id: 'mm-' + Date.now(), title: 'Music Maker', icon: 'music-maker', width: 600, height: 420, resizable: true });
       var body = getWinBody(win);
       body.style.background = '#1a1a2e';
       body.style.padding = '12px';
@@ -1142,11 +1142,11 @@
     id: 'calendar',
     name: 'Calendar',
     description: 'Event planner and month viewer.',
-    icon: '📅',
+    icon: 'calendar',
     category: 'Utilities',
     installed: false,
     launch: function() {
-      var win = MWO.wm.create({ id: 'cal-' + Date.now(), title: 'Calendar', icon: '📅', width: 440, height: 460, resizable: true });
+      var win = MWO.wm.create({ id: 'cal-' + Date.now(), title: 'Calendar', icon: 'calendar', width: 440, height: 460, resizable: true });
       var body = getWinBody(win);
 
       body.style.background = '#16213e';
@@ -1162,11 +1162,11 @@
     id: 'gallery',
     name: 'Gallery',
     description: 'Image and photo viewer.',
-    icon: '🖼️',
+    icon: 'gallery',
     category: 'Media',
     installed: false,
     launch: function() {
-      var win = MWO.wm.create({ id: 'gal-' + Date.now(), title: 'Gallery', icon: '🖼️', width: 600, height: 440, resizable: true });
+      var win = MWO.wm.create({ id: 'gal-' + Date.now(), title: 'Gallery', icon: 'gallery', width: 600, height: 440, resizable: true });
       var body = getWinBody(win);
       body.style.background = '#0a0a1a';
       body.style.padding = '14px';
@@ -1181,11 +1181,11 @@
     id: 'camera',
     name: 'Camera',
     description: 'Webcam photo capture.',
-    icon: '📷',
+    icon: 'camera',
     category: 'Media',
     installed: false,
     launch: function() {
-      var win = MWO.wm.create({ id: 'cam-' + Date.now(), title: 'Camera', icon: '📷', width: 540, height: 420, resizable: true });
+      var win = MWO.wm.create({ id: 'cam-' + Date.now(), title: 'Camera', icon: 'camera', width: 540, height: 420, resizable: true });
       var body = getWinBody(win);
 
       body.style.background = '#000';

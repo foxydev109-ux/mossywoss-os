@@ -658,7 +658,7 @@ MWO.Browser = (function() {
     const winBody = MWO.wm.create({
       id: 'game_' + Date.now() + '_' + Math.floor(Math.random()*1000),
       title: gameTitle,
-      icon: '🎮',
+      icon: 'game',
       width: 900,
       height: 640,
       resizable: true,
@@ -769,7 +769,7 @@ MWO.Browser = (function() {
     const winBody = MWO.wm.create({
       id: 'pe_' + Date.now(),
       title: 'PE Inspector - ' + filename,
-      icon: '⚙️',
+      icon: 'pe-inspector',
       width: 520,
       height: 420,
       resizable: true
@@ -790,7 +790,7 @@ MWO.Browser = (function() {
 
     winBody.innerHTML = `
       <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;border-bottom:1px solid rgba(255,255,255,0.1);padding-bottom:12px">
-        <div style="font-size:32px">⚙️</div>
+        <div style="font-size:32px"></div>
         <div>
           <div style="font-weight:bold;font-size:16px;color:#4e9eff">${escapeHTML(filename)}</div>
           <div style="font-size:12px;color:#aaa">Windows PE Executable Metadata</div>
@@ -808,7 +808,7 @@ MWO.Browser = (function() {
       </table>
 
       <div style="background:rgba(255, 170, 0, 0.12);border:1px solid rgba(255, 170, 0, 0.3);border-radius:8px;padding:12px;font-size:13px;line-height:1.4;color:#ffe082">
-        ℹ️ <strong>Honest Notice:</strong> Windows programs cannot execute inside a browser OS. Download the HTML5/JS build instead — those run right here with ▶ Run.
+ ℹ <strong>Honest Notice:</strong> Windows programs cannot execute inside a browser OS. Download the HTML5/JS build instead — those run right here with Run Run.
       </div>
     `;
   }
@@ -828,7 +828,7 @@ MWO.Browser = (function() {
     const winBody = MWO.wm.create({
       id: 'prev_' + Date.now(),
       title: 'Preview - ' + filename,
-      icon: '👁️',
+      icon: 'preview',
       width: 640,
       height: 480,
       resizable: true
@@ -914,7 +914,7 @@ MWO.Browser = (function() {
     const winBody = MWO.wm.create({
       id: winId,
       title: 'Browser',
-      icon: '🌐',
+      icon: 'browser',
       width: 900,
       height: 600,
       resizable: true
@@ -941,20 +941,20 @@ MWO.Browser = (function() {
       <!-- Toolbar -->
       <div id="mwb-toolbar" style="display:flex;align-items:center;background:#1f2338;padding:6px 10px;gap:8px;border-bottom:1px solid rgba(255,255,255,0.08);min-height:48px">
         <button id="mwb-back" title="Back" style="height:38px;width:38px;min-width:38px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:8px;color:#fff;font-size:15px;cursor:pointer">◀</button>
-        <button id="mwb-forward" title="Forward" style="height:38px;width:38px;min-width:38px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:8px;color:#fff;font-size:15px;cursor:pointer">▶</button>
-        <button id="mwb-reload" title="Reload" style="height:38px;width:38px;min-width:38px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:8px;color:#fff;font-size:15px;cursor:pointer">🔄</button>
-        <button id="mwb-home" title="Home Page" style="height:38px;width:38px;min-width:38px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:8px;color:#fff;font-size:15px;cursor:pointer">🏠</button>
+        <button id="mwb-forward" title="Forward" style="height:38px;width:38px;min-width:38px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:8px;color:#fff;font-size:15px;cursor:pointer">Run</button>
+ <button id="mwb-reload" title="Reload" style="height:38px;width:38px;min-width:38px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:8px;color:#fff;font-size:15px;cursor:pointer"></button>
+ <button id="mwb-home" title="Home Page" style="height:38px;width:38px;min-width:38px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:8px;color:#fff;font-size:15px;cursor:pointer"></button>
 
         <!-- URL Input Container -->
         <div style="flex:1;height:38px;display:flex;align-items:center;background:rgba(0,0,0,0.35);border:1px solid rgba(255,255,255,0.15);border-radius:8px;padding:0 10px;gap:8px">
-          <span id="mwb-scheme-icon" style="font-size:14px;color:#8a99ad">🌐</span>
+          <span id="mwb-scheme-icon" style="font-size:14px;color:#8a99ad"></span>
           <input id="mwb-url-input" type="text" placeholder="Search Wikipedia or type URL..." style="flex:1;background:transparent;border:none;color:#fff;font-size:14px;outline:none" />
           <button id="mwb-go-btn" style="background:var(--accent, #4e9eff);border:none;border-radius:6px;color:#fff;padding:4px 10px;font-size:12px;font-weight:bold;cursor:pointer">Go</button>
         </div>
 
-        <button id="mwb-star" title="Bookmark Page" style="height:38px;width:38px;min-width:38px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:8px;color:#fff;font-size:16px;cursor:pointer">⭐</button>
+        <button id="mwb-star" title="Bookmark Page" style="height:38px;width:38px;min-width:38px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:8px;color:#fff;font-size:16px;cursor:pointer">Star</button>
         <button id="mwb-downloads-toggle" title="Downloads" style="height:38px;padding:0 12px;display:flex;align-items:center;gap:6px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:8px;color:#fff;font-size:14px;cursor:pointer;position:relative">
-          <span>📥</span>
+          <span>In</span>
           <span style="font-size:12px;font-weight:bold">Downloads</span>
           <span id="mwb-dl-badge" style="background:#ff3b30;color:#fff;border-radius:10px;padding:1px 6px;font-size:11px;font-weight:bold;display:none">0</span>
         </button>
@@ -967,11 +967,11 @@ MWO.Browser = (function() {
       <div id="mwb-downloads-panel" style="position:absolute;bottom:0;left:0;right:0;max-height:55%;background:#161829;border-top:2px solid var(--accent, #4e9eff);box-shadow:0 -6px 20px rgba(0,0,0,0.6);display:none;flex-direction:column;z-index:100">
         <div style="padding:10px 14px;background:#1f223a;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.08)">
           <div style="font-weight:bold;font-size:14px;display:flex;align-items:center;gap:8px">
-            <span>📥 Downloads Manager</span>
+            <span>In Downloads Manager</span>
           </div>
           <div style="display:flex;gap:8px">
             <button id="mwb-new-dl-toggle" style="background:var(--accent, #4e9eff);border:none;border-radius:6px;color:#fff;padding:6px 12px;font-size:12px;font-weight:bold;cursor:pointer;height:34px">＋ New Download</button>
-            <button id="mwb-dl-close" style="background:rgba(255,255,255,0.1);border:none;border-radius:6px;color:#fff;padding:6px 10px;font-size:14px;cursor:pointer;height:34px">✕</button>
+            <button id="mwb-dl-close" style="background:rgba(255,255,255,0.1);border:none;border-radius:6px;color:#fff;padding:6px 10px;font-size:14px;cursor:pointer;height:34px">Close</button>
           </div>
         </div>
 
@@ -1146,7 +1146,7 @@ MWO.Browser = (function() {
         tabEl.onclick = () => switchTab(t.id);
 
         const iconSpan = document.createElement('span');
-        iconSpan.textContent = t.url === 'about:home' || t.url.startsWith('mossy:') ? '🏠' : '🌐';
+ iconSpan.textContent = t.url === 'about:home' || t.url.startsWith('mossy:')? '': '';
 
         const titleSpan = document.createElement('span');
         titleSpan.style.flex = '1';
@@ -1156,7 +1156,7 @@ MWO.Browser = (function() {
         titleSpan.textContent = t.title || t.url;
 
         const closeBtn = document.createElement('button');
-        closeBtn.textContent = '✕';
+        closeBtn.textContent = 'Close';
         closeBtn.style.padding = '2px 6px';
         closeBtn.style.borderRadius = '50%';
         closeBtn.style.border = 'none';
@@ -1190,13 +1190,13 @@ MWO.Browser = (function() {
       }
 
       if (tab.url.startsWith('https://')) {
-        schemeIcon.textContent = '🔒';
+        schemeIcon.textContent = 'Lock';
         schemeIcon.style.color = '#00c853';
       } else if (tab.url === 'about:home' || tab.url.startsWith('mossy:')) {
-        schemeIcon.textContent = '🏠';
+ schemeIcon.textContent = '';
         schemeIcon.style.color = '#4e9eff';
       } else {
-        schemeIcon.textContent = '🌐';
+        schemeIcon.textContent = '';
         schemeIcon.style.color = '#8a99ad';
       }
     }
@@ -1285,7 +1285,7 @@ MWO.Browser = (function() {
                 <div style="font-weight:bold;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escapeHTML(bm.title)}</div>
                 <div style="font-size:11px;color:#8a99ad;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escapeHTML(bm.url)}</div>
               </div>
-              <button class="mwb-bm-del" data-id="${bm.id}" style="background:transparent;border:none;color:#ff5555;font-size:14px;cursor:pointer;padding:4px;border-radius:4px" title="Remove Bookmark">✕</button>
+              <button class="mwb-bm-del" data-id="${bm.id}" style="background:transparent;border:none;color:#ff5555;font-size:14px;cursor:pointer;padding:4px;border-radius:4px" title="Remove Bookmark">Close</button>
             </div>
           `;
         });
@@ -1295,14 +1295,14 @@ MWO.Browser = (function() {
         <div style="max-width:800px;margin:30px auto;display:flex;flex-direction:column;align-items:center;gap:24px">
           <!-- Big Logo / Header -->
           <div style="text-align:center">
-            <div style="font-size:48px;margin-bottom:8px">🌐</div>
+            <div style="font-size:48px;margin-bottom:8px"></div>
             <h1 style="margin:0;font-size:26px;font-weight:bold;background:linear-gradient(135deg, #4e9eff, #00c853);-webkit-background-clip:text;-webkit-text-fill-color:transparent">MossyWoss Browser</h1>
             <p style="margin:6px 0 0 0;font-size:13px;color:#8a99ad">Browse the web, download files, unzip & run HTML5 games in-OS</p>
           </div>
 
           <!-- Big Search Box -->
           <div style="width:100%;display:flex;gap:8px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);border-radius:12px;padding:6px 12px;box-shadow:0 8px 24px rgba(0,0,0,0.3)">
-            <span style="font-size:18px;color:#8a99ad;align-self:center">🔍</span>
+            <span style="font-size:18px;color:#8a99ad;align-self:center"></span>
             <input id="mwb-home-search-input" type="text" placeholder="Search Wikipedia or type URL..." style="flex:1;background:transparent;border:none;color:#fff;font-size:15px;padding:8px;outline:none" />
             <button id="mwb-home-search-btn" style="background:var(--accent, #4e9eff);border:none;border-radius:8px;color:#fff;padding:8px 20px;font-weight:bold;cursor:pointer;font-size:14px">Search</button>
           </div>
@@ -1310,20 +1310,20 @@ MWO.Browser = (function() {
           <!-- Quick Action Buttons -->
           <div style="display:flex;gap:12px;width:100%;justify-content:center">
             <button id="mwb-quick-dl" style="flex:1;max-width:180px;height:44px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;color:#fff;font-weight:bold;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;font-size:13px">
-              <span>📥</span> Downloads
+              <span>In</span> Downloads
             </button>
             <button id="mwb-quick-unzip" style="flex:1;max-width:180px;height:44px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;color:#fff;font-weight:bold;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;font-size:13px">
-              <span>📦</span> Extract a ZIP
+              <span>Box</span> Extract a ZIP
             </button>
             <button id="mwb-quick-help" style="flex:1;max-width:180px;height:44px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;color:#fff;font-weight:bold;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;font-size:13px">
-              <span>❓</span> Help
+ <span></span> Help
             </button>
           </div>
 
           <!-- Bookmarks Grid -->
           <div style="width:100%">
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;border-bottom:1px solid rgba(255,255,255,0.08);padding-bottom:8px">
-              <span style="font-weight:bold;font-size:14px;color:#a0a5c0">⭐ Bookmarks</span>
+              <span style="font-weight:bold;font-size:14px;color:#a0a5c0">Star Bookmarks</span>
               <button id="mwb-add-bm-btn" style="background:rgba(255,255,255,0.08);border:none;border-radius:6px;color:#4e9eff;padding:4px 10px;font-size:12px;font-weight:bold;cursor:pointer">＋ Add Bookmark</button>
             </div>
             <div style="display:grid;grid-template-columns:repeat(auto-fill, minmax(220px, 1fr));gap:12px">
@@ -1518,7 +1518,7 @@ MWO.Browser = (function() {
       tab.overlayEl.innerHTML = `
         <div style="max-width:650px;margin:40px auto;background:#16192e;border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:24px;box-shadow:0 10px 30px rgba(0,0,0,0.5)">
           <div style="display:flex;align-items:center;gap:14px;margin-bottom:16px">
-            <div style="font-size:36px;background:rgba(255, 170, 0, 0.15);width:50px;height:50px;border-radius:12px;display:flex;align-items:center;justify-content:center">🔒</div>
+            <div style="font-size:36px;background:rgba(255, 170, 0, 0.15);width:50px;height:50px;border-radius:12px;display:flex;align-items:center;justify-content:center">Lock</div>
             <div>
               <h3 style="margin:0;font-size:18px;color:#ffe082">Embedding Restricted</h3>
               <div style="font-size:12px;color:#8a99ad;margin-top:2px">${escapeHTML(url)}</div>
@@ -1526,15 +1526,15 @@ MWO.Browser = (function() {
           </div>
 
           <p style="font-size:14px;line-height:1.5;color:#e0e0e0;margin-bottom:20px">
-            This site does not allow embedding. You can still download files from it — paste the file link in Downloads → New download.
+ This site does not allow embedding. You can still download files from it — paste the file link in Downloads New download.
           </p>
 
           <div style="display:flex;gap:10px;justify-content:flex-end">
             <button id="mwb-fb-open-dl" style="background:var(--accent, #4e9eff);border:none;border-radius:8px;color:#fff;padding:8px 16px;font-weight:bold;cursor:pointer;font-size:13px;height:38px">
-              📥 Open Downloads
+              In Open Downloads
             </button>
             <button id="mwb-fb-home" style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:8px;color:#fff;padding:8px 16px;cursor:pointer;font-size:13px;height:38px">
-              🏠 Back to Home
+ Back to Home
             </button>
           </div>
         </div>
@@ -1604,11 +1604,11 @@ MWO.Browser = (function() {
                 <div style="font-size:11px;color:#00c853">${formatBytes(dl.size || dl.loaded)} • Saved in /Downloads</div>
               </div>
               <div style="display:flex;gap:6px;align-items:center">
-                ${isZip ? `<button class="mwb-dl-unzip-btn" data-name="${escapeHTML(dl.name)}" style="background:#00c853;border:none;border-radius:6px;color:#fff;padding:6px 12px;font-size:12px;font-weight:bold;cursor:pointer;height:36px">📦 Extract</button>` : ''}
-                ${isExe ? `<button class="mwb-dl-inspect-btn" data-name="${escapeHTML(dl.name)}" style="background:#ff9800;border:none;border-radius:6px;color:#fff;padding:6px 12px;font-size:12px;font-weight:bold;cursor:pointer;height:36px">⚙️ Inspect</button>` : ''}
-                <button class="mwb-dl-open-btn" data-name="${escapeHTML(dl.name)}" style="background:var(--accent, #4e9eff);border:none;border-radius:6px;color:#fff;padding:6px 12px;font-size:12px;font-weight:bold;cursor:pointer;height:36px">▶ Open</button>
-                <button class="mwb-dl-show-btn" data-name="${escapeHTML(dl.name)}" title="Show in Downloads" style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:6px;color:#fff;padding:6px 10px;font-size:12px;cursor:pointer;height:36px">📁 Show in Downloads</button>
-                <button class="mwb-dl-del-btn" data-id="${dl.id}" data-name="${escapeHTML(dl.name)}" style="background:rgba(255,85,85,0.2);border:none;border-radius:6px;color:#ff5555;padding:6px 10px;font-size:12px;cursor:pointer;height:36px">✕</button>
+                ${isZip ? `<button class="mwb-dl-unzip-btn" data-name="${escapeHTML(dl.name)}" style="background:#00c853;border:none;border-radius:6px;color:#fff;padding:6px 12px;font-size:12px;font-weight:bold;cursor:pointer;height:36px">Box Extract</button>` : ''}
+                ${isExe ? `<button class="mwb-dl-inspect-btn" data-name="${escapeHTML(dl.name)}" style="background:#ff9800;border:none;border-radius:6px;color:#fff;padding:6px 12px;font-size:12px;font-weight:bold;cursor:pointer;height:36px"> Inspect</button>` : ''}
+                <button class="mwb-dl-open-btn" data-name="${escapeHTML(dl.name)}" style="background:var(--accent, #4e9eff);border:none;border-radius:6px;color:#fff;padding:6px 12px;font-size:12px;font-weight:bold;cursor:pointer;height:36px">Run Open</button>
+                <button class="mwb-dl-show-btn" data-name="${escapeHTML(dl.name)}" title="Show in Downloads" style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:6px;color:#fff;padding:6px 10px;font-size:12px;cursor:pointer;height:36px">Dir Show in Downloads</button>
+                <button class="mwb-dl-del-btn" data-id="${dl.id}" data-name="${escapeHTML(dl.name)}" style="background:rgba(255,85,85,0.2);border:none;border-radius:6px;color:#ff5555;padding:6px 10px;font-size:12px;cursor:pointer;height:36px">Close</button>
               </div>
             </div>
           `;
@@ -1619,7 +1619,7 @@ MWO.Browser = (function() {
                 <div style="font-weight:bold;font-size:13px;color:#fca5a5">${escapeHTML(dl.name)}</div>
                 <div style="font-size:11px;color:#f87171;margin-top:2px">${escapeHTML(dl.errorMsg || 'Blocked high risk file')}</div>
               </div>
-              <button class="mwb-dl-del-btn" data-id="${dl.id}" data-name="${escapeHTML(dl.name)}" style="background:rgba(255,85,85,0.2);border:none;border-radius:6px;color:#ff5555;padding:6px 10px;font-size:12px;cursor:pointer;height:34px">✕</button>
+              <button class="mwb-dl-del-btn" data-id="${dl.id}" data-name="${escapeHTML(dl.name)}" style="background:rgba(255,85,85,0.2);border:none;border-radius:6px;color:#ff5555;padding:6px 10px;font-size:12px;cursor:pointer;height:34px">Close</button>
             </div>
           `;
         } else if (dl.status === 'warning') {
@@ -1627,13 +1627,13 @@ MWO.Browser = (function() {
             <div style="background:rgba(245,158,11,0.15);border:1px solid rgba(245,158,11,0.4);border-radius:8px;padding:10px 12px;display:flex;align-items:center;justify-content:space-between;gap:10px">
               <div style="flex:1;overflow:hidden">
                 <div style="font-weight:bold;font-size:13px;color:#fef08a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escapeHTML(dl.name)}</div>
-                <div style="font-size:11px;color:#fbbf24;margin-top:2px">⚠️ Medium risk: ${escapeHTML(dl.warningMsg || 'Scan findings detected')}</div>
+                <div style="font-size:11px;color:#fbbf24;margin-top:2px"> Medium risk: ${escapeHTML(dl.warningMsg || 'Scan findings detected')}</div>
               </div>
               <div style="display:flex;gap:6px;align-items:center">
-                <button class="mwb-dl-quarantine-btn" data-name="${escapeHTML(dl.name)}" style="background:#f59e0b;border:none;border-radius:6px;color:#000;padding:6px 12px;font-size:12px;font-weight:bold;cursor:pointer;height:36px">☣️ Quarantine</button>
-                ${isZip ? `<button class="mwb-dl-unzip-btn" data-name="${escapeHTML(dl.name)}" style="background:#00c853;border:none;border-radius:6px;color:#fff;padding:6px 12px;font-size:12px;font-weight:bold;cursor:pointer;height:36px">📦 Extract</button>` : ''}
-                <button class="mwb-dl-open-btn" data-name="${escapeHTML(dl.name)}" style="background:var(--accent, #4e9eff);border:none;border-radius:6px;color:#fff;padding:6px 12px;font-size:12px;font-weight:bold;cursor:pointer;height:36px">▶ Open</button>
-                <button class="mwb-dl-del-btn" data-id="${dl.id}" data-name="${escapeHTML(dl.name)}" style="background:rgba(255,85,85,0.2);border:none;border-radius:6px;color:#ff5555;padding:6px 10px;font-size:12px;cursor:pointer;height:36px">✕</button>
+ <button class="mwb-dl-quarantine-btn" data-name="${escapeHTML(dl.name)}" style="background:#f59e0b;border:none;border-radius:6px;color:#000;padding:6px 12px;font-size:12px;font-weight:bold;cursor:pointer;height:36px"> Quarantine</button>
+                ${isZip ? `<button class="mwb-dl-unzip-btn" data-name="${escapeHTML(dl.name)}" style="background:#00c853;border:none;border-radius:6px;color:#fff;padding:6px 12px;font-size:12px;font-weight:bold;cursor:pointer;height:36px">Box Extract</button>` : ''}
+                <button class="mwb-dl-open-btn" data-name="${escapeHTML(dl.name)}" style="background:var(--accent, #4e9eff);border:none;border-radius:6px;color:#fff;padding:6px 12px;font-size:12px;font-weight:bold;cursor:pointer;height:36px">Run Open</button>
+                <button class="mwb-dl-del-btn" data-id="${dl.id}" data-name="${escapeHTML(dl.name)}" style="background:rgba(255,85,85,0.2);border:none;border-radius:6px;color:#ff5555;padding:6px 10px;font-size:12px;cursor:pointer;height:36px">Close</button>
               </div>
             </div>
           `;
@@ -1645,7 +1645,7 @@ MWO.Browser = (function() {
                 <div style="font-weight:bold;font-size:13px;color:#ff8888">${escapeHTML(dl.name)}</div>
                 <div style="font-size:11px;color:#ffaaaa;margin-top:2px">${escapeHTML(dl.errorMsg || 'Download failed.')}</div>
               </div>
-              <button class="mwb-dl-del-btn" data-id="${dl.id}" data-name="${escapeHTML(dl.name)}" style="background:rgba(255,85,85,0.2);border:none;border-radius:6px;color:#ff5555;padding:6px 10px;font-size:12px;cursor:pointer;height:34px">✕</button>
+              <button class="mwb-dl-del-btn" data-id="${dl.id}" data-name="${escapeHTML(dl.name)}" style="background:rgba(255,85,85,0.2);border:none;border-radius:6px;color:#ff5555;padding:6px 10px;font-size:12px;cursor:pointer;height:34px">Close</button>
             </div>
           `;
         }
@@ -1744,7 +1744,7 @@ MWO.Browser = (function() {
             }
           } catch(err) {
             btn.disabled = false;
-            btn.textContent = '📦 Extract';
+            btn.textContent = 'Box Extract';
             alert('ZIP Extraction Failed: ' + err.message);
           }
         };
@@ -1871,7 +1871,7 @@ const browserAppDef = {
   id: 'browser',
   name: 'Browser',
   description: 'Browse the web, download files, unzip & run HTML5 games in-OS',
-  icon: '🌐',
+  icon: 'browser',
   category: 'app',
   installed: true,
   launch: function(initialUrl) {

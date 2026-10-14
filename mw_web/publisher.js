@@ -233,7 +233,7 @@ MWO.Publisher = (function() {
     const winBody = MWO.wm.create({
       id: 'publisher_' + Date.now(),
       title: 'Publish Studio',
-      icon: '📤',
+      icon: 'publish-studio',
       width: 820,
       height: 640,
       resizable: true
@@ -269,7 +269,7 @@ MWO.Publisher = (function() {
     let appName = '';
     let appDesc = '';
     let appCategory = 'game';
-    let appIcon = '📦';
+    let appIcon = 'Box';
 
     let rule1Checked = false; // No malware
     let rule2Checked = false; // No copyright
@@ -301,7 +301,7 @@ MWO.Publisher = (function() {
     headerTitle.style.gap = '8px';
     headerTitle.style.fontWeight = '700';
     headerTitle.style.fontSize = '16px';
-    headerTitle.innerHTML = '<span>📤</span><span>Publish Studio</span>';
+    headerTitle.innerHTML = '<span>Out</span><span>Publish Studio</span>';
 
     const tabsNav = document.createElement('div');
     tabsNav.style.display = 'flex';
@@ -422,7 +422,7 @@ MWO.Publisher = (function() {
       optZipBtn.style.color = sourceType === 'zip' ? '#60a5fa' : '#94a3b8';
       optZipBtn.style.fontWeight = '600';
       optZipBtn.style.cursor = 'pointer';
-      optZipBtn.innerHTML = '📦 Import a .zip file';
+      optZipBtn.innerHTML = 'Box Import a .zip file';
 
       const optVfsBtn = document.createElement('button');
       optVfsBtn.style.flex = '1';
@@ -434,7 +434,7 @@ MWO.Publisher = (function() {
       optVfsBtn.style.color = sourceType === 'vfs' ? '#60a5fa' : '#94a3b8';
       optVfsBtn.style.fontWeight = '600';
       optVfsBtn.style.cursor = 'pointer';
-      optVfsBtn.innerHTML = '📁 Choose a folder from this OS';
+      optVfsBtn.innerHTML = 'Dir Choose a folder from this OS';
 
       optZipBtn.onclick = function() {
         sourceType = 'zip';
@@ -472,7 +472,7 @@ MWO.Publisher = (function() {
         uploadBtn.style.fontWeight = '600';
         uploadBtn.style.fontSize = '14px';
         uploadBtn.style.cursor = 'pointer';
-        uploadBtn.textContent = selectedZipName ? '🔄 Choose Different .zip File' : '📤 Upload .zip Archive...';
+ uploadBtn.textContent = selectedZipName? ' Choose Different.zip File': 'Out Upload.zip Archive...';
 
         uploadBtn.onclick = function() { fileInput.click(); };
 
@@ -613,7 +613,7 @@ MWO.Publisher = (function() {
         btnUp.style.color = '#f8fafc';
         btnUp.style.fontSize = '12px';
         btnUp.style.cursor = 'pointer';
-        btnUp.textContent = '⬆ Up';
+ btnUp.textContent = ' Up';
 
         btnUp.onclick = async function() {
           if (vfsCurrentDir === '/' || !vfsCurrentDir) return;
@@ -654,7 +654,7 @@ MWO.Publisher = (function() {
               itemRow.style.cursor = 'pointer';
               itemRow.style.fontSize = '13px';
               itemRow.style.minHeight = '36px';
-              itemRow.innerHTML = `<span style="margin-right:8px">📁</span><span>${escapeHTML(d.name)}</span>`;
+              itemRow.innerHTML = `<span style="margin-right:8px">Dir</span><span>${escapeHTML(d.name)}</span>`;
               itemRow.onclick = function() {
                 vfsCurrentDir = d.path;
                 renderPublishForm();
@@ -775,12 +775,12 @@ MWO.Publisher = (function() {
           entryBox.style.background = 'rgba(16, 185, 129, 0.15)';
           entryBox.style.border = '1px solid #10b981';
           entryBox.style.color = '#34d399';
-          entryBox.innerHTML = `✅ <strong>Entry Point Found:</strong> <code>${escapeHTML(entryFile)}</code>`;
+          entryBox.innerHTML = `[ok] <strong>Entry Point Found:</strong> <code>${escapeHTML(entryFile)}</code>`;
         } else {
           entryBox.style.background = 'rgba(239, 68, 68, 0.15)';
           entryBox.style.border = '1px solid #ef4444';
           entryBox.style.color = '#f87171';
-          entryBox.innerHTML = `❌ <strong>Entry Point Error:</strong> ${escapeHTML(entryFileError || 'index.html not found.')}`;
+          entryBox.innerHTML = `[FAIL] <strong>Entry Point Error:</strong> ${escapeHTML(entryFileError || 'index.html not found.')}`;
         }
         secVal.appendChild(entryBox);
 
@@ -797,7 +797,7 @@ MWO.Publisher = (function() {
             scanBox.style.color = '#f87171';
             let findingsList = scanResult.findings.map(f => `<li><strong>${escapeHTML(f.file)}</strong>: ${escapeHTML(f.detail)}</li>`).join('');
             scanBox.innerHTML = `
-              <div style="font-weight:700;font-size:14px;margin-bottom:6px">⛔ Security Scan Failed (High Severity Threat Detected)</div>
+ <div style="font-weight:700;font-size:14px;margin-bottom:6px"> Security Scan Failed (High Severity Threat Detected)</div>
               <div style="margin-bottom:6px">Publishing is BLOCKED due to high risk security findings:</div>
               <ul style="margin:4px 0 0 18px;padding:0">${findingsList}</ul>
             `;
@@ -807,7 +807,7 @@ MWO.Publisher = (function() {
             scanBox.style.color = '#fbbf24';
             let findingsList = scanResult.findings.map(f => `<li><strong>${escapeHTML(f.file)}</strong>: ${escapeHTML(f.detail)}</li>`).join('');
             scanBox.innerHTML = `
-              <div style="font-weight:700;font-size:14px;margin-bottom:6px">⚠️ Security Warning (Medium Risk Pattern Detected)</div>
+              <div style="font-weight:700;font-size:14px;margin-bottom:6px"> Security Warning (Medium Risk Pattern Detected)</div>
               <div style="margin-bottom:8px">MossGuard flagged medium severity findings:</div>
               <ul style="margin:4px 0 10px 18px;padding:0">${findingsList}</ul>
             `;
@@ -838,7 +838,7 @@ MWO.Publisher = (function() {
             scanBox.style.background = 'rgba(16, 185, 129, 0.15)';
             scanBox.style.border = '1px solid #10b981';
             scanBox.style.color = '#34d399';
-            scanBox.innerHTML = `🛡️ <strong>MossGuard Scan Clean:</strong> Scanned ${scanResult.totalFiles} files cleanly with 0 high/medium threats.`;
+ scanBox.innerHTML = ` <strong>MossGuard Scan Clean:</strong> Scanned ${scanResult.totalFiles} files cleanly with 0 high/medium threats.`;
           }
           secVal.appendChild(scanBox);
         }
@@ -912,7 +912,7 @@ MWO.Publisher = (function() {
       const iconInp = document.createElement('input');
       iconInp.type = 'text';
       iconInp.value = appIcon;
-      iconInp.placeholder = '📦';
+      iconInp.placeholder = 'Box';
       iconInp.style.minHeight = '38px';
       iconInp.style.padding = '8px 12px';
       iconInp.style.borderRadius = '6px';
@@ -950,12 +950,12 @@ MWO.Publisher = (function() {
 
       const optGame = document.createElement('option');
       optGame.value = 'game';
-      optGame.textContent = '🎮 Game';
+      optGame.textContent = 'Games Game';
       optGame.selected = appCategory === 'game';
 
       const optApp = document.createElement('option');
       optApp.value = 'app';
-      optApp.textContent = '⚡ App';
+ optApp.textContent = ' App';
       optApp.selected = appCategory === 'app';
 
       catSel.appendChild(optGame);
@@ -1085,7 +1085,7 @@ MWO.Publisher = (function() {
       btnPublish.style.fontSize = '15px';
       btnPublish.style.cursor = 'pointer';
       btnPublish.style.transition = 'all 0.2s ease';
-      btnPublish.textContent = '🚀 Publish to Store Now';
+      btnPublish.textContent = ' Publish to Store Now';
 
       function updatePublishBtnState() {
         const canPublish = extractedFolder &&
@@ -1123,7 +1123,7 @@ MWO.Publisher = (function() {
             name: sanitizeName(appName),
             description: appDesc.trim(),
             category: appCategory,
-            icon: (appIcon || '📦').trim(),
+            icon: (appIcon || 'Box').trim(),
             folder: extractedFolder,
             entryFile: entryFile,
             publishedAt: new Date().toISOString(),
@@ -1194,7 +1194,7 @@ MWO.Publisher = (function() {
         emptyBox.style.color = '#94a3b8';
         emptyBox.style.border = '1px solid #334155';
         emptyBox.innerHTML = `
-          <div style="font-size:36px;margin-bottom:12px">📤</div>
+          <div style="font-size:36px;margin-bottom:12px">Out</div>
           <div style="font-size:16px;font-weight:600;color:#f8fafc;margin-bottom:6px">No published apps yet</div>
           <div style="font-size:13px">Use the Publish tab to package and release your own HTML5 apps and games.</div>
         `;
@@ -1225,7 +1225,7 @@ MWO.Publisher = (function() {
           iconDiv.style.display = 'flex';
           iconDiv.style.alignItems = 'center';
           iconDiv.style.justifyContent = 'center';
-          iconDiv.textContent = item.icon || '📦';
+          iconDiv.textContent = item.icon || 'Box';
 
           const info = document.createElement('div');
           info.style.display = 'flex';
@@ -1247,7 +1247,7 @@ MWO.Publisher = (function() {
           catBadge.style.background = item.category === 'game' ? 'rgba(168, 85, 247, 0.2)' : 'rgba(59, 130, 246, 0.2)';
           catBadge.style.color = item.category === 'game' ? '#c084fc' : '#60a5fa';
           catBadge.style.fontWeight = '600';
-          catBadge.textContent = item.category === 'game' ? '🎮 Game' : '⚡ App';
+ catBadge.textContent = item.category === 'game'? 'Games Game': ' App';
 
           nameLine.appendChild(document.createTextNode(item.name));
           nameLine.appendChild(catBadge);
@@ -1285,7 +1285,7 @@ MWO.Publisher = (function() {
           btnRun.style.fontWeight = '600';
           btnRun.style.fontSize = '13px';
           btnRun.style.cursor = 'pointer';
-          btnRun.textContent = '▶ Run';
+          btnRun.textContent = 'Run Run';
 
           btnRun.onclick = function() {
             runPublished(item.id);
@@ -1301,7 +1301,7 @@ MWO.Publisher = (function() {
           btnDelete.style.fontWeight = '600';
           btnDelete.style.fontSize = '13px';
           btnDelete.style.cursor = 'pointer';
-          btnDelete.textContent = '🗑️ Remove';
+ btnDelete.textContent = ' Remove';
 
           btnDelete.onclick = function() {
             showDeleteConfirm(item);
@@ -1451,7 +1451,7 @@ MWO.Publisher = (function() {
     id: 'publisher',
     name: 'Publish Studio',
     description: 'Publish your own apps & games to the Store',
-    icon: '📤',
+    icon: 'publish-studio',
     category: 'app',
     installed: false,
     launch: function() {

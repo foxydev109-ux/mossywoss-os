@@ -162,7 +162,7 @@ MWO.VideoGen = (function() {
     isPlaying = false;
     if (animationFrame) cancelAnimationFrame(animationFrame);
     stopMusic();
-    if (playBtn) playBtn.textContent = '▶';
+    if (playBtn) playBtn.textContent = 'Run';
   }
 
   function togglePlay() { if (isPlaying) pause(); else play(); }

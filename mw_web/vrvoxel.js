@@ -406,7 +406,7 @@
       winBody = MWO.wm.create({
         id: 'vrvoxel',
         title: 'VoxelForge VR',
-        icon: '🥽',
+        icon: 'voxelforge-vr',
         width: 960,
         height: 600,
         resizable: true
@@ -473,7 +473,7 @@
     var titleSpan = document.createElement('span');
     titleSpan.style.fontWeight = 'bold';
     titleSpan.style.color = '#4fc3f7';
-    titleSpan.textContent = '🥽 VoxelForge VR';
+ titleSpan.textContent = ' VoxelForge VR';
 
     this.statusElem = document.createElement('span');
     this.statusElem.style.cssText = 'padding: 3px 8px; border-radius: 4px; background: #333; color: #aaa; font-size: 12px;';
@@ -489,13 +489,13 @@
 
     this.enterVrBtn = document.createElement('button');
     this.enterVrBtn.style.cssText = 'background: #2b5c8f; border: 1px solid #4fc3f7; color: #fff; padding: 5px 12px; border-radius: 4px; cursor: pointer; font-weight: bold; transition: background 0.2s;';
-    this.enterVrBtn.textContent = '🥽 Enter VR';
+ this.enterVrBtn.textContent = ' Enter VR';
     this.enterVrBtn.disabled = true;
     this.enterVrBtn.onclick = function() { self.requestVRSession(); };
 
     var saveBtn = document.createElement('button');
     saveBtn.style.cssText = 'background: #2e7d32; border: 1px solid #81c784; color: #fff; padding: 5px 10px; border-radius: 4px; cursor: pointer;';
-    saveBtn.textContent = '💾 Save World';
+ saveBtn.textContent = ' Save World';
     saveBtn.onclick = function() { self.saveWorld(); };
 
     rightGroup.appendChild(this.enterVrBtn);
@@ -523,7 +523,7 @@
     // Stats Bar (Health, Hunger)
     var statsBar = document.createElement('div');
     statsBar.style.cssText = 'display: flex; gap: 16px; background: rgba(0,0,0,0.6); padding: 6px 14px; border-radius: 20px; color: #fff; font-size: 13px; font-weight: bold;';
-    statsBar.innerHTML = '<span id="vf-hp">❤️ HP: 100</span><span id="vf-hunger">🍖 Hunger: 100</span>';
+ statsBar.innerHTML = '<span id="vf-hp">Heart HP: 100</span><span id="vf-hunger"> Hunger: 100</span>';
     hudDiv.appendChild(statsBar);
 
     // Hotbar Strip
@@ -595,17 +595,17 @@
 
     var btnBreak = document.createElement('button');
     btnBreak.style.cssText = 'width: 60px; height: 60px; border-radius: 50%; background: #d32f2f; color: #fff; font-weight: bold; border: none; font-size: 14px;';
-    btnBreak.textContent = '⛏️ Break';
+ btnBreak.textContent = ' Break';
     btnBreak.onclick = function() { self.performAction('break'); };
 
     var btnPlace = document.createElement('button');
     btnPlace.style.cssText = 'width: 60px; height: 60px; border-radius: 50%; background: #388e3c; color: #fff; font-weight: bold; border: none; font-size: 14px;';
-    btnPlace.textContent = '🧱 Place';
+ btnPlace.textContent = ' Place';
     btnPlace.onclick = function() { self.performAction('place'); };
 
     var btnBow = document.createElement('button');
     btnBow.style.cssText = 'width: 65px; height: 65px; border-radius: 50%; background: #f57c00; color: #fff; font-weight: bold; border: none; font-size: 14px;';
-    btnBow.textContent = '🏹 Bow';
+    btnBow.textContent = 'Bow Bow';
     btnBow.addEventListener('touchstart', function() { self.isDrawingBow = true; });
     btnBow.addEventListener('touchend', function() {
       if (self.isDrawingBow) {
@@ -714,7 +714,7 @@
     // HP Bar
     ctx.fillStyle = '#fff';
     ctx.font = 'bold 24px sans-serif';
-    ctx.fillText('❤️ HEALTH', 30, 50);
+    ctx.fillText('Heart HEALTH', 30, 50);
     ctx.fillStyle = '#333';
     ctx.fillRect(180, 30, 290, 24);
     ctx.fillStyle = '#e53935';
@@ -722,7 +722,7 @@
 
     // Hunger Bar
     ctx.fillStyle = '#fff';
-    ctx.fillText('🍖 HUNGER', 30, 95);
+ ctx.fillText(' HUNGER', 30, 95);
     ctx.fillStyle = '#333';
     ctx.fillRect(180, 75, 290, 24);
     ctx.fillStyle = '#fb8c00';
@@ -730,7 +730,7 @@
 
     // Selected Item Info
     var activeItem = this.hotbar[this.selectedHotbarIdx];
-    var itemName = activeItem === 'bow' ? '🏹 Bow & Arrow' : (BLOCK_DEFS[activeItem] ? BLOCK_DEFS[activeItem].name : 'Item');
+    var itemName = activeItem === 'bow' ? 'Bow Bow & Arrow' : (BLOCK_DEFS[activeItem] ? BLOCK_DEFS[activeItem].name : 'Item');
     var count = activeItem === 'bow' ? '∞' : (this.inventory[activeItem] || 0);
 
     ctx.fillStyle = '#81c784';
@@ -747,8 +747,8 @@
 
     // Also update Desktop HUD UI
     if (this.desktopHud) {
-      this.desktopHud.hpElem.textContent = '❤️ HP: ' + Math.ceil(this.health);
-      this.desktopHud.hungerElem.textContent = '🍖 Hunger: ' + Math.ceil(this.hunger);
+      this.desktopHud.hpElem.textContent = 'Heart HP: ' + Math.ceil(this.health);
+ this.desktopHud.hungerElem.textContent = ' Hunger: ' + Math.ceil(this.hunger);
       for (var i = 0; i < 9; i++) {
         var slot = this.desktopHud.slots[i];
         if (!slot) continue;
@@ -758,7 +758,7 @@
         slot.style.transform = isSel ? 'scale(1.15)' : 'scale(1)';
 
         if (item === 'bow') {
-          slot.textContent = '🏹';
+          slot.textContent = 'Bow';
         } else {
           var bDef = BLOCK_DEFS[item];
           slot.textContent = bDef ? bDef.name.substring(0, 3) : '';
@@ -924,7 +924,7 @@
     navigator.xr.isSessionSupported('immersive-vr').then(function(supported) {
       self.vrSupported = supported;
       if (supported) {
-        self.xrStatusText = '✓ VR ready — Enter VR';
+        self.xrStatusText = '[ok] VR ready — Enter VR';
         if (self.enterVrBtn) {
           self.enterVrBtn.disabled = false;
           self.enterVrBtn.style.background = '#2e7d32';
@@ -1023,11 +1023,11 @@
 
       session.addEventListener('end', function() {
         self.xrSession = null;
-        self.xrStatusText = '✓ VR ready — Enter VR';
+        self.xrStatusText = '[ok] VR ready — Enter VR';
         self.updateVRStatusUI();
       });
 
-      self.xrStatusText = '🥽 VR Active';
+ self.xrStatusText = ' VR Active';
       self.updateVRStatusUI();
 
     }).catch(function(err) {
@@ -1750,7 +1750,7 @@
       id: 'vrvoxel',
       name: 'VoxelForge VR',
       description: 'Voxel survival in VR — swing, punch, draw your bow (WebXR)',
-      icon: '🥽',
+      icon: 'voxelforge-vr',
       category: 'game',
       installed: false,
       launch: function() {

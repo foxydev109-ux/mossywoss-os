@@ -49,7 +49,7 @@ MWO.Voxely3D = (function() {
     var w = MWO.wm.create({
       id: 'voxely3d-' + Date.now(),
       title: 'Voxely 3D',
-      icon: '🟫',
+      icon: 'voxely-3d',
       width: 900, height: 620,
       x: 40, y: 20,
       resizable: true
@@ -62,9 +62,9 @@ MWO.Voxely3D = (function() {
         <div id="voxely-hud" style="position:absolute;top:0;left:0;right:0;bottom:0;pointer-events:none;font-family:sans-serif;font-size:12px">
           <!-- Top HUD: Health/Hunger/Energy -->
           <div style="position:absolute;top:10px;right:10px;text-align:right;background:rgba(0,0,0,0.5);padding:8px 12px;border-radius:6px;color:#fff">
-            <div style="margin-bottom:4px">❤️ <div style="display:inline-block;width:100px;height:12px;background:#333;border-radius:6px;vertical-align:middle"><div id="vx-health-bar" style="height:100%;width:100%;background:#e44;border-radius:6px;transition:width .3s"></div></div></div>
-            <div style="margin-bottom:4px">🍖 <div style="display:inline-block;width:100px;height:12px;background:#333;border-radius:6px;vertical-align:middle"><div id="vx-hunger-bar" style="height:100%;width:100%;background:#ec4;border-radius:6px;transition:width .3s"></div></div></div>
-            <div>⚡ <div style="display:inline-block;width:100px;height:12px;background:#333;border-radius:6px;vertical-align:middle"><div id="vx-energy-bar" style="height:100%;width:100%;background:#4e4;border-radius:6px;transition:width .3s"></div></div></div>
+            <div style="margin-bottom:4px">Heart <div style="display:inline-block;width:100px;height:12px;background:#333;border-radius:6px;vertical-align:middle"><div id="vx-health-bar" style="height:100%;width:100%;background:#e44;border-radius:6px;transition:width .3s"></div></div></div>
+ <div style="margin-bottom:4px"> <div style="display:inline-block;width:100px;height:12px;background:#333;border-radius:6px;vertical-align:middle"><div id="vx-hunger-bar" style="height:100%;width:100%;background:#ec4;border-radius:6px;transition:width.3s"></div></div></div>
+ <div> <div style="display:inline-block;width:100px;height:12px;background:#333;border-radius:6px;vertical-align:middle"><div id="vx-energy-bar" style="height:100%;width:100%;background:#4e4;border-radius:6px;transition:width.3s"></div></div></div>
           </div>
           <!-- Crosshair -->
           <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:20px;height:20px;pointer-events:none">
@@ -77,11 +77,11 @@ MWO.Voxely3D = (function() {
           </div>
           <!-- Inventory display -->
           <div style="position:absolute;bottom:60px;left:10px;background:rgba(0,0,0,0.5);padding:6px 10px;border-radius:6px;color:#fff;font-size:11px">
-            🪵 Wood: <span id="vx-wood">0</span> | 🪨 Stone: <span id="vx-stone">0</span> | 🟫 Dirt: <span id="vx-dirt">0</span> | 💎 Diamond: <span id="vx-diamond">0</span>
+ Wood: <span id="vx-wood">0</span> | Stone: <span id="vx-stone">0</span> | Dirt: <span id="vx-dirt">0</span> | Gem Diamond: <span id="vx-diamond">0</span>
           </div>
           <!-- Time of day -->
           <div style="position:absolute;top:10px;left:10px;background:rgba(0,0,0,0.5);padding:6px 10px;border-radius:6px;color:#fff;font-size:11px">
-            <span id="vx-time">☀️ Day</span> | FPS: <span id="vx-fps">60</span>
+ <span id="vx-time"> Day</span> | FPS: <span id="vx-fps">60</span>
           </div>
           <!-- Touch controls for mobile -->
           <div id="vx-touch-controls" style="position:absolute;bottom:0;left:0;right:0;display:none;pointer-events:auto">
@@ -89,17 +89,17 @@ MWO.Voxely3D = (function() {
               <div id="vx-joystick" style="position:relative;width:50px;height:50px;background:rgba(255,255,255,0.3);border-radius:25px;top:35px;left:35px;transition:none"></div>
             </div>
             <div style="position:absolute;bottom:80px;right:20px;display:flex;flex-direction:column;gap:8px">
-              <div id="vx-jump-btn" style="width:60px;height:60px;background:rgba(255,255,255,0.2);border:1px solid rgba(255,255,255,0.3);border-radius:30px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:24px;cursor:pointer">⬆</div>
-              <div id="vx-break-btn" style="width:60px;height:60px;background:rgba(255,100,100,0.2);border:1px solid rgba(255,100,100,0.3);border-radius:30px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:20px;cursor:pointer">⛏</div>
-              <div id="vx-place-btn" style="width:60px;height:60px;background:rgba(100,255,100,0.2);border:1px solid rgba(100,255,100,0.3);border-radius:30px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:20px;cursor:pointer">🧱</div>
+ <div id="vx-jump-btn" style="width:60px;height:60px;background:rgba(255,255,255,0.2);border:1px solid rgba(255,255,255,0.3);border-radius:30px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:24px;cursor:pointer"></div>
+ <div id="vx-break-btn" style="width:60px;height:60px;background:rgba(255,100,100,0.2);border:1px solid rgba(255,100,100,0.3);border-radius:30px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:20px;cursor:pointer"></div>
+ <div id="vx-place-btn" style="width:60px;height:60px;background:rgba(100,255,100,0.2);border:1px solid rgba(100,255,100,0.3);border-radius:30px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:20px;cursor:pointer"></div>
             </div>
           </div>
           <!-- Start message -->
           <div id="vx-start-msg" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,0.7);padding:20px 32px;border-radius:10px;color:#fff;text-align:center;pointer-events:auto;cursor:pointer">
-            <div style="font-size:18px;font-weight:700;margin-bottom:8px">🟫 Voxely 3D</div>
+ <div style="font-size:18px;font-weight:700;margin-bottom:8px"> Voxely 3D</div>
             <div style="font-size:13px;color:#ccc;margin-bottom:12px">Click to play</div>
             <div style="font-size:11px;color:#999">WASD move | Space jump | Mouse look | Left click break | Right click place | 1-5 select block</div>
-            <div style="font-size:11px;color:#999;margin-top:4px">Touch: Joystick move | ⬆ jump | ⛏ break | 🧱 place | Drag screen to look</div>
+ <div style="font-size:11px;color:#999;margin-top:4px">Touch: Joystick move | jump | break | place | Drag screen to look</div>
           </div>
         </div>
       </div>
@@ -133,7 +133,7 @@ MWO.Voxely3D = (function() {
   }
 
   function getBlockIcon(type) {
-    var icons = { 1:'🟩', 2:'🟫', 3:'⬜', 4:'🟤', 5:'🌿', 6:'🟨', 7:'💧', 8:'💎', 9:'⬛' };
+ var icons = { 1:'', 2:'', 3:'', 4:'', 5:'▲', 6:'', 7:'', 8:'Gem', 9:'' };
     return icons[type] || '?';
   }
 
@@ -468,10 +468,10 @@ MWO.Voxely3D = (function() {
     el = winBody.querySelector('#vx-energy-bar'); if (el) el.style.width = energy + '%';
     el = winBody.querySelector('#vx-time');
     if (el) {
-      if (time < 0.25 || time > 0.75) el.textContent = '🌙 Night';
-      else if (time < 0.3) el.textContent = '🌅 Dawn';
-      else if (time > 0.7) el.textContent = '🌇 Dusk';
-      else el.textContent = '☀️ Day';
+      if (time < 0.25 || time > 0.75) el.textContent = 'Moon Night';
+ else if (time < 0.3) el.textContent = ' Dawn';
+ else if (time > 0.7) el.textContent = ' Dusk';
+ else el.textContent = ' Day';
     }
   }
 
@@ -845,7 +845,7 @@ if (MWO.registerApp) {
     id: 'voxely3d',
     name: 'Voxely 3D',
     description: '3D voxel survival game — mine, craft & build',
-    icon: '🟫',
+    icon: 'voxely-3d',
     category: 'game',
     installed: false,
     launch: function() { MWO.Voxely3D.launch(); }
