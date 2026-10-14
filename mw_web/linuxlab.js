@@ -31,6 +31,17 @@
       desc: 'The original x86/RISC-V emulator experiments running real kernels in JavaScript/WASM. Text-mode, very fast, great for seeing a genuine kernel boot in seconds.' }
   ];
 
+  var OTHER_OS = [
+    { name: 'SerenityOS', owner: 'SerenityOS project (BSD-2-Clause)', url: 'https://github.com/SerenityOS/serenity',
+      desc: 'A complete from-scratch Unix-like OS with its own kernel, browser and windowed desktop — built in the open and famously readable. Free, community-run, most people have never heard of it.' },
+    { name: 'Redox OS', owner: 'Redox OS project (MIT)', url: 'https://www.redox-os.org/',
+      desc: 'A full Unix-like microkernel OS written in Rust, focused on safety and security. Free and open source with an official site and downloads.' },
+    { name: 'RISC OS Open', owner: 'RISC OS Open (Apache-2.0)', url: 'https://www.riscosopen.org/',
+      desc: 'The direct descendant of the 1987 Acorn RISC OS — not Linux, not Windows, a completely different lineage. Free, runs great on Raspberry Pi.' },
+    { name: 'Plan 9 from Bell Labs', owner: 'Bell Labs / Lucent Public License', url: 'https://9p.io/plan9/',
+      desc: 'The legendary successor to Unix from the original researchers. Free for personal use under the Lucent Public License — a piece of OS history.' }
+  ];
+
   var EASY_DISTROS = [
     { name: 'Ubuntu', url: 'https://ubuntu.com/download', why: 'Most common beginner distro; huge community support.' },
     { name: 'Linux Mint', url: 'https://linuxmint.com/download.php', why: 'Windows-like desktop, famously easy installer.' },
@@ -109,7 +120,18 @@
         body.appendChild(card);
       });
 
-      body.appendChild(section('2. Easier Linux for a real PC (official downloads, rights with owners)'));
+      body.appendChild(section('2. More free open-source OSes you have probably never seen (official sites, rights with owners)'));
+      OTHER_OS.forEach(function(d) {
+        var card = el('div', 'll-card');
+        card.style.cssText = 'background:var(--card,#1e2431);border:1px solid var(--border,#2c3346);border-radius:10px;padding:12px;margin:8px 0';
+        var t = el('div', '', d.name); t.style.cssText = 'font-weight:700;font-size:1.02em';
+        var o = el('div', '', 'Rights: ' + d.owner); o.style.cssText = 'opacity:0.65;font-size:0.8em;margin:2px 0 6px';
+        var de = el('div', '', d.desc); de.style.cssText = 'font-size:0.88em;line-height:1.45;margin-bottom:8px';
+        card.appendChild(t); card.appendChild(o); card.appendChild(de); card.appendChild(launchBtn(d.url));
+        body.appendChild(card);
+      });
+
+      body.appendChild(section('3. Easier Linux for a real PC (official downloads, rights with owners)'));
       var list = el('div'); list.style.margin = '6px 0 14px';
       EASY_DISTROS.forEach(function(d) {
         var row = el('div', 'll-row');
@@ -123,7 +145,7 @@
       });
       body.appendChild(list);
 
-      body.appendChild(section('3. Emulators, honestly'));
+      body.appendChild(section('4. Emulators, honestly'));
       EMU_GUIDE.forEach(function(g) {
         var h = el('div', '', g.level);
         h.style.cssText = 'font-weight:600;font-size:0.9em;margin:10px 0 4px';

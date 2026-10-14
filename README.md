@@ -132,6 +132,13 @@ cleared by the browser at any time.
 - No placeholders, mock-ups, or simulated behavior — everything is real.
 - No emoji, no SVG icons — pure-CSS icon tiles throughout.
 
+## Contributing
+
+Want to help? [CONTRIBUTING.md](CONTRIBUTING.md) lists every area — apps,
+games, icon tiles, themes, responsive fixes, MossGuard rules, OS Lab
+catalog, and the proposed native track in [ROADMAP.md](ROADMAP.md).
+One-command reproducible build/test via the included Dockerfile.
+
 ## License & third-party notices
 
 This project is MIT licensed (see [LICENSE](LICENSE)); third-party

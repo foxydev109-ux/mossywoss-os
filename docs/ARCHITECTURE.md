@@ -137,6 +137,33 @@ refresh the `latest` GitHub release. The download links in the README
 
 ---
 
+
+## Boot chooser & OS Lab (honest multi-OS support)
+
+MossyWoss OS is its own complete OS — it is not Linux and contains no Linux
+kernel. Users who want real other-OSes get a real path:
+
+```
+login screen (first boot)
+   └─ non-blocking chooser overlay
+        ├─ "Stay on MossyWoss OS"  → normal login (auto-hides after 5s)
+        └─ "OS Lab"               → opens the OS Lab app immediately
+```
+
+OS Lab contents (all third-party, deep links only — nothing hosted,
+bundled, or redistributed; rights belong to each owner):
+- Real in-browser OSes: v86 (Alpine, Arch, TinyCore, KolibriOS, FreeDOS,
+  Minix 3, Haiku), WebVM (Debian), JSLinux — real kernels via x86/WASM
+- Free open-source OSes people rarely see: SerenityOS, Redox OS, RISC OS
+  Open, Plan 9 — official project sites only
+- Easier Linux directory for real PCs (Ubuntu, Mint, Zorin, Pop!_OS, Fedora)
+- Honest emulator guide (8/16-bit era is real in-browser; GameCube/Wii/Sims
+  need a real PC) + "games you own only" anti-piracy rule
+- Proprietary OS images (Windows) deliberately excluded for licensing
+
+Chooser state persists in localStorage (`mwo_os_pref`), so it shows once
+per browser and never blocks login timing.
+
 ## Changelog of the current cycle
 
 - Icon overhaul: pure-CSS monogram tiles; 800+ emoji and all SVG removed
@@ -150,5 +177,10 @@ refresh the `latest` GitHub release. The download links in the README
 - Packages: Windows zip (no install), Linux zip (user-level installer +
   menu entry + `mossywoss` command), web zip
 - Docs: honest scope, device-separation notes, disclaimer
-- Tests: 83/83 apps, 15/15 fresh-PC, 11/11 browser zip/download,
+- Boot chooser + OS Lab: real third-party in-browser OSes (v86 KolibriOS,
+  FreeDOS, Minix, Haiku, Alpine, WebVM Debian, JSLinux) + SerenityOS,
+  Redox OS, RISC OS, Plan 9 directory — deep links only, rights + NOTICE
+- LICENSE (MIT), NOTICE (third-party rights), CONTRIBUTING.md, ROADMAP.md
+  (honest native-track proposal), reproducible Dockerfile build+test
+- Tests: 84/84 apps, 15/15 fresh-PC, 11/11 browser zip/download,
   10/10 second boot, 11/11 interpreter, 6/6 VR engine — all green
