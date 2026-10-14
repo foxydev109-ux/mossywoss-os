@@ -2430,6 +2430,18 @@ var MWO = MWO || {};
         bar.appendChild(chip);
       });
       bar.appendChild(search);
+      if (MWO.Publisher && MWO.Publisher.open) {
+        const pubBtn = document.createElement('button');
+        pubBtn.textContent = '📤 Publish your own';
+        pubBtn.style.padding = '8px 14px';
+        pubBtn.style.borderRadius = '999px';
+        pubBtn.style.border = '1px solid rgba(255,255,255,0.15)';
+        pubBtn.style.background = 'rgba(34,197,94,0.15)';
+        pubBtn.style.color = '#86efac';
+        pubBtn.style.fontWeight = 'bold';
+        pubBtn.onclick = () => MWO.Publisher.open();
+        bar.appendChild(pubBtn);
+      }
       container.appendChild(bar);
 
       const grid = document.createElement('div');
@@ -2556,6 +2568,61 @@ var MWO = MWO || {};
           card.appendChild(actions);
           grid.appendChild(card);
         });
+
+        // Published-by-user entries (Publish Studio) — real installs from the VFS.
+        if (MWO.Publisher && MWO.Publisher.listPublished) {
+          MWO.Publisher.listPublished().then(items => {
+            if (!items.length) return;
+            items.forEach(p => {
+              const card = document.createElement('div');
+              card.style.background = 'rgba(34,197,94,0.07)';
+              card.style.border = '1px solid rgba(34,197,94,0.25)';
+              card.style.borderRadius = '10px';
+              card.style.padding = '14px';
+              card.style.display = 'flex';
+              card.style.flexDirection = 'column';
+              card.style.gap = '8px';
+              const top = document.createElement('div');
+              top.style.display = 'flex';
+              top.style.alignItems = 'center';
+              top.style.gap = '10px';
+              const icn = document.createElement('div');
+              icn.style.fontSize = '2em';
+              icn.textContent = p.icon || '📦';
+              const info = document.createElement('div');
+              const nm = document.createElement('div');
+              nm.style.fontWeight = 'bold';
+              nm.style.fontSize = '0.9em';
+              nm.textContent = p.name;
+              const cat = document.createElement('div');
+              cat.style.fontSize = '0.72em';
+              cat.style.color = 'var(--text2)';
+              cat.textContent = 'Published · ' + (p.category === 'game' ? 'Game' : 'App');
+              info.appendChild(nm);
+              info.appendChild(cat);
+              top.appendChild(icn);
+              top.appendChild(info);
+              const desc = document.createElement('div');
+              desc.style.fontSize = '0.78em';
+              desc.style.color = 'var(--text2)';
+              desc.style.flex = '1';
+              desc.textContent = p.description || '';
+              const runBtn = document.createElement('button');
+              runBtn.textContent = '▶ Run';
+              runBtn.style.padding = '9px';
+              runBtn.style.borderRadius = '6px';
+              runBtn.style.border = 'none';
+              runBtn.style.fontWeight = 'bold';
+              runBtn.style.background = 'var(--accent)';
+              runBtn.style.color = '#fff';
+              runBtn.onclick = () => MWO.Publisher.runPublished(p.id);
+              card.appendChild(top);
+              card.appendChild(desc);
+              card.appendChild(runBtn);
+              grid.appendChild(card);
+            });
+          }).catch(function() {});
+        }
       };
 
       search.oninput = renderGrid;
@@ -4901,6 +4968,18 @@ var MWO = MWO || {};
         bar.appendChild(chip);
       });
       bar.appendChild(search);
+      if (MWO.Publisher && MWO.Publisher.open) {
+        const pubBtn = document.createElement('button');
+        pubBtn.textContent = '📤 Publish your own';
+        pubBtn.style.padding = '8px 14px';
+        pubBtn.style.borderRadius = '999px';
+        pubBtn.style.border = '1px solid rgba(255,255,255,0.15)';
+        pubBtn.style.background = 'rgba(34,197,94,0.15)';
+        pubBtn.style.color = '#86efac';
+        pubBtn.style.fontWeight = 'bold';
+        pubBtn.onclick = () => MWO.Publisher.open();
+        bar.appendChild(pubBtn);
+      }
       container.appendChild(bar);
 
       const grid = document.createElement('div');
@@ -5027,6 +5106,61 @@ var MWO = MWO || {};
           card.appendChild(actions);
           grid.appendChild(card);
         });
+
+        // Published-by-user entries (Publish Studio) — real installs from the VFS.
+        if (MWO.Publisher && MWO.Publisher.listPublished) {
+          MWO.Publisher.listPublished().then(items => {
+            if (!items.length) return;
+            items.forEach(p => {
+              const card = document.createElement('div');
+              card.style.background = 'rgba(34,197,94,0.07)';
+              card.style.border = '1px solid rgba(34,197,94,0.25)';
+              card.style.borderRadius = '10px';
+              card.style.padding = '14px';
+              card.style.display = 'flex';
+              card.style.flexDirection = 'column';
+              card.style.gap = '8px';
+              const top = document.createElement('div');
+              top.style.display = 'flex';
+              top.style.alignItems = 'center';
+              top.style.gap = '10px';
+              const icn = document.createElement('div');
+              icn.style.fontSize = '2em';
+              icn.textContent = p.icon || '📦';
+              const info = document.createElement('div');
+              const nm = document.createElement('div');
+              nm.style.fontWeight = 'bold';
+              nm.style.fontSize = '0.9em';
+              nm.textContent = p.name;
+              const cat = document.createElement('div');
+              cat.style.fontSize = '0.72em';
+              cat.style.color = 'var(--text2)';
+              cat.textContent = 'Published · ' + (p.category === 'game' ? 'Game' : 'App');
+              info.appendChild(nm);
+              info.appendChild(cat);
+              top.appendChild(icn);
+              top.appendChild(info);
+              const desc = document.createElement('div');
+              desc.style.fontSize = '0.78em';
+              desc.style.color = 'var(--text2)';
+              desc.style.flex = '1';
+              desc.textContent = p.description || '';
+              const runBtn = document.createElement('button');
+              runBtn.textContent = '▶ Run';
+              runBtn.style.padding = '9px';
+              runBtn.style.borderRadius = '6px';
+              runBtn.style.border = 'none';
+              runBtn.style.fontWeight = 'bold';
+              runBtn.style.background = 'var(--accent)';
+              runBtn.style.color = '#fff';
+              runBtn.onclick = () => MWO.Publisher.runPublished(p.id);
+              card.appendChild(top);
+              card.appendChild(desc);
+              card.appendChild(runBtn);
+              grid.appendChild(card);
+            });
+          }).catch(function() {});
+        }
       };
 
       search.oninput = renderGrid;

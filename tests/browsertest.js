@@ -57,7 +57,7 @@ function crc32(buf) {
 }
 
 const ZIP_BYTES = buildZip();
-const html = fs.readFileSync('/app/conversations/69c77ec56e1663b653b6eaa5/../mossywoss_os.html', 'utf8')
+const html = fs.readFileSync('/app/conversations/69c77ec56e1663b653b6eaa5/mossywoss_os.html', 'utf8')
   .replace(/<script src="https:\/\/cdn\.babylonjs\.com\/babylon\.js"><\/script>/, '');
 
 const sleep = (ms) => new Promise(r => setTimeout(r, ms));

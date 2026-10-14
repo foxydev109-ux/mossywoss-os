@@ -362,8 +362,8 @@ MWO.Browser = (function() {
    * In-Browser ZIP Extraction Engine
    * ---------------------------------------------------------------------- */
 
-  async function extractZip(filename, onProgress) {
-    const filePath = '/Downloads/' + filename;
+  async function extractZip(filename, onProgress, targetDirOverride) {
+    const filePath = (typeof filename === 'string' && filename.startsWith('/')) ? filename : ('/Downloads/' + filename);
     if (!(await MWO.fs.exists(filePath))) {
       throw new Error('File not found: ' + filePath);
     }
@@ -439,8 +439,11 @@ MWO.Browser = (function() {
     }
 
     // Target folder name
-    const zipBaseName = filename.replace(/\.zip$/i, '');
-    const targetDir = '/Downloads/' + sanitizeFilename(zipBaseName) + '_extracted';
+    const rawName = typeof filename === 'string' ? filename.split('/').pop() : filename;
+    const zipBaseName = rawName.replace(/\.zip$/i, '');
+    const targetDir = targetDirOverride || ((filePath.startsWith('/System/store/uploads') || filePath.startsWith('/WebApps'))
+      ? '/WebApps/' + sanitizeFilename(zipBaseName) + '_extracted'
+      : '/Downloads/' + sanitizeFilename(zipBaseName) + '_extracted');
     await ensureDir(targetDir);
 
     let extractedCount = 0;
@@ -1839,6 +1842,15 @@ MWO.Browser = (function() {
 
     // Initialize first tab
     createTab(initialUrl || 'about:home');
+  }
+
+  if (typeof MWO !== 'undefined') {
+    MWO.ZipKit = {
+      extractZip: extractZip,
+      runHTML5Game: runHTML5Game,
+      checkForIndexHtml: checkForIndexHtml,
+      dataUrlToBytes: dataURLToUint8Array
+    };
   }
 
   return {

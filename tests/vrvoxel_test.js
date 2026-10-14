@@ -5,7 +5,7 @@
 const assert = require('assert');
 
 // 1. Mock Browser Environment Globals
-global.THREE = require('./mw_web/three.min.js');
+global.THREE = require('../mw_web/three.min.js');
 
 global.window = global;
 global.document = {
@@ -52,7 +52,7 @@ global.MWO = {
 };
 
 // 2. Require Module
-const VoxelForgeVR = require('./mw_web/vrvoxel.js');
+const VoxelForgeVR = require('../mw_web/vrvoxel.js');
 
 console.log('=== VoxelForge VR Test Suite ===');
 

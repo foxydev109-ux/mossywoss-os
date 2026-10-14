@@ -1,5 +1,5 @@
 global.MWO = {};
-const CInterp = require('./mw_web/cinterp.js');
+const CInterp = require('../mw_web/cinterp.js');
 const assert = require('assert');
 
 console.log("=== Running Comprehensive CInterp Tests ===");

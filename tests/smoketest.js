@@ -2,7 +2,7 @@
 const fs = require('fs');
 const { JSDOM } = require('jsdom');
 
-const html = fs.readFileSync('/app/conversations/69c77ec56e1663b653b6eaa5/../mossywoss_os.html', 'utf8');
+const html = fs.readFileSync('/app/conversations/69c77ec56e1663b653b6eaa5/mossywoss_os.html', 'utf8');
 const patched = html.replace(/<script src="https:\/\/cdn\.babylonjs\.com\/babylon\.js"><\/script>/, '');
 
 const dom = new JSDOM(patched, {
