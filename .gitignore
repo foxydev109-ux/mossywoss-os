@@ -1,3 +1,9 @@
 node_modules/
 .env
 *.log
+append_megapack*.py
+build_apps*.py
+make_aura*.py
+generate_*.py
+mw_parts/
+mossywoss_b64.txt
