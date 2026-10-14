@@ -15,7 +15,7 @@ if [ ! -f "$LIBS_DIR/webkit-1.10.0.jar" ]; then
   echo "Downloading androidx libraries..."
   curl -sfL -o "$LIBS_DIR/webkit-1.10.0.aar" https://dl.google.com/android/maven2/androidx/webkit/webkit/1.10.0/webkit-1.10.0.aar
   curl -sfL -o "$LIBS_DIR/core-1.12.0.aar" https://dl.google.com/android/maven2/androidx/core/core/1.12.0/core-1.12.0.aar
-  curl -sfL -o "$LIBS_DIR/annotation-1.6.0.jar" https://dl.google.com/android/maven2/androidx/annotation/annotation/1.6.0/annotation-1.6.0.jar
+  curl -sfL -o "$LIBS_DIR/annotation-jvm-1.6.0.jar" https://dl.google.com/android/maven2/androidx/annotation/annotation-jvm/1.6.0/annotation-jvm-1.6.0.jar
   for aar in webkit-1.10.0 core-1.12.0; do
     unzip -o -q "$LIBS_DIR/$aar.aar" classes.jar -d "$LIBS_DIR"
     mv "$LIBS_DIR/classes.jar" "$LIBS_DIR/$aar.jar"
@@ -24,6 +24,9 @@ fi
 if [ ! -f "$LIBS_DIR/core-1.12.0.jar" ]; then
   unzip -o -q "$LIBS_DIR/core-1.12.0.aar" classes.jar -d "$LIBS_DIR" && mv "$LIBS_DIR/classes.jar" "$LIBS_DIR/core-1.12.0.jar" 2>/dev/null || true
 fi
+for L in webkit-1.10.0.jar core-1.12.0.jar annotation-jvm-1.6.0.jar; do
+  [ -s "$LIBS_DIR/$L" ] || { echo "MISSING LIBRARY: $LIBS_DIR/$L (download failed)"; exit 1; }
+done
 KEYSTORE="mwos-release.keystore"
 KEY_ALIAS="mwos"
 KEY_PASS="mwos-release-key"

@@ -62,6 +62,10 @@ CHANGELOG (final for this release cycle):
   Debug certificate, one stable committed key so updates install cleanly,
   build-time install-readiness gate (CI now fails loudly instead of silently
   releasing without an APK), 15-check offline test (tests/apk_install_check.sh)
+- CI fix: the APK build downloaded one androidx jar filename but compiled
+  against another, so clean CI runners could not build the APK and earlier
+  releases may have carried a stale APK. Fixed, with a missing-library guard,
+  and verified from a completely clean SDK directory.
 - APK 1.1: v1+v2+v3 signing, uncompressed resources.arsc, WebViewAssetLoader
   secure origin (Android 7.0+)
 - Shell cleanup: removed ~2,500 lines of duplicated dead code
