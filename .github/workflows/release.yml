@@ -50,7 +50,7 @@ jobs:
         run: |
           if [ -f build_apk.sh ]; then
             chmod +x build_apk.sh
-            bash build_apk.sh || echo "APK build failed; releasing zips only" >> $GITHUB_STEP_SUMMARY
+            bash build_apk.sh
           else
             echo "build_apk.sh not present; skipping APK" >> $GITHUB_STEP_SUMMARY
           fi

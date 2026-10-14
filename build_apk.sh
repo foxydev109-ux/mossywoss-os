@@ -24,7 +24,9 @@ fi
 if [ ! -f "$LIBS_DIR/core-1.12.0.jar" ]; then
   unzip -o -q "$LIBS_DIR/core-1.12.0.aar" classes.jar -d "$LIBS_DIR" && mv "$LIBS_DIR/classes.jar" "$LIBS_DIR/core-1.12.0.jar" 2>/dev/null || true
 fi
-KEYSTORE="debug.keystore"
+KEYSTORE="mwos-release.keystore"
+KEY_ALIAS="mwos"
+KEY_PASS="mwos-release-key"
 
 # Copy latest HTML asset
 cp mossywoss_os.html apk-build/assets/mossywoss_os.html
@@ -76,17 +78,17 @@ zipalign -f 4 apk-build/build/base.apk apk-build/build/aligned.apk
 
 # 7. Generate keystore if missing & Sign APK
 if [ ! -f "$KEYSTORE" ]; then
-    echo "Generating debug keystore..."
-    keytool -genkey -v -keystore "$KEYSTORE" \
-        -storepass android -alias androiddebugkey -keypass android \
-        -keyalg RSA -keysize 2048 -validity 10000 \
-        -dname "CN=Android Debug,O=Android,C=US"
+    echo "Generating release keystore..."
+    keytool -genkeypair -keystore "$KEYSTORE" \
+        -storepass "$KEY_PASS" -alias "$KEY_ALIAS" -keypass "$KEY_PASS" \
+        -keyalg RSA -keysize 4096 -validity 36500 \
+        -dname "CN=MossyWoss OS, OU=foxydev109-ux, O=foxydev109-ux, L=Sydney, ST=NSW, C=AU"
 fi
 
 echo "7. Signing APK with apksigner..."
-apksigner sign --ks "$KEYSTORE" \
-    --ks-pass pass:android \
-    --key-pass pass:android \
+apksigner sign \
+    --ks "$KEYSTORE" --ks-pass pass:"$KEY_PASS" --ks-key-alias "$KEY_ALIAS" \
+    --key-pass pass:"$KEY_PASS" \
     --v1-signing-enabled true --v2-signing-enabled true --v3-signing-enabled true \
     --out mossywoss.apk \
     apk-build/build/aligned.apk
@@ -97,5 +99,26 @@ apksigner verify --verbose --min-sdk-version 24 --max-sdk-version 35 mossywoss.a
 # resources.arsc MUST be uncompressed (stored) for targetSdk 30+ installers
 unzip -v mossywoss.apk | grep "resources.arsc" | grep -q "Stored" || { echo "ERROR: resources.arsc must be Stored"; exit 1; }
 echo "resources.arsc is Stored (installer-safe)"
+
+
+# 9. Install-readiness gate: fail the build rather than ship an APK Android may refuse
+echo "9. Install-readiness checks..."
+fail() { echo "INSTALL-GATE FAILED: $1"; exit 1; }
+BADGING=$(aapt2 dump badging mossywoss.apk 2>/dev/null)
+echo "$BADGING" | grep -q "package: name='com.foxydev109ux.mwos'" || fail "unexpected package name"
+echo "$BADGING" | grep -q "sdkVersion:'24'" || fail "minSdk not 24"
+echo "$BADGING" | grep -q "application-label:'MossyWoss OS'" || fail "missing app label"
+echo "$BADGING" | grep -q "application-icon" || fail "missing launcher icon"
+echo "$BADGING" | grep -q "launchable-activity: name='com.foxydev109ux.mwos.MainActivity'" || fail "launcher activity missing"
+unzip -v mossywoss.apk | grep "resources.arsc" | grep -q "Stored" || fail "resources.arsc must be stored"
+zipalign -c -P 16 4 mossywoss.apk 2>/dev/null || zipalign -c 4 mossywoss.apk || fail "APK not aligned"
+SIGN=$(apksigner verify --verbose --print-certs mossywoss.apk 2>&1)
+echo "$SIGN" | grep -q "v2 scheme (APK Signature Scheme v2): true" || fail "v2 signature missing"
+echo "$SIGN" | grep -q "v3 scheme (APK Signature Scheme v3): true" || fail "v3 signature missing"
+echo "$SIGN" | grep -q "CN=Android Debug" && fail "still signed with generic debug identity"
+jarsigner -verify mossywoss.apk 2>&1 | grep -q "jar verified" || fail "v1 (jar) signature invalid"
+# every Java class referenced by the manifest must exist in classes.dex
+unzip -p mossywoss.apk classes.dex | strings | grep -q "com/foxydev109ux/mwos/MainActivity" || fail "MainActivity not in dex"
+echo "All install-readiness checks passed."
 
 echo "=== Build Successful! Final APK: mossywoss.apk ==="

@@ -1,7 +1,7 @@
 MossyWoss OS - latest build (auto-built from main)
 
 DOWNLOADS (attached to this release):
-- mossywoss.apk - Android 7.0+ app (WebView shell over the web OS; secure in-app origin so saves and the virtual file system work)
+- mossywoss.apk (v1.2) - Android 7.0+ app (WebView shell over the web OS; secure in-app origin). Package com.foxydev109ux.mwos. If you see a Play Protect "App blocked" prompt, tap Install anyway: it appears for every sideloaded app from a developer Google has not seen before. If you see "App not installed", delete old downloads and uninstall any older MossyWoss OS first (older test builds used a different signing key).
 - mossywoss-os-windows.zip - Windows 10/11: extract, open mossywoss_os.html in a browser. Nothing is installed to your PC.
 - mossywoss-os-linux.zip - any Linux distro: extract, then "chmod +x install.sh && ./install.sh" (installs to ~/.local only, adds the mossywoss command + app-menu entry; uninstall.sh included)
 - mossywoss-os-web.zip - the raw single file for any other device
@@ -57,6 +57,11 @@ CHANGELOG (final for this release cycle):
   items show "Developer: <username>", pre-made store items show none
 - New automated end-to-end tests: publisher/store contract (4/4) and
   game builder zip round-trip (9/9) - all green
+- APK 1.2: new package name (no conflict with older test builds), dedicated
+  release signing identity (CN=MossyWoss OS) instead of the generic Android
+  Debug certificate, one stable committed key so updates install cleanly,
+  build-time install-readiness gate (CI now fails loudly instead of silently
+  releasing without an APK), 15-check offline test (tests/apk_install_check.sh)
 - APK 1.1: v1+v2+v3 signing, uncompressed resources.arsc, WebViewAssetLoader
   secure origin (Android 7.0+)
 - Shell cleanup: removed ~2,500 lines of duplicated dead code

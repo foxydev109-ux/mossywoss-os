@@ -11,5 +11,4 @@ dlcheck/
 apk-build/build/
 apk-build/gen/
 mossywoss.apk
-debug.keystore
 dist/

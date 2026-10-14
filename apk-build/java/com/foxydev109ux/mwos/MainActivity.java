@@ -1,4 +1,4 @@
-package com.foxydev109ux.mossywoss;
+package com.foxydev109ux.mwos;
 
 import android.Manifest;
 import android.app.Activity;

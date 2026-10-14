@@ -67,6 +67,34 @@ python3 mw_assemble.py
 cd tests && node smoketest.js
 ```
 
+
+## Installing the Android app (read this if install fails)
+
+Direct download: `https://github.com/foxydev109-ux/mossywoss-os/releases/latest/download/mossywoss.apk`
+
+**"App blocked to protect your device / Play Protect hasn't seen an app from
+this developer before"** - this is Google Play Protect, not a fault in the
+APK. It appears for ANY app that is not from the Play Store and whose
+developer is new to Google (no installs/reputation yet). It cannot be removed
+from inside an APK. To install anyway: tap **Install anyway** (or **More
+details**, then **Install anyway**). If you prefer, Play Protect can be paused
+in Play Store, Profile, Play Protect, Settings.
+
+**"App not installed"** - on Android this means a package conflict, most often
+an older copy with a different signing key. v1.2 changed the package name to
+`com.foxydev109ux.mwos` and uses one stable signing key committed to this
+repo, so it cannot conflict with earlier test builds. Steps:
+1. Delete the old downloaded file(s) (for example `mossywoss (1).apk`).
+2. Uninstall any older "MossyWoss OS" from Settings, Apps.
+3. Download the latest APK again and install.
+Your saves live inside the app, so uninstalling the OLD app clears the old
+app's data only.
+
+Honest limits: this is a sideloaded app signed with a self-generated key, not
+a Play Store app, so the Play Protect prompt is expected. Verify any download
+with `apksigner verify --print-certs` (signer: CN=MossyWoss OS, foxydev109-ux).
+`tests/apk_install_check.sh` runs 15 offline install-readiness checks in CI.
+
 ## Architecture
 
 Deep dive into every subsystem (VFS, zip engine, icon tiles, responsive shell,

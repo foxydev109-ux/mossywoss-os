@@ -127,7 +127,7 @@ Publish Studio: pick HTML/JS game or app → real zip upload
 The APK is a WebView shell over the same single file, served through
 WebViewAssetLoader on `https://appassets.androidplatform.net` — a secure
 in-app origin so localStorage/IndexedDB behave exactly like the browser build.
-Signed v1+v2+v3, `resources.arsc` stored uncompressed, minSdk 24.
+Signed v1+v2+v3 with a dedicated release key (CN=MossyWoss OS), `resources.arsc` stored uncompressed, minSdk 24, package `com.foxydev109ux.mwos`. The build runs an install-readiness gate (package, SDK levels, alignment, all three signature schemes, no generic debug identity, launcher activity present in dex) and CI fails if it does not pass.
 
 ## CI
 
