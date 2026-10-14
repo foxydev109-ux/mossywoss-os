@@ -87,11 +87,15 @@ echo "7. Signing APK with apksigner..."
 apksigner sign --ks "$KEYSTORE" \
     --ks-pass pass:android \
     --key-pass pass:android \
+    --v1-signing-enabled true --v2-signing-enabled true --v3-signing-enabled true \
     --out mossywoss.apk \
     apk-build/build/aligned.apk
 
 # 8. Verify APK
 echo "8. Verifying APK..."
-apksigner verify --verbose mossywoss.apk
+apksigner verify --verbose --min-sdk-version 24 --max-sdk-version 35 mossywoss.apk
+# resources.arsc MUST be uncompressed (stored) for targetSdk 30+ installers
+unzip -v mossywoss.apk | grep "resources.arsc" | grep -q "Stored" || { echo "ERROR: resources.arsc must be Stored"; exit 1; }
+echo "resources.arsc is Stored (installer-safe)"
 
 echo "=== Build Successful! Final APK: mossywoss.apk ==="

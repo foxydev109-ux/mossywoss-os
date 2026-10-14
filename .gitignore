@@ -7,3 +7,9 @@ make_aura*.py
 generate_*.py
 mw_parts/
 mossywoss_b64.txt
+dlcheck/
+apk-build/build/
+apk-build/gen/
+mossywoss.apk
+debug.keystore
+dist/

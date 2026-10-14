@@ -1,0 +1,77 @@
+name: Build & Release
+
+# Every push to main rebuilds all download packages and refreshes the
+# "latest" release, so the direct download links below never go stale.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Build the OS (single HTML file)
+        run: python3 mw_assemble.py
+
+      - name: Build download packages (Windows / Linux / Web zips)
+        run: |
+          chmod +x packages/build_packages.sh
+          bash packages/build_packages.sh
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install Android platform + build tools
+        run: |
+          yes | sdkmanager 'platforms;android-34' 'build-tools;34.0.0' > /dev/null
+
+      - name: Build Android APK
+        run: |
+          if [ -f build_apk.sh ]; then
+            chmod +x build_apk.sh
+            bash build_apk.sh || echo "APK build failed; releasing zips only" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "build_apk.sh not present; skipping APK" >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Collect artifacts
+        run: |
+          mkdir -p release-artifacts
+          cp mossywoss_os.html release-artifacts/
+          cp dist/*.zip release-artifacts/ 2>/dev/null || true
+          cp mossywoss.apk release-artifacts/ 2>/dev/null || [ -f mossywoss.apk ] || echo "no apk this run"
+          ls -la release-artifacts/
+
+      - name: Create or refresh the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG="build-${GITHUB_SHA::7}"
+          # remove any previous 'latest' release + tag so links stay stable
+          gh release delete latest --yes --cleanup-tag 2>/dev/null || true
+          gh release create latest \
+            --title "MossyWoss OS — latest build" \
+            --notes "Auto-built from the latest main branch push. \
+Direct downloads: grab the assets below — mossywoss.apk for Android, \
+mossywoss-os-windows.zip for Windows 10/11, mossywoss-os-linux.zip for Linux \
+(run install.sh), mossywoss-os-web.zip for any other device." \
+            release-artifacts/* 2>/dev/null || \
+          gh release upload latest release-artifacts/* --clobber
