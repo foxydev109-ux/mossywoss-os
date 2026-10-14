@@ -14,6 +14,10 @@ OS Lab references (deep links only, nothing hosted or bundled here):
 - KolibriOS, FreeDOS, Minix 3, Haiku — independent open-source projects;
   trademarks and rights belong to their owners.
 - Proprietary OS images (e.g., Microsoft Windows) are deliberately excluded.
+- On-Android references: Winlator (GPL) and PojavLauncher (GPL-3.0) are
+  independent projects; trademarks and rights belong to their owners.
+  Minecraft is a trademark of Mojang/Microsoft; PojavLauncher ships none of
+  its assets and requires the user's own account.
 
 Emulators referenced for information only: Dolphin, PCSX2 and similar
 projects belong to their owners. Emulation must only be used with software

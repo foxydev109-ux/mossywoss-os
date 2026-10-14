@@ -6323,6 +6323,13 @@ MWO.CodeStudio = (function() {
     { name: 'Fedora Workstation', owner: 'Red Hat sponsored project', url: 'https://fedoraproject.org/workstation/download/', why: 'Modern, up-to-date, clean GNOME desktop.' }
   ];
 
+  var ON_ANDROID = [
+    { name: 'Winlator', owner: 'Winlator project (GPL, rights with owners)', url: 'https://github.com/brunodev85/winlator',
+      desc: 'REAL Windows app support on Android, no root: Wine + Box86/Box64 x86 translation + Turnip/Zink/VirGL GPU drivers, all inside the normal app sandbox. This is the genuine architecture: PRoot-style isolation, Mesa drivers, DXVK pipelines, touchscreen mapped to mouse. Honest performance on a decent Android 15 tablet: light 2D PC apps and older games run well; heavy 3D titles are limited by ARM translation overhead.' },
+    { name: 'PojavLauncher', owner: 'PojavLauncherTeam (GPL-3.0)', url: 'https://github.com/PojavLauncherTeam/PojavLauncher',
+      desc: 'The real way to play Minecraft: Java Edition on Android — no root, and legal under Mojang EULA (your own account required; this project ships none of Mojang assets). Includes JVM-on-ARM translation and GPU backends. Bedrock Edition runs natively on Android already.' }
+  ];
+
   var EMU_GUIDE = [
     { level: 'Runs in your browser today (third-party, use games you own)', items: [
       'NES / SNES / Game Boy class emulators exist as fast in-browser projects (WASM-era; real cycle-accurate emulation of 8/16-bit consoles).'
@@ -6418,7 +6425,18 @@ MWO.CodeStudio = (function() {
       });
       body.appendChild(list);
 
-      body.appendChild(section('4. Emulators, honestly'));
+      body.appendChild(section('4. On Android: real PC software, no root (third-party, rights with owners)'));
+      ON_ANDROID.forEach(function(d) {
+        var card = el('div', 'll-card');
+        card.style.cssText = 'background:var(--card,#1e2431);border:1px solid var(--border,#2c3346);border-radius:10px;padding:12px;margin:8px 0';
+        var t = el('div', '', d.name); t.style.cssText = 'font-weight:700;font-size:1.02em';
+        var o = el('div', '', 'Rights: ' + d.owner); o.style.cssText = 'opacity:0.65;font-size:0.8em;margin:2px 0 6px';
+        var de = el('div', '', d.desc); de.style.cssText = 'font-size:0.88em;line-height:1.45;margin-bottom:8px';
+        card.appendChild(t); card.appendChild(o); card.appendChild(de); card.appendChild(launchBtn(d.url));
+        body.appendChild(card);
+      });
+
+      body.appendChild(section('5. Emulators, honestly'));
       EMU_GUIDE.forEach(function(g) {
         var h = el('div', '', g.level);
         h.style.cssText = 'font-weight:600;font-size:0.9em;margin:10px 0 4px';

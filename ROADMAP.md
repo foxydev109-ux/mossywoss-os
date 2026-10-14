@@ -34,3 +34,11 @@ honest about what it is.
 
 Each phase lands with its own test script runnable headless in CI (QEMU via
 GitHub Actions). Code is real or it does not merge.
+
+## Phase 4 — Android PC-compatibility container (design only)
+A no-root APK running x86 Windows binaries on Android 15 via
+PRoot + Box64 + Wine/DXVK + Mesa/Zink/Turnip, with a SurfaceView
+graphics bridge and strict app-sandbox separation. Full specification in
+[docs/ANDROID-PC-COMPAT-DESIGN.md](docs/ANDROID-PC-COMPAT-DESIGN.md).
+Existing real projects to study (rights with owners): Winlator, PojavLauncher.
+Not built; not claimed.

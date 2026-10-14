@@ -180,6 +180,9 @@ per browser and never blocks login timing.
 - Boot chooser + OS Lab: real third-party in-browser OSes (v86 KolibriOS,
   FreeDOS, Minix, Haiku, Alpine, WebVM Debian, JSLinux) + SerenityOS,
   Redox OS, RISC OS, Plan 9 directory — deep links only, rights + NOTICE
+- On-Android section: real no-root PC software (Winlator, PojavLauncher)
+  cataloged with honest capability notes; full PC-compat container design
+  in docs/ANDROID-PC-COMPAT-DESIGN.md (design only, not claimed)
 - LICENSE (MIT), NOTICE (third-party rights), CONTRIBUTING.md, ROADMAP.md
   (honest native-track proposal), reproducible Dockerfile build+test
 - Tests: 84/84 apps, 15/15 fresh-PC, 11/11 browser zip/download,
