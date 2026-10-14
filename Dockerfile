@@ -22,4 +22,5 @@ CMD ["bash", "-c", "python3 mw_assemble.py && \
   node tests/browsertest.js && \
   node tests/cinterp_test.js && \
   node tests/vrvoxel_test.js && \
+  node tests/publisher_storetest.js && \
   echo 'ALL TESTS PASSED IN CONTAINER'"]

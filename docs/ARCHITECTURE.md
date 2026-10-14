@@ -164,6 +164,24 @@ bundled, or redistributed; rights belong to each owner):
 Chooser state persists in localStorage (`mwo_os_pref`), so it shows once
 per browser and never blocks login timing.
 
+
+## Store & Publish Studio (tested end to end)
+
+```
+Publish Studio                     Store
+pick zip ----> MossGuard scan ----> rules+disclaimer (mandatory)
+                (local static      title / description / icon
+                 analysis)        ----> /System/store/published/<id>.json
+                                    ----> live card in Store (install/uninstall)
+```
+
+Verified by `tests/publisher_storetest.js` (4/4): a real published manifest
+lists via `MWO.Publisher.listPublished()`, renders live in the Store, and the
+manifest + content persist and re-read from the VFS. Honest sharing model:
+local-first means each user's store lives on their device - sharing happens
+by sending the zip itself (the other user publishes it identically). No
+cross-user server exists or is claimed.
+
 ## Changelog of the current cycle
 
 - Icon overhaul: pure-CSS monogram tiles; 800+ emoji and all SVG removed

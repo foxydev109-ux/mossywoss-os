@@ -52,7 +52,7 @@ docker run --rm -v "$PWD":/app mwo-build
 3. No placeholders, demos, or simulated behavior — everything must work.
 4. Run the full battery before opening a PR:
    `node tests/smoketest.js`, `tests/freshtest.js`, `tests/secondboot.js`,
-   `tests/browsertest.js`, `tests/cinterp_test.js`, `tests/vrvoxel_test.js`.
+   `tests/browsertest.js`, `tests/cinterp_test.js`, `tests/vrvoxel_test.js`, `tests/publisher_storetest.js`.
 5. Keep the final product a single assembled HTML file
    (`python3 mw_assemble.py` must stay the one-command build).
 6. MIT license; third-party notices live in NOTICE. Add attribution lines

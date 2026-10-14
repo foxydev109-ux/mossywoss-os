@@ -67,68 +67,11 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          cat > /tmp/relnotes.md << 'NOTES'
-          MossyWoss OS — latest build (auto-built from main)
-
-          DOWNLOADS (attached to this release):
-          - mossywoss.apk — Android 7.0+ app (WebView shell over the web OS; secure in-app origin so saves and the virtual file system work)
-          - mossywoss-os-windows.zip — Windows 10/11: extract, open mossywoss_os.html in a browser. Nothing is installed to your PC.
-          - mossywoss-os-linux.zip — any Linux distro: extract, then "chmod +x install.sh && ./install.sh" (installs to ~/.local only, adds the mossywoss command + app-menu entry; uninstall.sh included)
-          - mossywoss-os-web.zip — the raw single file for any other device
-          - mossywoss_os.html — the same single file, unpackaged
-
-          WHAT IT IS (honest scope):
-          A fully functional web-based OS simulation in one HTML file: desktop, window
-          manager, taskbar, start menu, virtual file system (IndexedDB), a Store with 80+
-          real apps and games, Publish Studio (publish your own zips, with mandatory
-          upload rules, a disclaimer, and MossGuard scanning), MossGuard local security
-          scanning + a real OS update system, a WebXR voxel survival game (real controller
-          tracking; full non-VR mode), a real built-in C/C++/C# subset interpreter, HTML/
-          CSS/JS live preview, 2D/3D animation tools, and an AI-chat platform. It runs in
-          the browser sandbox — it is not a native bootable OS and does not run desktop
-          programs. Everything inside works for real: downloads really download into the
-          virtual file system, zips really extract (deflate), the interpreter really
-          executes code.
-
-          DEVICE SEPARATION:
-          Everything is stored in the browser's site storage — the OS never reads or
-          modifies your device's files unless you import them yourself. Windows: nothing
-          installed, delete the folder and it is gone. Linux: user-level only (~/.local),
-          uninstall.sh removes exactly what was added. Android: WebView sandbox, only
-          INTERNET/CAMERA/MICROPHONE permissions (camera/mic for the OS's camera and
-          recorder apps, requested at first use).
-
-          CHANGELOG (this cycle):
-          - Icon overhaul: pure-CSS monogram tiles everywhere — zero emoji, zero SVG, zero image files
-          - APK 1.1 (versionCode 2): v1+v2+v3 signing for installer compatibility, uncompressed resources.arsc (installer-safe), auto-fetched androidx libs in CI
-          - True responsiveness: every screen from 320px phones to 4K — windows clamp to viewport and open full-screen on phones, full-screen start menu on small displays, taskbar scaling, live orientation handling
-          - Publish Studio: real zip upload -> extraction -> MossGuard scan -> mandatory rules + disclaimer -> Store publishing
-          - Shell cleanup: removed a ~2,500-line duplicated dead shell region
-          - Full test suite green: 83/83 apps launch, 15/15 fresh-PC, 11/11 browser download/zip, 10/10 second-boot, 11/11 C interpreter, 6/6 VR engine
-          - CI: every push auto-rebuilds this release (HTML, zips, APK)
-
-          DISCLAIMER:
-          PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED. In no event
-          shall the author be liable for any claim, damages, or other liability arising
-          from its use. For personal use. Published items are user content under user
-          responsibility; MossGuard performs local static analysis only and no scanner
-          can guarantee 100% detection. Back up anything you care about — browser storage
-          can be cleared at any time.
-
-          Free, offline, local-first. No paywalls, no accounts, no servers.
-          NOTES'
-          Auto-built from the latest main branch push.
-
-          Direct downloads — grab the assets attached to this release:
-          - mossywoss.apk (Android 7.0+)
-          - mossywoss-os-windows.zip (Windows 10/11)
-          - mossywoss-os-linux.zip (Linux: run install.sh)
-          - mossywoss-os-web.zip (any other device)
-          NOTES
+          echo 'release notes: release-notes.md'
           # remove any previous 'latest' release + tag so links stay stable
           gh release delete latest --yes --cleanup-tag 2>/dev/null || true
           gh release create latest \
             --title "MossyWoss OS — latest build" \
-            --notes-file /tmp/relnotes.md \
+            --notes-file release-notes.md \
             release-artifacts/* || \
           gh release upload latest release-artifacts/* --clobber
