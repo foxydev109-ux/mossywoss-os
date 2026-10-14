@@ -1,0 +1,28 @@
+MossyWoss OS — third-party notices
+===================================
+
+MossyWoss OS is an independent, original web-based OS by foxydev109-ux.
+It is NOT affiliated with, endorsed by, or derived from any company or
+project named below. No third-party OS, distro, emulator, or game is
+distributed in this repository.
+
+OS Lab references (deep links only, nothing hosted or bundled here):
+- v86 / JSLinux — (c) Fabian Hemmer, BSD-2-Clause — https://copy.sh/v86/
+- WebVM / CheerpX — (c) Leaning Technologies — https://webvm.io
+- Linux distros referenced (Ubuntu, Linux Mint, Zorin OS, Pop!_OS, Fedora,
+  Alpine, Arch, TinyCore) — trademarks and rights belong to their owners.
+- KolibriOS, FreeDOS, Minix 3, Haiku — independent open-source projects;
+  trademarks and rights belong to their owners.
+- Proprietary OS images (e.g., Microsoft Windows) are deliberately excluded.
+
+Emulators referenced for information only: Dolphin, PCSX2 and similar
+projects belong to their owners. Emulation must only be used with software
+you legally own; this project does not support, enable, or link piracy.
+
+Bundled open-source libraries:
+- three.js (three.min.js) — (c) three.js authors, MIT License.
+
+All app, game, and system code in MossyWoss OS is original work written for
+this project. Any resemblance to other products is coincidental. If you are
+a rights holder and believe anything here needs attention, please open an
+issue and it will be addressed promptly.

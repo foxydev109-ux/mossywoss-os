@@ -351,13 +351,12 @@ var MWO = MWO || {};
             });
           } catch (e) {}
           
-          bootEl.style.transition = 'opacity 0.8s ease';
+bootEl.style.transition = 'opacity 0.8s ease';
           bootEl.style.opacity = '0';
           setTimeout(() => {
             bootEl.style.display = 'none';
             MWO.login.init();
-          }, 800);
-        }
+          }, 800);        }
       }, 50);
     },
 
@@ -387,7 +386,37 @@ var MWO = MWO || {};
   ];
 
   MWO.login = {
+    // First-boot OS chooser overlay: MossyWoss OS (default) or OS Lab
+    // (real third-party open-source OSes). Non-blocking; auto-hides.
+    maybeOfferChoice() {
+      try {
+        if (localStorage.getItem('mwo_os_pref')) return;
+        const loginEl = document.getElementById('login');
+        if (!loginEl) return;
+        const bar = document.createElement('div');
+        bar.style.cssText = 'position:absolute;top:12px;left:50%;transform:translateX(-50%);display:flex;gap:10px;align-items:center;background:var(--card,#1e2431);border:1px solid var(--border,#2c3346);border-radius:12px;padding:8px 12px;z-index:50;max-width:92vw';
+        bar.innerHTML = '<span style="font-size:0.8em;color:var(--text2,#9aa4b8)">New here?</span>';
+        const labBtn = document.createElement('button');
+        labBtn.textContent = 'OS Lab - real Linux & other open-source OSes (third-party)';
+        labBtn.style.cssText = 'padding:7px 12px;border-radius:8px;border:1px solid var(--accent,#2e7d4f);background:var(--accent,#2e7d4f);color:#fff;cursor:pointer;font-size:0.78em;font-weight:600';
+        labBtn.onclick = () => {
+          try { sessionStorage.setItem('mwo_boot_choice', 'linux-lab'); } catch (e) {}
+          try { localStorage.setItem('mwo_os_pref', 'mwo'); } catch (e) {}
+          bar.remove();
+          if (MWO.apps['linux-lab']) MWO.launchApp('linux-lab');
+        };
+        const skipBtn = document.createElement('button');
+        skipBtn.textContent = 'Stay on MossyWoss OS';
+        skipBtn.style.cssText = 'padding:7px 12px;border-radius:8px;border:1px solid var(--border,#2c3346);background:transparent;color:var(--text2,#9aa4b8);cursor:pointer;font-size:0.78em';
+        skipBtn.onclick = () => { try { localStorage.setItem('mwo_os_pref', 'mwo'); } catch (e) {} bar.remove(); };
+        bar.appendChild(labBtn); bar.appendChild(skipBtn);
+        loginEl.appendChild(bar);
+        setTimeout(() => { if (bar.parentNode) { try { localStorage.setItem('mwo_os_pref', 'mwo'); } catch (e) {} bar.remove(); } }, 5000);
+      } catch (e) {}
+    },
+
     async init() {
+      this.maybeOfferChoice();
       const loginEl = document.getElementById('login');
       if (loginEl) loginEl.classList.add('active');
 
@@ -558,6 +587,16 @@ var MWO = MWO || {};
         settings: { wallpaper: 'wp-1', activeDesktop: 1 },
         desktops: [{ id: 1, wallpaper: 'wp-1' }]
       };
+
+      // Honor the boot chooser: open Linux Lab right after the first boot.
+      try {
+        if (sessionStorage.getItem('mwo_boot_choice') === 'linux-lab') {
+          sessionStorage.removeItem('mwo_boot_choice');
+          setTimeout(() => { if (MWO.apps['linux-lab']) MWO.launchApp('linux-lab'); }, 900);
+        } else {
+          sessionStorage.removeItem('mwo_boot_choice');
+        }
+      } catch (e) {}
 
       if (!currentUser.desktops || currentUser.desktops.length === 0) {
         currentUser.desktops = [{ id: 1, wallpaper: 'wp-1' }];

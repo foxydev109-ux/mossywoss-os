@@ -53,7 +53,8 @@
     'aura':      { t: 'AU', g: ['#e879f9', '#701a75'], a: 'chev' },
     'chat':      { t: 'CH', g: ['#38bdf8', '#075985'], a: 'dot' },
     'roleplay':  { t: 'RP', g: ['#c026d3', '#4a044e'], a: 'notch' },
-    'world':     { t: 'WL', g: ['#86efac', '#14532d'], a: 'bar' }
+    'world':     { t: 'WL', g: ['#86efac', '#14532d'], a: 'bar' },
+    'linux':     { t: 'LI', g: ['#fbbf24', '#78350f'], a: 'dot' }
   };
 
   function hashKey(key) {

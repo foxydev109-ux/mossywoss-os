@@ -131,3 +131,13 @@ cleared by the browser at any time.
 - No brand names or copyrighted material anywhere in the OS.
 - No placeholders, mock-ups, or simulated behavior — everything is real.
 - No emoji, no SVG icons — pure-CSS icon tiles throughout.
+
+## License & third-party notices
+
+This project is MIT licensed (see [LICENSE](LICENSE)); third-party
+references and trademark acknowledgements are in [NOTICE](NOTICE).
+The OS Lab feature deep-links to real third-party projects (v86, WebVM,
+JSLinux, and open-source OSes) without hosting, bundling, or redistributing
+any of them — all rights belong to their owners, and MossyWoss OS claims no
+affiliation or endorsement. Proprietary OS images (like Windows) are
+deliberately excluded for licensing reasons.
