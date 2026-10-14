@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="mobile-web-app-capable" content="yes">
+<title>MossyWoss OS</title>
+<style>
+:root {
+  --accent: #7c6cff;
+  --accent2: #38bdf8;
+  --surface: rgba(16, 18, 35, 0.92);
+  --surface2: rgba(28, 30, 54, 0.95);
+  --text: #e8e9f3;
+  --text2: #8b8fa8;
+  --mono: 'Courier New', monospace;
+  --radius: 12px;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { width: 100%; height: 100%; overflow: hidden; }
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background: #0a0a1a;
+  color: var(--text);
+  touch-action: manipulation;
+}
+button { font-family: inherit; }
+input, select, textarea {
+  font-family: inherit;
+  font-size: 0.95em;
+  color: var(--text);
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 8px;
+  padding: 10px 12px;
+  outline: none;
+  width: 100%;
+}
+input:focus, select:focus, textarea:focus { border-color: var(--accent); }
+select option { background: #16182c; color: var(--text); }
+.mw-hidden { display: none !important; }
+
+/* ============ BUTTONS ============ */
+.btn {
+  display: inline-block;
+  border: 1px solid rgba(255,255,255,0.14);
+  background: rgba(255,255,255,0.07);
+  color: var(--text);
+  border-radius: 8px;
+  padding: 10px 16px;
+  font-size: 0.9em;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.1s;
+  user-select: none;
+}
+.btn:hover { background: rgba(255,255,255,0.12); }
+.btn:active { transform: scale(0.97); }
+.btn.primary {
+  background: linear-gradient(135deg, var(--accent), #5a48e8);
+  border-color: transparent;
+  font-weight: 600;
+}
+.btn.primary:hover { filter: brightness(1.15); }
+.btn.secondary { background: transparent; }
+
+/* ============ BOOT SCREEN ============ */
+#boot {
+  position: fixed; inset: 0; z-index: 99990;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  background: radial-gradient(ellipse at 50% 40%, #14163a 0%, #0a0a1a 70%);
+}
+#boot .boot-logo {
+  font-size: 72px;
+  filter: drop-shadow(0 0 24px rgba(124, 108, 255, 0.5));
+  animation: bootPulse 1.6s ease-in-out infinite;
+}
+@keyframes bootPulse { 0%,100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.08); opacity: 0.85; } }
+#boot .boot-title { font-size: 1.5em; font-weight: 700; margin: 18px 0 6px; letter-spacing: 1px; }
+#boot .boot-sub { color: var(--text2); font-size: 0.8em; margin-bottom: 28px; }
+#boot .boot-bar-wrap {
+  width: min(320px, 70vw);
+  height: 6px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 3px;
+  overflow: hidden;
+}
+#boot-bar {
+  height: 100%; width: 0%;
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+  border-radius: 3px;
+  transition: width 0.1s linear;
+}
+#boot-status { margin-top: 16px; font-size: 0.75em; color: var(--text2); font-family: var(--mono); min-height: 1.2em; }
+
+/* ============ LOGIN SCREEN ============ */
+#login {
+  position: fixed; inset: 0; z-index: 9000;
+  display: none;
+  align-items: center; justify-content: center;
+  background:
+    radial-gradient(ellipse at 20% 20%, rgba(124,108,255,0.15) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 80%, rgba(56,189,248,0.12) 0%, transparent 50%),
+    linear-gradient(135deg, #0a0a1a, #12142b);
+  padding: 20px;
+}
+#login.active { display: flex; }
+#login .login-panel {
+  width: min(400px, 94vw);
+  max-height: 88vh;
+  overflow-y: auto;
+  background: var(--surface);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 16px;
+  padding: 30px 26px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+  backdrop-filter: blur(12px);
+}
+#login .login-logo { text-align: center; font-size: 52px; }
+#login h1 { text-align: center; font-size: 1.35em; margin: 10px 0 4px; }
+#login-subtitle { text-align: center; color: var(--text2); font-size: 0.82em; margin-bottom: 20px; min-height: 1.2em; }
+#login label { display: block; font-size: 0.75em; color: var(--text2); margin: 12px 0 5px; text-transform: uppercase; letter-spacing: 0.5px; }
+#user-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 8px; }
+.user-chip {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 12px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+  user-select: none;
+}
+.user-chip:hover { background: rgba(124,108,255,0.15); border-color: var(--accent); }
+.user-chip span { font-size: 0.9em; }
+.avatar {
+  width: 36px; height: 36px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  border-radius: 50%;
+  font-weight: 700; font-size: 1em; color: #fff;
+}
+#login-error, #signin-error { color: #ff7b8a; font-size: 0.78em; min-height: 1.1em; margin-top: 8px; }
+.login-link {
+  display: block; text-align: center; margin-top: 14px;
+  color: var(--accent2); font-size: 0.8em;
+  cursor: pointer; user-select: none;
+  text-decoration: underline;
+}
+.login-divider {
+  height: 1px; background: rgba(255,255,255,0.08);
+  margin: 16px 0;
+}
+#login .btn { width: 100%; margin-top: 14px; padding: 12px; font-size: 1em; }
+.login-legal { text-align: center; color: var(--text2); font-size: 0.65em; margin-top: 18px; }
+
+/* ============ DESKTOP ============ */
+#desktop {
+  position: fixed; inset: 0;
+  display: none;
+  overflow: hidden;
+}
+#desktop.active { display: block; }
+#wallpaper { position: absolute; inset: 0; transition: background 0.4s; }
+#icons {
+  position: absolute; inset: 0;
+  bottom: 56px;
+  display: flex; flex-direction: column;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  gap: 6px;
+  padding: 12px;
+  pointer-events: none;
+}
+.icon {
+  width: 82px;
+  display: flex; flex-direction: column; align-items: center;
+  padding: 8px 4px;
+  border-radius: 10px;
+  cursor: pointer;
+  pointer-events: auto;
+  user-select: none;
+  border: 1px solid transparent;
+  transition: background 0.15s;
+}
+.icon:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.1); }
+.icon:active { background: rgba(124,108,255,0.25); }
+.icn-img { font-size: 34px; filter: drop-shadow(0 2px 6px rgba(0,0,0,0.5)); line-height: 1.2; }
+.icn-label {
+  font-size: 0.68em; text-align: center; color: #fff;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+  margin-top: 4px;
+  word-break: break-word;
+  max-width: 78px;
+}
+
+/* ============ WINDOWS ============ */
+.window {
+  position: fixed;
+  display: flex; flex-direction: column;
+  background: var(--surface);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: var(--radius);
+  box-shadow: 0 16px 48px rgba(0,0,0,0.55);
+  overflow: hidden;
+  min-width: 240px; min-height: 160px;
+  resize: none;
+}
+.titlebar {
+  display: flex; align-items: center; gap: 8px;
+  height: 38px; flex-shrink: 0;
+  padding: 0 8px 0 12px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+}
+.titlebar:active { cursor: grabbing; }
+.w-icon { font-size: 15px; }
+.w-title {
+  flex: 1;
+  font-size: 0.8em; font-weight: 600;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.w-btns { display: flex; gap: 6px; }
+.w-btn {
+  width: 26px; height: 26px;
+  display: flex; align-items: center; justify-content: center;
+  border: none; border-radius: 6px;
+  background: rgba(255,255,255,0.08);
+  color: var(--text);
+  font-size: 0.72em;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.w-btn:hover { background: rgba(255,255,255,0.18); }
+.w-btn.close:hover { background: #e0344a; }
+.w-body { flex: 1; overflow: auto; position: relative; }
+.mw-scroll::-webkit-scrollbar { width: 8px; height: 8px; }
+.mw-scroll::-webkit-scrollbar-track { background: transparent; }
+.mw-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 4px; }
+.mw-scroll::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.28); }
+.resize-handle {
+  position: absolute; right: 0; bottom: 0;
+  width: 22px; height: 22px;
+  cursor: nwse-resize;
+  touch-action: none;
+  background: linear-gradient(135deg, transparent 50%, rgba(255,255,255,0.18) 50%);
+  border-bottom-right-radius: var(--radius);
+}
+
+/* ============ TASKBAR ============ */
+#taskbar {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 8000;
+  height: 52px;
+  display: flex; align-items: center; gap: 8px;
+  padding: 0 10px;
+  background: rgba(10, 10, 26, 0.85);
+  border-top: 1px solid rgba(255,255,255,0.1);
+  backdrop-filter: blur(14px);
+}
+#start-btn {
+  height: 38px; min-width: 90px;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 9px;
+  background: linear-gradient(135deg, rgba(124,108,255,0.25), rgba(56,189,248,0.15));
+  color: var(--text);
+  font-size: 0.85em; font-weight: 600;
+  cursor: pointer;
+  transition: filter 0.15s;
+  user-select: none;
+  flex-shrink: 0;
+}
+#start-btn:hover { filter: brightness(1.25); }
+#start-btn:active { transform: scale(0.97); }
+#taskbar-apps {
+  flex: 1;
+  display: flex; align-items: center; gap: 6px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+}
+#taskbar-apps::-webkit-scrollbar { display: none; }
+.taskbar-app {
+  height: 38px; min-width: 42px;
+  display: flex; align-items: center; justify-content: center;
+  padding: 0 10px;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 9px;
+  background: rgba(255,255,255,0.06);
+  color: var(--text);
+  font-size: 0.8em;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: background 0.15s;
+  user-select: none;
+}
+.taskbar-app:hover { background: rgba(255,255,255,0.14); }
+.taskbar-app.active { background: rgba(124,108,255,0.3); border-color: var(--accent); }
+#desktop-switcher { display: flex; gap: 5px; align-items: center; flex-shrink: 0; }
+.ds-btn {
+  width: 34px; height: 38px;
+  display: flex; align-items: center; justify-content: center;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 9px;
+  background: rgba(255,255,255,0.06);
+  color: var(--text);
+  font-size: 0.8em; font-weight: 700;
+  cursor: pointer;
+  user-select: none;
+}
+.ds-btn.active { background: rgba(124,108,255,0.35); border-color: var(--accent); }
+.ds-btn.ds-add { font-size: 1em; font-weight: 400; }
+#clock {
+  flex-shrink: 0;
+  text-align: center;
+  font-size: 0.78em;
+  color: var(--text);
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  min-width: 78px;
+  user-select: none;
+}
+
+/* ============ START MENU ============ */
+#start-menu {
+  position: fixed; left: 10px; bottom: 62px; z-index: 8500;
+  width: min(400px, calc(100vw - 20px));
+  max-height: calc(100vh - 84px);
+  display: none;
+  flex-direction: column;
+  background: var(--surface2);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 14px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.65);
+  overflow: hidden;
+  backdrop-filter: blur(16px);
+}
+#start-menu.active { display: flex; }
+#sm-search-input { margin: 14px 14px 10px; border-radius: 10px; }
+.sm-tabs {
+  display: flex; gap: 4px;
+  padding: 0 14px 10px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.sm-tabs::-webkit-scrollbar { display: none; }
+.sm-tab {
+  padding: 7px 14px;
+  border: none; border-radius: 8px;
+  background: transparent;
+  color: var(--text2);
+  font-size: 0.8em; font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  user-select: none;
+}
+.sm-tab:hover { background: rgba(255,255,255,0.07); color: var(--text); }
+.sm-tab.active { background: rgba(124,108,255,0.28); color: var(--text); }
+#sm-content {
+  flex: 1; overflow-y: auto;
+  padding: 10px;
+  display: flex; flex-direction: column; gap: 4px;
+}
+#sm-content::-webkit-scrollbar { width: 8px; }
+#sm-content::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 4px; }
+.sm-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.12s;
+}
+.sm-item:hover { background: rgba(255,255,255,0.08); }
+.sm-item:active { background: rgba(124,108,255,0.25); }
+.sm-icon { font-size: 24px; width: 30px; text-align: center; flex-shrink: 0; }
+.sm-text { min-width: 0; }
+.sm-name { font-size: 0.85em; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sm-desc { font-size: 0.72em; color: var(--text2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* ============ CONTEXT MENU ============ */
+#ctx-menu {
+  position: fixed; display: none;
+  min-width: 180px;
+  background: var(--surface2);
+  border: 1px solid rgba(255,255,255,0.14);
+  border-radius: 10px;
+  box-shadow: 0 12px 36px rgba(0,0,0,0.6);
+  padding: 5px;
+  z-index: 99999;
+}
+.ctx-item {
+  padding: 8px 14px;
+  font-size: 0.85em;
+  border-radius: 7px;
+  cursor: pointer;
+  color: var(--text);
+  display: flex; align-items: center; gap: 8px;
+  user-select: none;
+}
+.ctx-item:hover { background: rgba(124,108,255,0.25); }
+
+/* ============ LOCK SCREEN ============ */
+#lock-screen {
+  position: fixed; inset: 0; z-index: 99998;
+  display: none;
+  flex-direction: column;
+  align-items: center; justify-content: center;
+  background: radial-gradient(ellipse at 50% 30%, #14163a 0%, #050510 75%);
+  cursor: pointer;
+}
+#lock-tm { font-size: 3.4em; font-weight: 200; letter-spacing: 2px; }
+#lock-av { margin: 26px 0 12px; }
+#lock-av .avatar, #lock-av.avatar { width: 64px; height: 64px; font-size: 1.6em; }
+#lock-nm { font-size: 1.05em; color: var(--text2); }
+#lock-screen .lock-hint { margin-top: 30px; font-size: 0.75em; color: var(--text2); }
+
+/* ============ NOTIFICATIONS ============ */
+#notif-area {
+  position: fixed; top: 12px; right: 12px; z-index: 99997;
+  display: flex; flex-direction: column;
+  width: min(300px, calc(100vw - 24px));
+  pointer-events: none;
+}
+#notif-area > * { pointer-events: auto; }
+
+/* ============ DIALOG ============ */
+#dialog-overlay {
+  position: fixed; inset: 0; z-index: 99996;
+  display: none;
+  align-items: center; justify-content: center;
+  background: rgba(5, 5, 16, 0.7);
+  backdrop-filter: blur(4px);
+  padding: 20px;
+}
+#dialog-overlay.active { display: flex; }
+#dialog-box {
+  width: min(380px, 94vw);
+  background: var(--surface2);
+  border: 1px solid rgba(255,255,255,0.14);
+  border-radius: 14px;
+  padding: 22px;
+  box-shadow: 0 24px 70px rgba(0,0,0,0.7);
+}
+#dialog-title { font-size: 1.05em; margin-bottom: 10px; }
+#dialog-body { font-size: 0.85em; color: var(--text2); line-height: 1.5; margin-bottom: 18px; }
+#dialog-btns { display: flex; gap: 10px; justify-content: flex-end; }
+#dialog-btns .btn { min-width: 80px; text-align: center; }
+
+/* ============ GLOBAL DROP OVERLAY ============ */
+#mwo-global-drop-overlay {
+  position: fixed; inset: 0; z-index: 99995;
+  display: none;
+  align-items: center; justify-content: center;
+  background: rgba(124, 108, 255, 0.25);
+  border: 3px dashed var(--accent);
+  font-size: 1.3em; font-weight: 700;
+  pointer-events: none;
+}
+
+/* ============ SPINNER ============ */
+.spinner {
+  width: 26px; height: 26px;
+  border: 3px solid rgba(255,255,255,0.15);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin: 20px auto;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ============ MOBILE ============ */
+@media (max-width: 600px) {
+  #icons { bottom: 50px; gap: 2px; padding: 8px; }
+  .icon { width: 72px; padding: 6px 2px; }
+  .icn-img { font-size: 28px; }
+  #taskbar { height: 48px; padding: 0 6px; gap: 5px; }
+  #start-btn { min-width: 42px; font-size: 1.05em; }
+  #start-btn .start-label { display: none; }
+  #clock { font-size: 0.68em; min-width: 62px; padding: 4px 6px; }
+  .ds-btn { width: 30px; height: 34px; }
+  #boot .boot-logo { font-size: 54px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ================= BOOT SCREEN ================= -->
+<div id="boot">
+  <div class="boot-logo">🦊</div>
+  <div class="boot-title">MossyWoss OS</div>
+  <div class="boot-sub">v1.0 · Personal Edition</div>
+  <div class="boot-bar-wrap"><div id="boot-bar"></div></div>
+  <div id="boot-status">Starting up…</div>
+</div>
+
+<!-- ================= LOGIN SCREEN ================= -->
+<div id="login">
+  <div class="login-panel">
+    <div class="login-logo">🦊</div>
+    <h1>MossyWoss OS</h1>
+    <div id="login-subtitle">Create your account to begin</div>
+
+    <div id="user-list"></div>
+
+    <div id="signup-fields">
+      <label for="login-name">Your Name</label>
+      <input type="text" id="login-name" placeholder="e.g. Socks" autocomplete="off" maxlength="24">
+      <label for="login-country">Country</label>
+      <select id="login-country"><option value="">Select country…</option></select>
+      <label for="login-language">Language</label>
+      <select id="login-language">
+        <option value="en">English</option>
+        <option value="es">Español</option>
+        <option value="fr">Français</option>
+        <option value="de">Deutsch</option>
+        <option value="pt">Português</option>
+        <option value="ja">日本語</option>
+        <option value="ko">한국어</option>
+        <option value="zh">中文</option>
+        <option value="ru">Русский</option>
+        <option value="ar">العربية</option>
+      </select>
+      <div id="login-error"></div>
+      <button class="btn primary" id="signup-btn">Create Account</button>
+      <div class="login-link" onclick="MWO.login.showSignin()">I already have an account</div>
+    </div>
+
+    <div id="signin-fields" class="mw-hidden">
+      <div class="login-divider"></div>
+      <label for="signin-name">Account Name</label>
+      <input type="text" id="signin-name" placeholder="Type your name" autocomplete="off" maxlength="24">
+      <div id="signin-error"></div>
+      <button class="btn primary" id="signin-btn">Sign In</button>
+      <div class="login-link" id="back-signup-btn" onclick="MWO.login.showSignup()">← Create a new account</div>
+    </div>
+
+    <div class="login-legal">Personal use · No passwords · Everything stays on this device</div>
+  </div>
+</div>
+
+<!-- ================= LOCK SCREEN ================= -->
+<div id="lock-screen">
+  <div id="lock-tm">--:--</div>
+  <div class="avatar" id="lock-av">U</div>
+  <div id="lock-nm">User</div>
+  <div class="lock-hint">Tap anywhere to unlock</div>
+</div>
+
+<!-- ================= DESKTOP ================= -->
+<div id="desktop">
+  <div id="wallpaper"></div>
+  <div id="icons"></div>
+</div>
+
+<!-- ================= TASKBAR ================= -->
+<div id="taskbar">
+  <div id="start-btn">🦊 <span class="start-label">Start</span></div>
+  <div id="taskbar-apps"></div>
+  <div id="desktop-switcher"></div>
+  <div id="clock">--:--</div>
+</div>
+
+<!-- ================= START MENU ================= -->
+<div id="start-menu">
+  <input type="text" id="sm-search-input" placeholder="🔍 Search apps & games…">
+  <div class="sm-tabs">
+    <button class="sm-tab active" data-tab="all">All</button>
+    <button class="sm-tab" data-tab="apps">Apps</button>
+    <button class="sm-tab" data-tab="games">Games</button>
+    <button class="sm-tab" data-tab="store">Store</button>
+    <button class="sm-tab" data-tab="system">System</button>
+  </div>
+  <div id="sm-content"></div>
+</div>
+
+<!-- ================= CONTEXT MENU ================= -->
+<div id="ctx-menu"></div>
+
+<!-- Notifications -->
+<div id="notif-area"></div>
+
+<!-- Dialog -->
+<div id="dialog-overlay"><div id="dialog-box">
+<h2 id="dialog-title">Confirm</h2>
+<p id="dialog-body">Are you sure?</p>
+<div class="dialog-btns" id="dialog-btns"></div>
+</div></div>
+
+<!-- Global drag-drop overlay (created by Media Import if absent) -->
+<div id="mwo-global-drop-overlay">📂 Drop files to import</div>
+
+<!--=$_SCRIPTS_PLACEHOLDER_=>-->
+</body>
+</html>

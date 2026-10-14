@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MWO Web Browser</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="mwo-browser-app">
+  <!-- Loading Progress Bar -->
+  <div id="loading-bar" class="loading-bar hidden"></div>
+
+  <!-- Top Navigation & Tab Bar Container -->
+  <header class="browser-header">
+    <!-- Tab Bar -->
+    <div class="tab-bar-container">
+      <div id="tab-bar" class="tab-bar">
+        <!-- Tabs rendered dynamically by script.js -->
+      </div>
+      <button id="btn-add-tab" class="btn-icon" title="New Tab" onclick="addTab()">+</button>
+    </div>
+
+    <!-- Navigation & Address Bar -->
+    <div class="toolbar">
+      <div class="nav-controls">
+        <button id="btn-back" class="btn-icon" title="Back" onclick="goBack()">&#x2190;</button>
+        <button id="btn-forward" class="btn-icon" title="Forward" onclick="goForward()">&#x2192;</button>
+        <button id="btn-reload" class="btn-icon" title="Reload" onclick="reload()">&#x21BB;</button>
+        <button id="btn-home" class="btn-icon" title="Home" onclick="goHome()">&#x2302;</button>
+      </div>
+
+      <div class="address-bar-container">
+        <span class="security-badge" id="security-badge">&#128274;</span>
+        <input type="text" id="address-bar" placeholder="Search with DuckDuckGo or enter URL..." onkeydown="if(event.key==='Enter') navigate(this.value)">
+        <button id="btn-go" class="btn-go" onclick="navigate(document.getElementById('address-bar').value)">Go</button>
+      </div>
+
+      <div class="action-controls">
+        <button id="btn-add-bookmark" class="btn-icon" title="Bookmark Page" onclick="addBookmark()">&#9733;</button>
+        <button id="btn-toggle-sidebar" class="btn-icon" title="History & Bookmarks" onclick="toggleSidebar()">&#9776;</button>
+      </div>
+    </div>
+
+    <!-- Bookmarks Bar -->
+    <div id="bookmarks-bar" class="bookmarks-bar">
+      <!-- Bookmarks rendered dynamically -->
+    </div>
+  </header>
+
+  <!-- Main Content Layout -->
+  <main class="browser-main">
+    <!-- Sidebar for Bookmarks & History -->
+    <aside id="sidebar" class="browser-sidebar hidden">
+      <div class="sidebar-tabs">
+        <button class="sidebar-tab active" onclick="switchSidebarTab('history')">History</button>
+        <button class="sidebar-tab" onclick="switchSidebarTab('bookmarks')">Bookmarks</button>
+      </div>
+
+      <div id="sidebar-history-panel" class="sidebar-panel active">
+        <div class="panel-header">
+          <h3>Browsing History</h3>
+          <button class="btn-small" onclick="clearHistory()">Clear</button>
+        </div>
+        <ul id="history-list" class="history-list"></ul>
+      </div>
+
+      <div id="sidebar-bookmarks-panel" class="sidebar-panel hidden">
+        <div class="panel-header">
+          <h3>Saved Bookmarks</h3>
+        </div>
+        <ul id="bookmarks-list" class="bookmarks-list"></ul>
+      </div>
+    </aside>
+
+    <!-- Content Area / Iframe / Error View -->
+    <section class="content-area">
+      <div id="error-container" class="error-container hidden">
+        <div class="error-card">
+          <div class="error-icon">&#9888;</div>
+          <h2 id="error-title">Unable to Load Page</h2>
+          <p id="error-message">The requested page could not be displayed or timed out.</p>
+          <button class="btn-primary" onclick="reload()">Try Again</button>
+        </div>
+      </div>
+      <iframe id="content-frame" name="content-frame" sandbox="allow-scripts allow-same-origin allow-forms allow-popups" src="about:blank"></iframe>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
