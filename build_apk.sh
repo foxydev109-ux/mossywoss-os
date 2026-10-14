@@ -106,21 +106,25 @@ echo "resources.arsc is Stored (installer-safe)"
 
 # 9. Install-readiness gate: fail the build rather than ship an APK Android may refuse
 echo "9. Install-readiness checks..."
-fail() { echo "INSTALL-GATE FAILED: $1"; exit 1; }
-BADGING=$(aapt2 dump badging mossywoss.apk 2>/dev/null)
+fail() { echo "INSTALL-GATE FAILED: $1"; echo "--- badging seen by the gate ---"; echo "$BADGING" | head -12; exit 1; }
+BADGING=$(aapt2 dump badging mossywoss.apk 2>&1 || true)
+# parse values instead of matching one exact string (tool versions format slightly differently)
+MINSDK=$(echo "$BADGING" | sed -n "s/.*sdkVersion:'\([0-9]*\)'.*/\1/p" | head -1)
+TARGET=$(echo "$BADGING" | sed -n "s/.*targetSdkVersion:'\([0-9]*\)'.*/\1/p" | head -1)
+echo "gate sees: minSdk=${MINSDK:-?} targetSdk=${TARGET:-?}"
 echo "$BADGING" | grep -q "package: name='com.foxydev109ux.mwos'" || fail "unexpected package name"
-echo "$BADGING" | grep -q "sdkVersion:'24'" || fail "minSdk not 24"
+[ -n "$MINSDK" ] && [ "$MINSDK" -eq 24 ] || fail "minSdk is '${MINSDK}', expected 24"
+[ -n "$TARGET" ] && [ "$TARGET" -ge 34 ] || fail "targetSdk is '${TARGET}', expected >= 34"
 echo "$BADGING" | grep -q "application-label:'MossyWoss OS'" || fail "missing app label"
 echo "$BADGING" | grep -q "application-icon" || fail "missing launcher icon"
 echo "$BADGING" | grep -q "launchable-activity: name='com.foxydev109ux.mwos.MainActivity'" || fail "launcher activity missing"
 unzip -v mossywoss.apk | grep "resources.arsc" | grep -q "Stored" || fail "resources.arsc must be stored"
-zipalign -c -P 16 4 mossywoss.apk 2>/dev/null || zipalign -c 4 mossywoss.apk || fail "APK not aligned"
+zipalign -c 4 mossywoss.apk || fail "APK not aligned"
 SIGN=$(apksigner verify --verbose --print-certs mossywoss.apk 2>&1)
 echo "$SIGN" | grep -q "v2 scheme (APK Signature Scheme v2): true" || fail "v2 signature missing"
 echo "$SIGN" | grep -q "v3 scheme (APK Signature Scheme v3): true" || fail "v3 signature missing"
 echo "$SIGN" | grep -q "CN=Android Debug" && fail "still signed with generic debug identity"
 jarsigner -verify mossywoss.apk 2>&1 | grep -q "jar verified" || fail "v1 (jar) signature invalid"
-# every Java class referenced by the manifest must exist in classes.dex
 unzip -p mossywoss.apk classes.dex | strings | grep -q "com/foxydev109ux/mwos/MainActivity" || fail "MainActivity not in dex"
 echo "All install-readiness checks passed."
 
