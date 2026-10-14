@@ -22,6 +22,32 @@ file system with Recycle Bin, a Store, and 80+ real apps and games.
 - **Code Studio**: real built-in interpreter for a practical C/C++/C# subset,
   plus HTML/CSS/JS with live preview, and a visual block mode.
 
+## Download & install
+
+Direct downloads (always the latest build — refreshed automatically on every push):
+
+| Platform | Download |
+|---|---|
+| Android (7.0+) | [mossywoss.apk](https://github.com/foxydev109-ux/mossywoss-os/releases/latest/download/mossywoss.apk) |
+| Windows 10 / 11 | [mossywoss-os-windows.zip](https://github.com/foxydev109-ux/mossywoss-os/releases/latest/download/mossywoss-os-windows.zip) |
+| Linux | [mossywoss-os-linux.zip](https://github.com/foxydev109-ux/mossywoss-os/releases/latest/download/mossywoss-os-linux.zip) |
+| Any other device | [mossywoss-os-web.zip](https://github.com/foxydev109-ux/mossywoss-os/releases/latest/download/mossywoss-os-web.zip) |
+
+**Android:** download the APK, allow "install unknown apps" for your browser when asked, then install. The app runs the whole OS offline in a native app shell (WebView over a secure in-app origin, so saves and the file system work like the browser version).
+
+**Windows 10/11:** extract the zip anywhere and double-click `mossywoss_os.html` — it opens as a full OS in your browser tab. Nothing is installed to your PC. Use the same browser each time to keep your files.
+
+**Linux (Debian, Ubuntu, Fedora, Arch, ...):** extract, then:
+```bash
+chmod +x install.sh
+./install.sh
+```
+This installs to `~/.local` (no root), adds the `mossywoss` command, and puts "Mossy Woss OS" in your app menu. `uninstall.sh` removes it.
+
+**Any other device / manual:** extract the web zip and open `mossywoss_os.html` in any modern browser.
+
+> Note: your files, apps, and settings are stored by the browser/WebView (local site storage). Same browser, same OS state. The OS also fits every screen size from small phones to 4K desktops.
+
 ## Project layout
 
 - `mw_web/` — OS source modules (JS) + `three.min.js` (MIT-licensed Three.js r147)

@@ -781,15 +781,32 @@ var MWO = MWO || {};
       }
 
       const desktopId = opts.desktopId || MWO.desktop.getCurrentDesktop();
-      const width = opts.width || 600;
-      const height = opts.height || 400;
-      
-      const winCount = windows.size;
-      const left = opts.x !== undefined ? opts.x : Math.max(20, Math.min(window.innerWidth - width - 20, 40 + (winCount % 8) * 25));
-      const top = opts.y !== undefined ? opts.y : Math.max(20, Math.min(window.innerHeight - height - 60, 40 + (winCount % 8) * 25));
+      const requestedW = opts.width || 600;
+      const requestedH = opts.height || 400;
+
+      const tbH = document.getElementById('taskbar')?.offsetHeight || 52;
+      const isSmallScreen = window.innerWidth < 700;
+
+      let width, height, left, top;
+      if (isSmallScreen) {
+        width = window.innerWidth;
+        height = Math.max(160, window.innerHeight - tbH);
+        left = 0;
+        top = 0;
+      } else {
+        width = Math.min(requestedW, Math.floor(window.innerWidth * 0.94));
+        height = Math.min(requestedH, Math.floor(window.innerHeight * 0.9 - tbH));
+
+        const winCount = windows.size;
+        const maxL = Math.max(0, window.innerWidth - width);
+        const maxT = Math.max(0, window.innerHeight - tbH - height);
+
+        left = opts.x !== undefined ? Math.max(0, Math.min(maxL, opts.x)) : Math.max(0, Math.min(maxL, 40 + (winCount % 8) * 25));
+        top = opts.y !== undefined ? Math.max(0, Math.min(maxT, opts.y)) : Math.max(0, Math.min(maxT, 40 + (winCount % 8) * 25));
+      }
 
       const winEl = document.createElement('div');
-      winEl.className = 'window';
+      winEl.className = 'window' + (isSmallScreen ? ' maximized' : '');
       winEl.id = id;
       winEl.style.width = width + 'px';
       winEl.style.height = height + 'px';
@@ -865,9 +882,9 @@ var MWO = MWO || {};
         body: bodyDiv,
         desktopId,
         minimized: false,
-        maximized: false,
+        maximized: isSmallScreen,
         onClose: opts.onClose,
-        restoreState: null
+        restoreState: isSmallScreen ? { top: '20px', left: '20px', width: requestedW + 'px', height: requestedH + 'px' } : null
       };
 
       windows.set(id, winObj);
@@ -911,11 +928,12 @@ var MWO = MWO || {};
         const dx = e.clientX - startX;
         const dy = e.clientY - startY;
 
-        let newLeft = initialLeft + dx;
-        let newTop = initialTop + dy;
+        const tbH = document.getElementById('taskbar')?.offsetHeight || 52;
+        const maxL = Math.max(0, window.innerWidth - winEl.offsetWidth);
+        const maxT = Math.max(0, window.innerHeight - tbH - winEl.offsetHeight);
 
-        newTop = Math.max(0, Math.min(window.innerHeight - 40, newTop));
-        newLeft = Math.max(-winEl.offsetWidth + 100, Math.min(window.innerWidth - 100, newLeft));
+        let newLeft = Math.max(0, Math.min(maxL, initialLeft + dx));
+        let newTop = Math.max(0, Math.min(maxT, initialTop + dy));
 
         winEl.style.left = newLeft + 'px';
         winEl.style.top = newTop + 'px';
@@ -925,6 +943,13 @@ var MWO = MWO || {};
         if (isDragging) {
           isDragging = false;
           try { titlebar.releasePointerCapture(e.pointerId); } catch (_) {}
+          const tbH = document.getElementById('taskbar')?.offsetHeight || 52;
+          const maxL = Math.max(0, window.innerWidth - winEl.offsetWidth);
+          const maxT = Math.max(0, window.innerHeight - tbH - winEl.offsetHeight);
+          const curLeft = parseInt(winEl.style.left) || 0;
+          const curTop = parseInt(winEl.style.top) || 0;
+          winEl.style.left = Math.max(0, Math.min(maxL, curLeft)) + 'px';
+          winEl.style.top = Math.max(0, Math.min(maxT, curTop)) + 'px';
         }
       };
 
@@ -955,8 +980,12 @@ var MWO = MWO || {};
 
       handle.onpointermove = (e) => {
         if (!isResizing) return;
-        const newW = Math.max(200, startW + (e.clientX - startX));
-        const newH = Math.max(150, startH + (e.clientY - startY));
+        const tbH = document.getElementById('taskbar')?.offsetHeight || 52;
+        const maxW = Math.max(240, window.innerWidth - winEl.offsetLeft);
+        const maxH = Math.max(160, window.innerHeight - tbH - winEl.offsetTop);
+
+        const newW = Math.max(240, Math.min(maxW, startW + (e.clientX - startX)));
+        const newH = Math.max(160, Math.min(maxH, startH + (e.clientY - startY)));
 
         winEl.style.width = newW + 'px';
         winEl.style.height = newH + 'px';
@@ -1037,6 +1066,46 @@ var MWO = MWO || {};
       MWO.taskbar.render();
     },
 
+    clampAllWindows() {
+      const tbH = document.getElementById('taskbar')?.offsetHeight || 52;
+      const isSmallScreen = window.innerWidth < 700;
+
+      windows.forEach(win => {
+        const winEl = win.element;
+        if (!winEl) return;
+
+        if (isSmallScreen || win.maximized) {
+          winEl.classList.add('maximized');
+          winEl.style.left = '0px';
+          winEl.style.top = '0px';
+          winEl.style.width = window.innerWidth + 'px';
+          winEl.style.height = Math.max(160, window.innerHeight - tbH) + 'px';
+          return;
+        }
+
+        winEl.classList.remove('maximized');
+        let currentW = parseInt(winEl.style.width) || winEl.offsetWidth || 600;
+        let currentH = parseInt(winEl.style.height) || winEl.offsetHeight || 400;
+
+        let clampedW = Math.max(240, Math.min(currentW, Math.floor(window.innerWidth * 0.94)));
+        let clampedH = Math.max(160, Math.min(currentH, Math.floor(window.innerHeight * 0.9 - tbH)));
+
+        let maxL = Math.max(0, window.innerWidth - clampedW);
+        let maxT = Math.max(0, window.innerHeight - tbH - clampedH);
+
+        let currentL = parseInt(winEl.style.left) || 0;
+        let currentT = parseInt(winEl.style.top) || 0;
+
+        let clampedL = Math.max(0, Math.min(maxL, currentL));
+        let clampedT = Math.max(0, Math.min(maxT, currentT));
+
+        winEl.style.width = clampedW + 'px';
+        winEl.style.height = clampedH + 'px';
+        winEl.style.left = clampedL + 'px';
+        winEl.style.top = clampedT + 'px';
+      });
+    },
+
     updateWindowVisibility() {
       const curDesktop = MWO.desktop.getCurrentDesktop();
       windows.forEach(win => {
@@ -1063,7 +1132,29 @@ var MWO = MWO || {};
       return windows.get(id);
     }
   };
+
+  // Debounced resize & orientation listener for clamping windows and re-rendering desktop icons
+  let resizeDebounceTimer = null;
+  function handleViewportResize() {
+    if (resizeDebounceTimer) clearTimeout(resizeDebounceTimer);
+    resizeDebounceTimer = setTimeout(() => {
+      MWO.wm.clampAllWindows();
+      if (MWO.desktop && typeof MWO.desktop.renderIcons === 'function') {
+        MWO.desktop.renderIcons();
+      }
+      if (MWO.taskbar && typeof MWO.taskbar.updateClock === 'function') {
+        MWO.taskbar.updateClock();
+      }
+    }, 100);
+  }
+
+  if (!window._mwoResizeBound) {
+    window._mwoResizeBound = true;
+    window.addEventListener('resize', handleViewportResize);
+    window.addEventListener('orientationchange', handleViewportResize);
+  }
 })(MWO);
+
 
 /* ========================================================================
  * 7. MWO.taskbar — Taskbar & Tray
@@ -1103,7 +1194,11 @@ var MWO = MWO || {};
       const now = new Date();
       const time = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
       const date = now.toLocaleDateString([], { month: 'short', day: 'numeric' });
-      clockEl.innerHTML = time + '<br><span style="color:var(--text2);font-size:0.8em">' + date + '</span>';
+      if (window.innerWidth < 520) {
+        clockEl.innerHTML = time;
+      } else {
+        clockEl.innerHTML = time + '<br><span class="clock-date" style="color:var(--text2);font-size:0.8em">' + date + '</span>';
+      }
     },
 
     renderDesktopSwitcher() {

@@ -1,0 +1,19 @@
+Mossy Woss OS — Windows 10/11 install
+======================================
+
+1. Extract this zip anywhere (right-click -> Extract All). No installer
+   is needed and nothing touches your system — the OS is one file.
+
+2. Double-click "mossywoss_os.html".
+
+3. If Windows asks which app to use, pick a modern browser
+   (any Chromium browser or Firefox). The OS runs inside that tab.
+
+Notes:
+- Works on Windows 10 and 11. No admin rights needed, nothing is
+  installed to your PC, and no internet connection is required after
+  the first open (the whole OS is in that one file).
+- Your files, apps, and settings are saved by the browser (site data),
+  so use the same browser each time to keep your OS state.
+- To "uninstall": delete the extracted folder and clear the browser's
+  site data for that file.
