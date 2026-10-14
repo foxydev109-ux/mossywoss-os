@@ -64,14 +64,19 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          TAG="build-${GITHUB_SHA::7}"
+          cat > /tmp/relnotes.md << 'NOTES'
+          Auto-built from the latest main branch push.
+
+          Direct downloads — grab the assets attached to this release:
+          - mossywoss.apk (Android 7.0+)
+          - mossywoss-os-windows.zip (Windows 10/11)
+          - mossywoss-os-linux.zip (Linux: run install.sh)
+          - mossywoss-os-web.zip (any other device)
+          NOTES
           # remove any previous 'latest' release + tag so links stay stable
           gh release delete latest --yes --cleanup-tag 2>/dev/null || true
           gh release create latest \
             --title "MossyWoss OS — latest build" \
-            --notes "Auto-built from the latest main branch push. \
-Direct downloads: grab the assets below — mossywoss.apk for Android, \
-mossywoss-os-windows.zip for Windows 10/11, mossywoss-os-linux.zip for Linux \
-(run install.sh), mossywoss-os-web.zip for any other device." \
-            release-artifacts/* 2>/dev/null || \
+            --notes-file /tmp/relnotes.md \
+            release-artifacts/* || \
           gh release upload latest release-artifacts/* --clobber
