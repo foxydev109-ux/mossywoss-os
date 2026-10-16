@@ -102,7 +102,7 @@ MWO.Maker = (function() {
             <div style="padding:6px 10px;font-size:0.72em;color:var(--text2);border-bottom:1px solid rgba(255,255,255,0.06);background:rgba(0,0,0,0.2)">Preview</div>
             <iframe id="mk-preview" style="flex:1;border:none;background:#fff" sandbox="allow-scripts allow-same-origin"></iframe>
             <div style="padding:6px 10px;border-top:1px solid rgba(255,255,255,0.06);font-size:0.72em;display:flex;gap:8px;align-items:center">
-              <button class="mw-btn" onclick="MWO.Maker.runPreview()" style="font-size:0.85em;padding:4px 10px">Run Run</button>
+              <button class="mw-btn" onclick="MWO.Maker.runPreview()" style="font-size:0.85em;padding:4px 10px">Run</button>
               <button class="mw-btn" onclick="MWO.Maker.openInBrowser()" style="font-size:0.85em;padding:4px 10px">Open in Browser</button>
               <span style="color:var(--text2);flex:1;text-align:right" id="mk-size">0 bytes</span>
             </div>

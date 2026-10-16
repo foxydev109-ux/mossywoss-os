@@ -449,16 +449,17 @@
  <div class="fm-side" data-p="/Desktop" style="padding:6px 10px;border-radius:6px;cursor:pointer;font-size:0.85em">Desktop</div>
  <div class="fm-side" data-p="/Documents" style="padding:6px 10px;border-radius:6px;cursor:pointer;font-size:0.85em">Documents</div>
           <div class="fm-side" data-p="/Downloads" style="padding:6px 10px;border-radius:6px;cursor:pointer;font-size:0.85em">Downloads</div>
- <div class="fm-side" data-p="/Pictures" style="padding:6px 10px;border-radius:6px;cursor:pointer;font-size:0.85em"> Pictures</div>
-          <div class="fm-side" data-p="/Music" style="padding:6px 10px;border-radius:6px;cursor:pointer;font-size:0.85em">~ Music</div>
- <div class="fm-side" data-p="/Videos" style="padding:6px 10px;border-radius:6px;cursor:pointer;font-size:0.85em"> Videos</div>
+ <div class="fm-side" data-p="/Pictures" style="padding:6px 10px;border-radius:6px;cursor:pointer;font-size:0.85em">Pictures</div>
+          <div class="fm-side" data-p="/Music" style="padding:6px 10px;border-radius:6px;cursor:pointer;font-size:0.85em">Music</div>
+ <div class="fm-side" data-p="/Videos" style="padding:6px 10px;border-radius:6px;cursor:pointer;font-size:0.85em">Videos</div>
         </div>
         <div style="flex:1;display:flex;flex-direction:column">
           <div style="padding:8px 12px;background:#16213e;display:flex;align-items:center;gap:8px;border-bottom:1px solid rgba(255,255,255,0.06)">
- <button id="fm-back" class="mw-btn" style="padding:4px 10px"> Up</button>
+ <button id="fm-back" class="mw-btn" style="padding:4px 10px">Up</button>
             <input id="fm-path" class="mw-input" type="text" readonly style="flex:1;padding:4px 10px;font-size:0.85em" />
             <button id="fm-new-folder" class="mw-btn">+ Folder</button>
             <button id="fm-new-file" class="mw-btn primary">+ File</button>
+            <button id="fm-rename" class="mw-btn">Rename</button>
           </div>
           <div id="fm-grid" style="flex:1;padding:14px;display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:12px;overflow-y:auto"></div>
         </div>
@@ -557,6 +558,28 @@
       body.querySelector('#fm-new-folder').onclick = async () => {
         var name = prompt('Enter folder name:');
         if (name) { await VFS.mkdir(currentPath + '/' + name); renderDir(); }
+      };
+
+      body.querySelector('#fm-rename').onclick = async () => {
+        var name = prompt('Rename which file or folder?');
+        if (!name) return;
+        var newName = prompt('New name for "' + name + '":');
+        if (!newName) return;
+        try {
+          await VFS.rename(currentPath + '/' + name, currentPath + '/' + newName);
+          showNotif('Files', 'Renamed "' + name + '" to "' + newName + '"');
+          renderDir();
+        } catch (e) {
+          try {
+            var c = await VFS.readFile(currentPath + '/' + name);
+            await VFS.writeFile(currentPath + '/' + newName, c);
+            await VFS.deleteFile(currentPath + '/' + name);
+            showNotif('Files', 'Renamed "' + name + '" to "' + newName + '"');
+            renderDir();
+          } catch (e2) {
+            showNotif('Files', 'Rename failed: ' + (e2 && e2.message ? e2.message : e2));
+          }
+        }
       };
 
       body.querySelector('#fm-new-file').onclick = async () => {

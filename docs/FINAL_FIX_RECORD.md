@@ -102,3 +102,7 @@ the build fails loudly in CI instead of shipping a stale file.
 - All visible real-world brand names removed from the OS product: OS Lab entries are now generic descriptions ("In-browser x86 PC: classic DOS environment", "Microkernel OS written in Rust", ...), the phone-compat section is generic ("PC app container for phones"), browser search buttons are "Open web results / Open alternate web results (new tab)" with neutral footers, and PE/Files copy says "PC executables (.exe)".
 - Owner lines in OS Lab now carry the license only; the full project attribution stays in the repo-level NOTICE file (kept on purpose: deep links need honest attribution).
 - Destination URLs (e.g. emulator sites) are untouched by design - a deep link must point where it points; they are not displayed as brand labels.
+
+## Round 7 (17 Oct 2026) - final cleanup + Files rename
+- Purged the last doubled-word artifacts ("Run Run" in Maker and Visual Code) and stray sidebar characters in Files.
+- Files: new Rename button using the native VFS rename (copy+delete fallback), alongside New Folder / New File.

@@ -305,7 +305,7 @@ MWO.VisualCode = (function() {
           <button class="vc-tab" data-mode="export">&lt;/&gt; JavaScript</button>
         </div>
         <div style="display:flex;gap:8px;align-items:center">
-          <button id="vc-btn-run" class="mw-btn" style="padding:5px 14px;background:#2ecc71;color:#fff;border:none;border-radius:6px;font-weight:bold;cursor:pointer">Run Run</button>
+          <button id="vc-btn-run" class="mw-btn" style="padding:5px 14px;background:#2ecc71;color:#fff;border:none;border-radius:6px;font-weight:bold;cursor:pointer">Run</button>
           <button id="vc-btn-stop" class="mw-btn" style="padding:5px 14px;background:#e74c3c;color:#fff;border:none;border-radius:6px;font-weight:bold;cursor:pointer">⏹ Stop</button>
  <button id="vc-btn-save" class="mw-btn" style="padding:5px 10px;font-size:0.85em"> Save</button>
           <button id="vc-btn-load" class="mw-btn" style="padding:5px 10px;font-size:0.85em">Dir Load</button>
