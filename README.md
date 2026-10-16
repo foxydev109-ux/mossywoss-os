@@ -95,6 +95,14 @@ a Play Store app, so the Play Protect prompt is expected. Verify any download
 with `apksigner verify --print-certs` (signer: CN=MossyWoss OS, foxydev109-ux).
 `tests/apk_install_check.sh` runs 15 offline install-readiness checks in CI.
 
+The APK toolchain is pinned (build-tools 34.0.0, platform android-34). An
+earlier bug let CI runners pick the NEWEST build-tools, which formats
+`aapt2 dump badging` output differently and produced flaky gate failures
+and inconsistent builds; the build now says which toolchain it used.
+
+How the MWO Store and publishing work (real flow, no mock-ups):
+see [docs/STORE_PUBLISH.md](docs/STORE_PUBLISH.md).
+
 ## Architecture
 
 Deep dive into every subsystem (VFS, zip engine, icon tiles, responsive shell,

@@ -5,9 +5,14 @@ echo "=== Building MossyWoss APK ==="
 
 # Set environment paths
 SDK="${ANDROID_HOME:-${ANDROID_SDK_ROOT:-/opt/android-sdk}}"
-BT_DIR=$(ls -d "$SDK"/build-tools/* 2>/dev/null | sort -V | tail -1)
+# Pin the toolchain so CI and local builds are identical (CI runners ship
+# many newer build-tools; "newest wins" made the gate see different formats).
+BT_DIR=$(ls -d "$SDK"/build-tools/34.0.0 2>/dev/null | head -1)
+[ -z "$BT_DIR" ] && BT_DIR=$(ls -d "$SDK"/build-tools/* 2>/dev/null | sort -V | tail -1)
 export PATH="$BT_DIR:$SDK/cmdline-tools/latest/bin:$PATH"
-ANDROID_JAR=$(ls "$SDK"/platforms/*/android.jar 2>/dev/null | sort -V | tail -1)
+ANDROID_JAR=$(ls "$SDK"/platforms/android-34/android.jar 2>/dev/null | head -1)
+[ -z "$ANDROID_JAR" ] && ANDROID_JAR=$(ls "$SDK"/platforms/*/android.jar 2>/dev/null | sort -V | tail -1)
+echo "Using build-tools: $BT_DIR | platform: $ANDROID_JAR"
 LIBS_DIR="$SDK/libs"
 mkdir -p "$LIBS_DIR"
 # Fetch androidx libs if not present (needed on fresh CI runners)
@@ -110,6 +115,7 @@ fail() { echo "INSTALL-GATE FAILED: $1"; echo "--- badging seen by the gate ---"
 BADGING=$(aapt2 dump badging mossywoss.apk 2>&1 || true)
 # parse values instead of matching one exact string (tool versions format slightly differently)
 MINSDK=$(echo "$BADGING" | sed -n "s/.*sdkVersion:'\([0-9]*\)'.*/\1/p" | head -1)
+[ -z "$MINSDK" ] && MINSDK=$(echo "$BADGING" | sed -n "s/.*minSdkVersion:'\([0-9]*\)'.*/\1/p" | head -1)
 TARGET=$(echo "$BADGING" | sed -n "s/.*targetSdkVersion:'\([0-9]*\)'.*/\1/p" | head -1)
 echo "gate sees: minSdk=${MINSDK:-?} targetSdk=${TARGET:-?}"
 echo "$BADGING" | grep -q "package: name='com.foxydev109ux.mwos'" || fail "unexpected package name"

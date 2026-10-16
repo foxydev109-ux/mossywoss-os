@@ -57,6 +57,12 @@ CHANGELOG (final for this release cycle):
   items show "Developer: <username>", pre-made store items show none
 - New automated end-to-end tests: publisher/store contract (4/4) and
   game builder zip round-trip (9/9) - all green
+- Deterministic APK toolchain: the build now pins build-tools 34.0.0 and
+  platform android-34 instead of using whatever is newest on the runner.
+  This was the deep cause of the CI gate failures ("minSdk not 24"):
+  newer aapt2 prints minSdkVersion instead of sdkVersion, and CI linked
+  against a newer platform than local builds. Gate now accepts both formats
+  and prints exactly what it saw.
 - APK 1.2: new package name (no conflict with older test builds), dedicated
   release signing identity (CN=MossyWoss OS) instead of the generic Android
   Debug certificate, one stable committed key so updates install cleanly,
