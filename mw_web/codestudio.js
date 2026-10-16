@@ -42,6 +42,8 @@ MWO.CodeStudio = (function() {
           <button class="mw-btn" onclick="MWO.CodeStudio.openFile()" style="font-size:0.78em;padding:6px 12px">Open</button>
           <button class="mw-btn" onclick="MWO.CodeStudio.saveFile()" style="font-size:0.78em;padding:6px 12px">Save</button>
           <button class="mw-btn" onclick="MWO.CodeStudio.insertImage()" style="font-size:0.78em;padding:6px 12px">Insert Image</button>
+          <button class="mw-btn" onclick="MWO.CodeStudio.importGLB()" style="font-size:0.78em;padding:6px 12px">Import GLB</button>
+          <button class="mw-btn" onclick="MWO.CodeStudio.importFrames()" style="font-size:0.78em;padding:6px 12px">Import Frames</button>
           <button class="mw-btn primary" onclick="MWO.CodeStudio.run()" style="font-size:0.78em;padding:6px 14px">Run</button> <button class="mw-btn primary" onclick="MWO.CodeStudio.publish()" style="font-size:0.78em;padding:6px 14px;background:#2e7d4f">Build zip + Publish</button>
           <div style="flex:1"></div>
           <span id="cs-status" style="font-size:0.72em;color:var(--text2)">Line 1, Col 1 | 1 lines | C/C++/C# run on the real built-in interpreter; JS/HTML/CSS run in the preview</span>
@@ -305,6 +307,99 @@ MWO.CodeStudio = (function() {
     return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   }
   
+
+  // Import a REAL .glb/.gltf file: bytes are stored in the OS at /Models and
+  // ready-to-run viewer code is inserted (loads the actual file, not a sample).
+  function importGLB() {
+    if (!textarea) return;
+    var input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.glb,.gltf';
+    input.onchange = function(e) {
+      var f = (e.target.files || [])[0];
+      if (!f) return;
+      var rd = new FileReader();
+      rd.onload = function(ev) {
+        var uri = ev.target.result;
+        var path = '/Models/' + (f.name || ('model-' + Date.now() + '.glb'));
+        MWO.fs.mkdir('/Models').then(function() { return MWO.fs.writeFile(path, uri); }).then(function() {
+          insertSnippet(
+            '<div id="glb-viewer" style="width:100%;height:400px;background:#111"></div>\n' +
+            '<script type="module">\n' +
+            '  const THREE = await import("https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js");\n' +
+            '  const { GLTFLoader } = await import("https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/loaders/GLTFLoader.js");\n' +
+            '  const data = await parent.MWO.fs.readFile("' + path + '");\n' +
+            '  const bytes = Uint8Array.from(atob(data.split(",")[1]), ch => ch.charCodeAt(0));\n' +
+            '  const el = document.getElementById("glb-viewer");\n' +
+            '  const renderer = new THREE.WebGLRenderer({ antialias: true });\n' +
+            '  renderer.setSize(el.clientWidth, el.clientHeight); el.appendChild(renderer.domElement);\n' +
+            '  const scene = new THREE.Scene(); scene.background = new THREE.Color(0x111111);\n' +
+            '  scene.add(new THREE.AmbientLight(0xffffff, 0.8));\n' +
+            '  const dLight = new THREE.DirectionalLight(0xffffff, 1); dLight.position.set(3, 5, 4); scene.add(dLight);\n' +
+            '  const cam = new THREE.PerspectiveCamera(50, el.clientWidth / el.clientHeight, 0.1, 100);\n' +
+            '  new GLTFLoader().parse(bytes.buffer, "", (g) => {\n' +
+            '    const box = new THREE.Box3().setFromObject(g.scene);\n' +
+            '    const size = box.getSize(new THREE.Vector3()).length();\n' +
+            '    cam.position.set(size * 0.7, size * 0.5, size * 0.9); cam.lookAt(0, 0, 0);\n' +
+            '    scene.add(g.scene);\n' +
+            '    (function tick() { requestAnimationFrame(tick); g.scene.rotation.y += 0.01; renderer.render(scene, cam); })();\n' +
+            '  });\n' +
+            '<\/script>');
+          MWO.notif.show('Code Studio', 'GLB saved to ' + path + ' and viewer code inserted. Press Run (online) to render your model.');
+        }).catch(function(err) { MWO.notif.show('Code Studio', 'Import failed: ' + err.message); });
+      };
+      rd.readAsDataURL(f);
+    };
+    input.click();
+  }
+
+  // Import REAL image frames -> an actual sprite animation using the exact files you pick.
+  function importFrames() {
+    if (!textarea) return;
+    var input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.multiple = true;
+    input.onchange = function(e) {
+      var files = Array.prototype.slice.call(e.target.files || []);
+      if (!files.length) return;
+      var uris = new Array(files.length); var done = 0;
+      files.forEach(function(f, idx) {
+        var rd = new FileReader();
+        rd.onload = function(ev) {
+          uris[idx] = ev.target.result;
+          done++;
+          if (done === files.length) {
+            var arr = '[\n' + uris.map(function(u) { return '  "' + u + '"'; }).join(',\n') + '\n]';
+            insertSnippet(
+              '<canvas id="anim" width="640" height="480" style="background:#111"></canvas>\n' +
+              '<script>\n' +
+              '  const frames = ' + arr + ';\n' +
+              '  let i = 0;\n' +
+              '  const cvs = document.getElementById("anim").getContext("2d");\n' +
+              '  const imgs = frames.map(src => { const im = new Image(); im.src = src; return im; });\n' +
+              '  setInterval(() => { if (imgs.every(im => im.complete)) { cvs.clearRect(0, 0, 640, 480); cvs.drawImage(imgs[i % imgs.length], 0, 0, 640, 480); i++; } }, 100);\n' +
+              '<\/script>');
+            MWO.notif.show('Code Studio', done + ' frame(s) imported. Sprite animation code inserted - press Run.');
+          }
+        };
+        rd.readAsDataURL(f);
+      });
+    };
+    input.click();
+  }
+
+  function insertSnippet(snippet) {
+    if (!textarea) return;
+    var start = textarea.selectionStart || textarea.value.length;
+    var end = textarea.selectionEnd || start;
+    var before = textarea.value.slice(0, start);
+    var after = textarea.value.slice(end);
+    if (before && !before.endsWith('\n')) before += '\n';
+    textarea.value = before + snippet + '\n' + after;
+    textarea.selectionStart = textarea.selectionEnd = before.length + snippet.length;
+  }
+
   return {
     launch: launch,
     insertImage: insertImage,
@@ -312,6 +407,8 @@ MWO.CodeStudio = (function() {
     openFile: openFile,
     saveFile: saveFile,
     run: run,
+    importGLB: importGLB,
+    importFrames: importFrames,
     publish: function() {
       var src = textarea ? textarea.value : '';
       if (!src.trim()) { alert('Write some code first.'); return; }

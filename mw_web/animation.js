@@ -316,6 +316,7 @@ MWO.Animation = (function() {
           <div style="height:18px;border-left:1px solid rgba(255,255,255,0.12);margin:0 4px"></div>
  <button class="mw-btn" id="anim-btn-mode3d" style="font-size:0.78em;padding:4px 10px;background:rgba(255,255,255,0.06)"> Mode: 2D</button>
  <button class="mw-btn" id="anim-btn-onionskin" style="font-size:0.78em;padding:4px 10px">Onion Skin: OFF</button>
+<button class="mw-btn" id="anim-tool-brush" style="font-size:0.78em;padding:4px 10px">Brush: OFF</button>
           <button class="mw-btn" id="anim-btn-resetview" style="font-size:0.78em;padding:4px 8px"> Reset View</button>
         </div>
 
@@ -641,6 +642,62 @@ MWO.Animation = (function() {
   }
 
   // Canvas Setup & Pointer Interaction
+  
+  function attachBrushTool() {
+    if (!canvas) { setTimeout(attachBrushTool, 300); return; }
+    if (canvas.__brushBound) return;
+    canvas.__brushBound = true;
+    var brushMode = false, brushing = false, brushPoints = [];
+    var brushBtn = document.getElementById('anim-tool-brush');
+    if (brushBtn) brushBtn.onclick = function() {
+      brushMode = !brushMode;
+      this.textContent = brushMode ? 'Brush: ON' : 'Brush: OFF';
+      this.style.background = brushMode ? '#2d4530' : 'transparent';
+      MWO.notif.show('Animation Studio', brushMode ? 'Brush on: drag on the canvas to draw a real shape you can animate.' : 'Brush off.');
+    };
+    canvas.addEventListener('pointerdown', function(e) {
+      if (!brushMode) return;
+      e.stopPropagation(); e.preventDefault();
+      brushing = true; brushPoints = [];
+      var c = getCanvasCoords(e);
+      brushPoints.push({ x: c.x, y: c.y });
+    }, true);
+    canvas.addEventListener('pointermove', function(e) {
+      if (!brushing) return;
+      e.stopPropagation();
+      var c = getCanvasCoords(e);
+      brushPoints.push({ x: c.x, y: c.y });
+      ctx.save();
+      ctx.strokeStyle = '#4a90e2'; ctx.lineWidth = 3; ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+      ctx.beginPath(); ctx.moveTo(brushPoints[0].x, brushPoints[0].y);
+      for (var i = 1; i < brushPoints.length; i++) ctx.lineTo(brushPoints[i].x, brushPoints[i].y);
+      ctx.stroke(); ctx.restore();
+    }, true);
+    canvas.addEventListener('pointerup', function(e) {
+      if (!brushing) return;
+      e.stopPropagation();
+      brushing = false;
+      if (brushPoints.length < 2) { brushPoints = []; return; }
+      var minx = 1e9, miny = 1e9, maxx = -1e9, maxy = -1e9;
+      brushPoints.forEach(function(p) { minx = Math.min(minx, p.x); miny = Math.min(miny, p.y); maxx = Math.max(maxx, p.x); maxy = Math.max(maxy, p.y); });
+      var rel = brushPoints.map(function(p) { return { x: p.x - minx, y: p.y - miny }; });
+      var lay = layers.find(function(l) { return l.id === activeLayerId; }) || layers[0];
+      var brushShape = {
+        id: 'shape_' + Date.now(), type: 'path',
+        x: minx, y: miny, w: Math.max(1, maxx - minx), h: Math.max(1, maxy - miny),
+        fill: 'none', stroke: '#ffffff', strokeWidth: 3, rotation: 0, opacity: 1,
+        points: rel, keyframes: []
+      };
+      lay.shapes.push(brushShape);
+      setKeyframeForShape(brushShape, 0);
+      activeShapeId = brushShape.id;
+      updatePropsPanel();
+      MWO.notif.show('Animation Studio', 'Stroke captured (' + brushPoints.length + ' points). Set keyframes on it to animate.');
+      brushPoints = [];
+    }, true);
+  }
+  attachBrushTool();
+
   function initCanvas() {
     canvas = document.getElementById('anim-canvas');
     ctx = canvas.getContext('2d');
@@ -1032,6 +1089,16 @@ MWO.Animation = (function() {
         if (isGhost) ctx.globalAlpha *= 0.9;
         ctx.drawImage(im, -halfW, -halfH, s.w, s.h);
       }
+    } else if (s.type === 'path') {
+      ctx.strokeStyle = s.stroke || '#fff';
+      ctx.lineWidth = Math.max(1, s.strokeWidth || 3);
+      ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+      ctx.beginPath();
+      if (s.points && s.points.length) {
+        ctx.moveTo(s.points[0].x - s.w/2, s.points[0].y - s.h/2);
+        for (var pi = 1; pi < s.points.length; pi++) ctx.lineTo(s.points[pi].x - s.w/2, s.points[pi].y - s.h/2);
+      }
+      ctx.stroke();
     } else if (s.type === 'rect') {
       ctx.fillStyle = isGhost ? '#88aaff' : s.fill;
       ctx.fillRect(-halfW, -halfH, s.w, s.h);
