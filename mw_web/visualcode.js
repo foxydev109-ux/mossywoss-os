@@ -112,6 +112,81 @@ MWO.VisualCode = (function() {
     document.head.appendChild(style);
   }
 
+  // Real sound effects, synthesized live with WebAudio
+  function playSfxKind(kind) {
+    var dur = 200;
+    try {
+      var AC = window.AudioContext || window.webkitAudioContext;
+      if (AC) {
+        var ac = new AC();
+        var t = ac.currentTime;
+        var mk = function(type, f0, f1, at, len, vol) {
+          var o = ac.createOscillator(); var g = ac.createGain();
+          o.type = type;
+          o.frequency.setValueAtTime(f0, t + at);
+          if (f1) o.frequency.exponentialRampToValueAtTime(f1, t + at + len);
+          g.gain.setValueAtTime(vol || 0.18, t + at);
+          g.gain.exponentialRampToValueAtTime(0.001, t + at + len);
+          o.connect(g); g.connect(ac.destination);
+          o.start(t + at); o.stop(t + at + len + 0.02);
+        };
+        if (kind === 'coin') { mk('square', 900, null, 0, 0.07); mk('square', 1350, null, 0.08, 0.16); dur = 300; }
+        else if (kind === 'boing') { mk('sine', 320, 70, 0, 0.35, 0.25); dur = 420; }
+        else if (kind === 'zap') { mk('sawtooth', 1400, 90, 0, 0.18, 0.2); dur = 240; }
+        else if (kind === 'blip') { mk('square', 620, null, 0, 0.08); dur = 140; }
+        else if (kind === 'boom') {
+          var blen = 0.45;
+          var buf = ac.createBuffer(1, Math.floor(ac.sampleRate * blen), ac.sampleRate);
+          var d = buf.getChannelData(0);
+          for (var i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / d.length, 2);
+          var src = ac.createBufferSource(); src.buffer = buf;
+          var lp = ac.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 400;
+          var gg = ac.createGain(); gg.gain.value = 0.5;
+          src.connect(lp); lp.connect(gg); gg.connect(ac.destination); src.start(t);
+          dur = 520;
+        }
+        setTimeout(function() { try { ac.close(); } catch (e) {} }, dur + 300);
+      }
+    } catch (e) {}
+    return dur;
+  }
+
+  // Visual effects (flash / shake / particle burst)
+  var VFX_COLORS = { gold: '#ffd54a', red: '#ff5252', blue: '#4e9eff', green: '#2ecc71', pink: '#ff7ab8', white: '#ffffff' };
+  function vfxFlash(color) {
+    var d = document.createElement('div');
+    d.style.cssText = 'position:fixed;inset:0;background:' + color + ';opacity:0.55;z-index:99998;pointer-events:none;transition:opacity 0.25s';
+    document.body.appendChild(d);
+    requestAnimationFrame(function() { d.style.opacity = '0'; });
+    setTimeout(function() { d.remove(); }, 340);
+  }
+  function vfxShake() {
+    var seq = [[7, -4], [-6, 4], [4, -2], [-2, 1], [0, 0]];
+    seq.forEach(function(tr, i) {
+      setTimeout(function() { document.body.style.transform = 'translate(' + tr[0] + 'px,' + tr[1] + 'px)'; }, i * 70);
+    });
+    setTimeout(function() { document.body.style.transform = ''; }, seq.length * 70 + 120);
+  }
+  function vfxBurst(color) {
+    for (var i = 0; i < 26; i++) {
+      var p = document.createElement('div');
+      p.style.cssText = 'position:fixed;width:8px;height:8px;border-radius:50%;background:' + color + ';z-index:99999;pointer-events:none;left:' + (45 + Math.random() * 10) + 'vw;top:40vh';
+      document.body.appendChild(p);
+      (function(p) {
+        var ang = Math.random() * 6.283, dist = 70 + Math.random() * 110;
+        var dx = Math.cos(ang) * dist, dy = Math.sin(ang) * dist + 50;
+        setTimeout(function() {
+          p.style.transition = 'all 0.7s ease-out';
+          requestAnimationFrame(function() {
+            p.style.transform = 'translate(' + dx + 'px,' + dy + 'px)';
+            p.style.opacity = '0';
+          });
+          setTimeout(function() { p.remove(); }, 760);
+        }, 12);
+      })(p);
+    }
+  }
+
   function playWebAudioTone(freq, durationMs) {
     try {
       const AudioCtx = window.AudioContext || window.webkitAudioContext;
@@ -385,7 +460,13 @@ MWO.VisualCode = (function() {
             { type: 'looks_hide', label: 'hide sprite' }
           ]},
           { name: 'Sound', color: 'sound', items: [
-            { type: 'sound_tone', label: 'play tone [440] Hz for [200] ms' }
+            { type: 'sound_tone', label: 'play tone [440] Hz for [200] ms' },
+            { type: 'sound_sfx', label: 'play sfx [coin]' }
+          ]},
+          { name: 'VFX', color: 'looks', items: [
+            { type: 'vfx_flash', label: 'vfx flash [gold]' },
+            { type: 'vfx_shake', label: 'vfx shake screen' },
+            { type: 'vfx_burst', label: 'vfx particle burst [gold]' }
           ]},
           { name: 'Control', color: 'control', items: [
             { type: 'control_wait', label: 'wait [500] ms' },
@@ -411,7 +492,7 @@ MWO.VisualCode = (function() {
                 type: item.type,
                 category: cat.color,
                 label: item.label,
-                inputs: { text: 'Hello!', steps: 15, x: 200, y: 150, freq: 440, ms: 250, times: 3 },
+                inputs: { text: 'Hello!', steps: 15, x: 200, y: 150, freq: 440, ms: 250, times: 3, sfx: 'coin', color: 'gold' },
                 next: null,
                 x: 100,
                 y: 100
@@ -426,9 +507,9 @@ MWO.VisualCode = (function() {
       } else if (currentMode === 'blueprint') {
         const nodeTypes = [
           { type: 'Start', title: 'Run Start' },
- { type: 'Say', title: ' Say' },
- { type: 'MoveSprite', title: ' Move' },
-          { type: 'Wait', title: '⏱ Wait' }
+ { type: 'Say', title: 'Say' },
+ { type: 'MoveSprite', title: 'Move' },
+          { type: 'Wait', title: 'Wait' }
         ];
 
         const header = document.createElement('div');
@@ -635,6 +716,14 @@ MWO.VisualCode = (function() {
           code += `  stage.redraw();\n`;
         } else if (blk.type === 'sound_tone') {
           code += `  await stage.playTone(${blk.inputs ? blk.inputs.freq || 440 : 440}, ${blk.inputs ? blk.inputs.ms || 250 : 250});\n`;
+        } else if (blk.type === 'sound_sfx') {
+          code += `  await stage.playSfx("${blk.inputs ? blk.inputs.sfx || 'coin' : 'coin'}");\n`;
+        } else if (blk.type === 'vfx_flash') {
+          code += `  stage.vfxFlash("${blk.inputs ? blk.inputs.color || 'gold' : 'gold'}");\n`;
+        } else if (blk.type === 'vfx_shake') {
+          code += `  stage.vfxShake();\n`;
+        } else if (blk.type === 'vfx_burst') {
+          code += `  stage.vfxBurst("${blk.inputs ? blk.inputs.color || 'gold' : 'gold'}");\n`;
         } else if (blk.type === 'control_wait') {
           code += `  await stage.wait(${blk.inputs ? blk.inputs.ms || 500 : 500});\n`;
         }
@@ -697,6 +786,21 @@ MWO.VisualCode = (function() {
           const ms = blk.inputs ? Number(blk.inputs.ms) || 250 : 250;
           playWebAudioTone(freq, ms);
           await new Promise(r => setTimeout(r, ms));
+        } else if (blk.type === 'sound_sfx') {
+          const kind = (blk.inputs && blk.inputs.sfx) || 'coin';
+          const sd = playSfxKind(kind);
+          await new Promise(r => setTimeout(r, sd));
+        } else if (blk.type === 'vfx_flash') {
+          const col = VFX_COLORS[(blk.inputs && blk.inputs.color) || 'gold'] || '#ffd54a';
+          vfxFlash(col);
+          await new Promise(r => setTimeout(r, 280));
+        } else if (blk.type === 'vfx_shake') {
+          vfxShake();
+          await new Promise(r => setTimeout(r, 460));
+        } else if (blk.type === 'vfx_burst') {
+          const col = VFX_COLORS[(blk.inputs && blk.inputs.color) || 'gold'] || '#ffd54a';
+          vfxBurst(col);
+          await new Promise(r => setTimeout(r, 520));
         } else if (blk.type === 'control_wait') {
           const ms = blk.inputs ? Number(blk.inputs.ms) || 500 : 500;
           await new Promise(r => setTimeout(r, ms));

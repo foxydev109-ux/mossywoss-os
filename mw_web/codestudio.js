@@ -41,6 +41,7 @@ MWO.CodeStudio = (function() {
           <button class="mw-btn" onclick="MWO.CodeStudio.newFile()" style="font-size:0.78em;padding:6px 12px">New</button>
           <button class="mw-btn" onclick="MWO.CodeStudio.openFile()" style="font-size:0.78em;padding:6px 12px">Open</button>
           <button class="mw-btn" onclick="MWO.CodeStudio.saveFile()" style="font-size:0.78em;padding:6px 12px">Save</button>
+          <button class="mw-btn" onclick="MWO.CodeStudio.insertImage()" style="font-size:0.78em;padding:6px 12px">Insert Image</button>
           <button class="mw-btn primary" onclick="MWO.CodeStudio.run()" style="font-size:0.78em;padding:6px 14px">Run</button> <button class="mw-btn primary" onclick="MWO.CodeStudio.publish()" style="font-size:0.78em;padding:6px 14px;background:#2e7d4f">Build zip + Publish</button>
           <div style="flex:1"></div>
           <span id="cs-status" style="font-size:0.72em;color:var(--text2)">Line 1, Col 1 | 1 lines | C/C++/C# run on the real built-in interpreter; JS/HTML/CSS run in the preview</span>
@@ -186,6 +187,48 @@ MWO.CodeStudio = (function() {
     input.click();
   }
   
+  function insertImage() {
+    if (!textarea) return;
+    var input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.multiple = true;
+    input.onchange = function(e) {
+      var files = Array.prototype.slice.call(e.target.files || []);
+      if (!files.length) return;
+      files.forEach(function(f) {
+        var rd = new FileReader();
+        rd.onload = function(ev) {
+          var uri = ev.target.result;
+          // keep a copy inside the OS so it persists
+          try {
+            MWO.fs.mkdir('/Pictures').then(function() {
+              return MWO.fs.writeFile('/Pictures/' + (f.name || ('img-' + Date.now() + '.png')), uri);
+            }).catch(function() {});
+          } catch (err) {}
+          var snippet;
+          if (currentLang === 'html') {
+            snippet = '<img src="' + uri + '" alt="image">';
+          } else if (currentLang === 'css') {
+            snippet = 'background-image: url("' + uri + '");';
+          } else if (currentLang === 'javascript' || currentLang === 'json') {
+            snippet = 'var img = new Image(); img.src = "' + uri + '";';
+          } else {
+            snippet = '// image "' + (f.name || 'image') + '" imported to /Pictures (binary data cannot be embedded in ' + currentLang + ' source)';
+          }
+          var start = textarea.selectionStart || textarea.value.length;
+          var end = textarea.selectionEnd || start;
+          var before = textarea.value.slice(0, start);
+          var after = textarea.value.slice(end);
+          textarea.value = before + snippet + '\n' + after;
+          textarea.selectionStart = textarea.selectionEnd = start + snippet.length + 1;
+        };
+        rd.readAsDataURL(f);
+      });
+    };
+    input.click();
+  }
+
   function saveFile() {
     if (!textarea) return;
     var ext = languages[currentLang].ext;
@@ -264,6 +307,7 @@ MWO.CodeStudio = (function() {
   
   return {
     launch: launch,
+    insertImage: insertImage,
     newFile: newFile,
     openFile: openFile,
     saveFile: saveFile,

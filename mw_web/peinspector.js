@@ -160,6 +160,15 @@
           if (!count) el.innerHTML += '<div style="color:#667">No .exe or .dll files yet - download one with the Browser (e.g. from a trusted open-source project).</div>';
         } catch (e) {}
       })();
+      // Files hands over a path when the user opens an .exe/.dll there
+      if (MWO._peInspectPath) {
+        var p = MWO._peInspectPath;
+        MWO._peInspectPath = null;
+        try {
+          body.querySelector('#pe-path').value = p;
+          body.querySelector('#pe-open').click();
+        } catch (e) {}
+      }
       return win;
     }
   });

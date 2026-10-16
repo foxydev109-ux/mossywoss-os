@@ -497,8 +497,43 @@
             if (isDir) {
               currentPath += '/' + item;
               renderDir();
+              return;
+            }
+            var full = currentPath + '/' + item;
+            var lower = item.toLowerCase();
+            if (/\.(exe|dll)$/.test(lower)) {
+              // Windows executable: hand it to the real PE Inspector
+              try {
+                MWO._peInspectPath = full;
+                MWO.launchApp('pe-inspector');
+              } catch (e) {
+                showNotif('Files', 'Saved in ' + currentPath + '. Install PE Inspector from the Store to analyze executables.');
+              }
+            } else if (/\.zip$/.test(lower)) {
+              if (MWO.ZipKit && typeof MWO.ZipKit.extractZip === 'function') {
+                showNotif('Files', 'Extracting ' + item + '...');
+                try {
+                  var res = await MWO.ZipKit.extractZip(full, function(cur, tot, fname) {
+                    if (fname) showNotif('Files', 'Extracting: ' + fname + ' (' + cur + '/' + tot + ')');
+                  });
+                  showNotif('Files', 'Extracted ' + item + ' into the OS filesystem.');
+                } catch (e) {
+                  showNotif('Files', 'Extraction failed: ' + (e && e.message));
+                }
+              } else {
+                showNotif('Files', item + ' is saved in ' + currentPath + '.');
+              }
+            } else if (/\.(png|jpe?g|gif|webp|bmp)$/.test(lower)) {
+              var data = await VFS.readFile(full);
+              if (typeof data === 'string' && data.indexOf('data:') === 0) {
+                var pw = MWO.wm.create({ id: 'imgview-' + Date.now(), title: item, icon: 'gallery', width: 640, height: 480, resizable: true });
+                pw.innerHTML = '<img src="' + data + '" style="max-width:100%;max-height:100%;display:block;margin:auto">';
+                pw.style.background = '#0d0d14';
+              } else {
+                showNotif('Files', 'Could not preview ' + item);
+              }
             } else {
-              var content = await VFS.readFile(currentPath + '/' + item);
+              var content = await VFS.readFile(full);
               showNotif('Files', `Opened ${item}: ${content.substring(0, 30)}...`);
             }
           };
