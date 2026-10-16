@@ -47,7 +47,14 @@
     { name: 'Easy Linux desktop for switchers', url: 'https://linuxmint.com/download.php', why: 'PC-like desktop, famously easy installer.' },
     { name: 'Polished familiar-layout Linux desktop', url: 'https://zorin.com/os/download/', why: 'Designed for people switching from PC.' },
     { name: 'Gaming-friendly Linux desktop', owner: '(open source; rights with the original authors)', url: 'https://pop.system76.com/', why: 'Polished, gaming-friendly, straightforward install.' },
-    { name: 'Modern workstation Linux desktop', owner: '(open source; rights with the original authors)', url: 'https://fedoraproject.org/workstation/download/', why: 'Modern, up-to-date, clean GNOME desktop.' }
+    { name: 'Modern workstation Linux desktop', owner: '(open source; rights with the original authors)', url: 'https://fedoraproject.org/workstation/download/', why: 'Modern, up-to-date, clean GNOME desktop.' },
+    { name: 'Tiny security-hardened Linux (open source)', owner: '(open source; rights with the original authors)', url: 'https://www.alpinelinux.org/downloads/', why: 'Very small, secure, runs from RAM.' },
+    { name: 'Universal community Linux (open source)', owner: '(open source; rights with the original authors)', url: 'https://www.debian.org/download', why: 'Stable, universal, massive package catalog.' },
+    { name: 'Rolling-release advanced Linux (open source)', owner: '(open source; rights with the original authors)', url: 'https://wiki.archlinux.org/title/Installation_guide', why: 'Full control, latest packages, great wiki.' },
+    { name: 'Green-themed friendly Linux (open source)', owner: '(open source; rights with the original authors)', url: 'https://manjaro.org/download/', why: 'Beginner-friendly but cutting-edge.' },
+    { name: 'Declarative reproducible Linux (open source)', owner: '(open source; rights with the original authors)', url: 'https://nixos.org/download.html', why: 'Whole system defined in one config file.' },
+    { name: 'Windows-compatible open-source OS (GPL)', owner: '(GPL; rights with the original authors)', url: 'https://reactos.org/', why: 'A 100% free, open-source OS built to be Windows-compatible - the honest closest thing to a free PC OS. Installs on real hardware only.' },
+    { name: 'Windows program compatibility layer on Linux (LGPL)', owner: '(LGPL; rights with the original authors)', url: 'https://www.winehq.org/', why: 'Runs many real Windows programs on a Linux PC. Not in a browser.' }
   ];
 
   var ON_ANDROID = [
@@ -65,6 +72,13 @@
       'GameCube and Wii: Dolphin Emulator (dolphin-emu.org) — a real PC is required for full speed. A browser-based web OS cannot honestly run these.',
       'The Sims 1/3: PC software; runs on a real PC (PC, or Linux via the compatibility layer/Proton). Not executable inside a browser sandbox.',
       'PlayStation 2: PCSX2. Switch: Ryujinx/yuzu-adjacent projects per their official sites.'
+    ]},
+    { level: 'Unity, Unreal 5, Roblox, Sims 1/2/3 - the honest hardware truth', items: [
+      'Unity Editor: has a NATIVE Linux version (free tier) - runs for real on a Linux PC. Never runs in a browser.',
+      'Unreal Engine 5: source-available, free to create; native Linux editor - runs for real on a Linux PC. Never in a browser.',
+      'Roblox: no native Linux or browser client. On a Linux PC it may run through the compatibility layer - untested here, so not claimed.',
+      'Sims 1/2/3: proprietary PC games (rights with their owners; buy from official stores). On a real PC via Windows or the Linux compatibility layer. Never in a browser.',
+      'If you ever get any PC (even a cheap one): install a free Linux distro above, and Unity + Unreal 5 genuinely run on it, free and legal.'
     ]},
     { level: 'Rules that always apply', items: [
       'Only use emulators with games you legally own. Piracy is not supported, enabled or linked here.',

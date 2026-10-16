@@ -51,3 +51,15 @@
   limitations (no display streaming yet; mixed-content rule), test matrix
   starting with Notepad, and requirement 9: Roblox/Unity/Unreal are NOT
   claimed until individually tested on real Windows hardware.
+
+## OS Lab - free-OS expansion (no Windows PC needed to browse; real PC needed to run)
+- 8 new official, free, open-source choices for a real PC: tiny hardened,
+  universal community, rolling advanced, green friendly, declarative,
+  Windows-compatible open-source OS (GPL), and the Windows-program
+  compatibility layer on Linux (LGPL).
+- New honest hardware-truth section: Unity Editor and Unreal 5 have native
+  Linux versions that genuinely run free on any Linux PC; Roblox has no
+  native Linux/browser client (compatibility layer only, untested);
+  Sims 1/2/3 are proprietary PC games (official stores only).
+- Disclaimers restated in-app: every project belongs to its owners; MWO is
+  not affiliated with, endorsed by, or redistributing any of them.
