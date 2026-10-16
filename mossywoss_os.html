@@ -5956,6 +5956,12 @@ MWO.CInterp = (function() {
           return this.isTruthy(tCond) ? this.eval(node.trueExpr) : this.eval(node.falseExpr);
 
         case 'MemberExpr':
+          // static class method access: Calc.Square -> the registered function
+          if (!node.computed && node.object && node.object.type === 'Identifier'
+              && this.classes && this.classes[node.object.name]
+              && this.functions && this.functions[node.property]) {
+            return this.functions[node.property];
+          }
           var obj = this.eval(node.object);
           if (obj === null || obj === undefined) {
             throw new Error('Runtime error: Null reference exception');
@@ -6116,11 +6122,13 @@ MWO.CInterp = (function() {
       var programAst = parser.parseProgram();
 
       evaler = new Evaluator(stdin || '');
+      evaler.classes = {};
 
       var topLevelStmts = [];
       for (var i = 0; i < programAst.body.length; i++) {
         var stmt = programAst.body[i];
         if (stmt.type === 'ClassDecl') {
+          evaler.classes[stmt.name] = true;
           for (var m = 0; m < stmt.members.length; m++) {
             var member = stmt.members[m];
             if (member.type === 'FunctionDecl') {
@@ -6199,7 +6207,7 @@ MWO.CodeStudio = (function() {
   
   function launch() {
     var w = MWO.wm.create({
-      id: 'codestudio-' + Date.now(),
+      id: 'codestudio-win',
       title: 'Code Studio',
       icon: 'code-studio',
       width: 800, height: 600,
@@ -6215,14 +6223,14 @@ MWO.CodeStudio = (function() {
       <div style="display:flex;flex-direction:column;height:100%">
         <div style="display:flex;align-items:center;padding:6px 8px;gap:6px;border-bottom:1px solid rgba(255,255,255,0.06);background:rgba(0,0,0,0.2)">
           <select id="cs-lang" style="padding:6px 10px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.08);border-radius:6px;color:#eee;font-size:0.82em">
-            ${Object.keys(languages).map(k => `<option value="${k}" ${k===currentLang?'selected':''}>${languages[k].icon} ${languages[k].name}</option>`).join('')}
+            ${Object.keys(languages).map(k => `<option value="${k}" ${k===currentLang?'selected':''}>${languages[k].name}</option>`).join('')}
           </select>
           <button class="mw-btn" onclick="MWO.CodeStudio.newFile()" style="font-size:0.78em;padding:6px 12px">New</button>
           <button class="mw-btn" onclick="MWO.CodeStudio.openFile()" style="font-size:0.78em;padding:6px 12px">Open</button>
           <button class="mw-btn" onclick="MWO.CodeStudio.saveFile()" style="font-size:0.78em;padding:6px 12px">Save</button>
-          <button class="mw-btn primary" onclick="MWO.CodeStudio.run()" style="font-size:0.78em;padding:6px 14px">Run Run</button> <button class="mw-btn primary" onclick="MWO.CodeStudio.publish()" style="font-size:0.78em;padding:6px 14px;background:#2e7d4f">Build zip + Publish</button>
+          <button class="mw-btn primary" onclick="MWO.CodeStudio.run()" style="font-size:0.78em;padding:6px 14px">Run</button> <button class="mw-btn primary" onclick="MWO.CodeStudio.publish()" style="font-size:0.78em;padding:6px 14px;background:#2e7d4f">Build zip + Publish</button>
           <div style="flex:1"></div>
-          <span id="cs-status" style="font-size:0.72em;color:var(--text2)">Line 1, Col 1 | 1 lines | Runs practical C/C++/C# subset (pointers out of scope)</span>
+          <span id="cs-status" style="font-size:0.72em;color:var(--text2)">Line 1, Col 1 | 1 lines | C/C++/C# run on the real built-in interpreter; JS/HTML/CSS run in the preview</span>
         </div>
         <div style="display:flex;flex:1;overflow:hidden">
           <div style="display:flex;flex:1;overflow:hidden">
@@ -6251,11 +6259,19 @@ MWO.CodeStudio = (function() {
     var consoleEl = winBody.querySelector('#cs-console');
     
     langSel.onchange = function() {
+      var prevLang = currentLang;
       currentLang = this.value;
-      if (textarea.value === '' || textarea.value.match(/^\s*$/)) {
+      var empty = !textarea.value || textarea.value.match(/^\s*$/);
+      var wasStarter = textarea.value === languages[prevLang].template;
+      if (empty || wasStarter) {
+        // starter template: swap it for the new language's starter
         textarea.value = languages[currentLang].template;
         updateGutter();
+      } else if (prevLang !== currentLang) {
+        // user code: keep it, but tell them what language they are now in
+        try { if (MWO.notif && MWO.notif.show) MWO.notif.show('Code Studio', 'Language set to ' + languages[currentLang].name + '. Your code was kept. Clear the editor to load the ' + languages[currentLang].name + ' starter template.'); } catch (e) {}
       }
+      updateStatus();
     };
     
     textarea.oninput = function() { updateGutter(); updateStatus(); };
@@ -14198,13 +14214,15 @@ MWO.Animation = (function() {
         <!-- TOP TOOLBAR -->
         <div style="display:flex;align-items:center;padding:6px 12px;gap:8px;background:#1e2230;border-bottom:1px solid rgba(255,255,255,0.08);flex-wrap:wrap">
  <span style="font-weight:bold;font-size:0.95em;margin-right:6px;display:flex;align-items:center;gap:4px"> Animation Studio</span>
-          <button class="mw-btn" id="anim-btn-new" style="font-size:0.78em;padding:4px 10px">Doc New</button>
+          <button class="mw-btn" id="anim-btn-new" style="font-size:0.78em;padding:4px 10px">New</button>
           <button class="mw-btn" id="anim-btn-open" style="font-size:0.78em;padding:4px 10px">Dir Open</button>
  <button class="mw-btn" id="anim-btn-save" style="font-size:0.78em;padding:4px 10px"> Save</button>
- <button class="mw-btn primary" id="anim-btn-export" style="font-size:0.78em;padding:4px 12px"> Export Video</button>
+ <button class="mw-btn primary" id="anim-btn-export" style="font-size:0.78em;padding:4px 12px">Export Video</button>
+          <button class="mw-btn" id="anim-btn-export-png" style="font-size:0.78em;padding:4px 10px">Export Frame PNG</button>
+          <button class="mw-btn" id="anim-btn-import-imgs" style="font-size:0.78em;padding:4px 10px">Import Image Frames</button>
           <div style="height:18px;border-left:1px solid rgba(255,255,255,0.12);margin:0 4px"></div>
  <button class="mw-btn" id="anim-btn-mode3d" style="font-size:0.78em;padding:4px 10px;background:rgba(255,255,255,0.06)"> Mode: 2D</button>
- <button class="mw-btn" id="anim-btn-onionskin" style="font-size:0.78em;padding:4px 10px"> Onion Skin: OFF</button>
+ <button class="mw-btn" id="anim-btn-onionskin" style="font-size:0.78em;padding:4px 10px">Onion Skin: OFF</button>
           <button class="mw-btn" id="anim-btn-resetview" style="font-size:0.78em;padding:4px 8px"> Reset View</button>
         </div>
 
@@ -14301,6 +14319,91 @@ MWO.Animation = (function() {
     document.getElementById('anim-btn-save').onclick = saveProject;
     document.getElementById('anim-btn-export').onclick = exportVideo;
 
+    // props panel is re-rendered on every selection: delegate the frame-duration field
+    document.getElementById('anim-props-content').addEventListener('change', function(e) {
+      if (e.target && e.target.id === 'prop-framedur') {
+        var shape = getActiveShape();
+        if (!shape) return;
+        var v = parseFloat(e.target.value);
+        if (isFinite(v) && v >= 0.02) {
+          shape.frameDur = v;
+          MWO.notif.show('Animation Studio', 'Frame duration: ' + v + 's (' + Math.round(1 / v) + ' fps).');
+        }
+      }
+    });
+
+    // Export the CURRENT frame as a PNG (device download + copy in /Pictures)
+    document.getElementById('anim-btn-export-png').onclick = function() {
+      try {
+        var data = canvas.toDataURL('image/png');
+        var a = document.createElement('a');
+        a.href = data;
+        a.download = 'mwo-frame-' + Math.round(currentTime * 1000) + '.png';
+        document.body.appendChild(a); a.click(); a.remove();
+        MWO.fs.mkdir('/Pictures').then(function() {
+          return MWO.fs.writeFile('/Pictures/frame-' + Date.now() + '.png', data);
+        }).then(function() {
+          MWO.notif.show('Animation Studio', 'Frame exported to your device (also saved in Pictures).');
+        }).catch(function() {
+          MWO.notif.show('Animation Studio', 'Frame exported to your device.');
+        });
+      } catch (e) {
+        MWO.notif.show('Animation Studio', 'Export failed: ' + e.message);
+      }
+    };
+
+    // Import images as ANIMATION FRAMES: every selected image becomes one
+    // frame of an image-sequence shape, played back on the timeline.
+    // Onion skin shows the neighbouring frames as ghosts while you edit.
+    document.getElementById('anim-btn-import-imgs').onclick = function() {
+      var input = document.createElement('input');
+      input.type = 'file';
+      input.accept = 'image/*';
+      input.multiple = true;
+      input.onchange = function(ev) {
+        var files = Array.prototype.slice.call(ev.target.files || []);
+        if (!files.length) return;
+        var layer = layers.find(function(l) { return l.id === activeLayerId; }) || layers[0];
+        if (!layer) return;
+        var seqShape = null;
+        for (var i = 0; i < layer.shapes.length; i++) {
+          if (layer.shapes[i].type === 'image' && layer.shapes[i].imgs && layer.shapes[i].imgs.length) { seqShape = layer.shapes[i]; break; }
+        }
+        if (!seqShape) {
+          seqShape = createShape('image', layer.id, 200, 140, 320, 240);
+          seqShape.type = 'image';
+          seqShape.fill = 'none';
+          seqShape.stroke = 'none';
+          seqShape.imgs = [];
+          seqShape.frameDur = 0.12; // seconds per frame (adjustable in the props panel)
+          layer.shapes.push(seqShape);
+          activeShapeId = seqShape.id;
+        }
+        var target = seqShape.imgs;
+        var done = 0;
+        files.forEach(function(f, idx) {
+          var rd = new FileReader();
+          rd.onload = function(e2) {
+            var img = new Image();
+            img.onload = function() {
+              target[idx] = img;
+              done++;
+              if (!seqShape.imgW && img.width) { seqShape.imgW = img.width; seqShape.imgH = img.height; seqShape.w = img.width; seqShape.h = img.height; seqShape.x = Math.max(20, (canvas.width - img.width) / 2); seqShape.y = Math.max(20, (canvas.height - img.height) / 2); }
+              if (done === files.length) {
+                duration = Math.max(duration, Math.ceil(seqShape.imgs.length * (seqShape.frameDur || 0.12) * 10) / 10);
+                updateTimelineUI();
+                updatePropsPanel();
+                MWO.notif.show('Animation Studio', done + ' frame(s) imported. Each image = 1 frame at ' + (1 / (seqShape.frameDur || 0.12)).toFixed(0) + ' fps. Turn on Onion Skin to see neighbours while you work.');
+              }
+            };
+            img.src = e2.target.result;
+          };
+          rd.readAsDataURL(f);
+        });
+      };
+      input.click();
+    };
+
     document.getElementById('anim-btn-mode3d').onclick = function() {
       is3D = !is3D;
  this.textContent = is3D? ' Mode: 3D': ' Mode: 2D';
@@ -14313,7 +14416,7 @@ MWO.Animation = (function() {
 
     document.getElementById('anim-btn-onionskin').onclick = function() {
       onionSkin = !onionSkin;
- this.textContent = onionSkin? ' Onion Skin: ON': ' Onion Skin: OFF';
+ this.textContent = onionSkin ? 'Onion Skin: ON' : 'Onion Skin: OFF';
       this.style.background = onionSkin ? '#2d4530' : 'transparent';
       renderCanvas();
     };
@@ -14804,6 +14907,13 @@ MWO.Animation = (function() {
       if (!layer.visible) return;
       layer.shapes.forEach(function(rawShape) {
         var s = getInterpolated(rawShape, time);
+        // image sequences: pick the frame for this point in time
+        if (rawShape.type === 'image' && rawShape.imgs && rawShape.imgs.length) {
+          var fd = rawShape.frameDur || 0.12;
+          var cyc = rawShape.imgs.length * fd;
+          var fi = Math.floor((time % cyc) / fd);
+          s.frameIndex = Math.min(rawShape.imgs.length - 1, Math.max(0, fi));
+        }
         renderSingle2DShape(s, isGhost, alphaMult, rawShape.id === activeShapeId);
       });
     });
@@ -14822,7 +14932,14 @@ MWO.Animation = (function() {
     var halfW = s.w / 2;
     var halfH = s.h / 2;
 
-    if (s.type === 'rect') {
+    if (s.type === 'image') {
+      var imgs = s.imgs || [];
+      var im = imgs[s.frameIndex !== undefined ? s.frameIndex : 0];
+      if (im && im.complete && im.naturalWidth) {
+        if (isGhost) ctx.globalAlpha *= 0.9;
+        ctx.drawImage(im, -halfW, -halfH, s.w, s.h);
+      }
+    } else if (s.type === 'rect') {
       ctx.fillStyle = isGhost ? '#88aaff' : s.fill;
       ctx.fillRect(-halfW, -halfH, s.w, s.h);
       if (s.strokeWidth > 0) {
@@ -15156,8 +15273,19 @@ MWO.Animation = (function() {
 
     typeBadge.textContent = shape.type.toUpperCase();
 
+    var seqHtml = '';
+    if (shape.type === 'image' && shape.imgs && shape.imgs.length) {
+      seqHtml = `
+        <div style="padding:8px;background:rgba(78,158,255,0.1);border:1px solid rgba(78,158,255,0.25);border-radius:6px;display:flex;flex-direction:column;gap:6px">
+          <div style="font-size:0.85em;color:#7fb3ff">Image sequence: ${shape.imgs.length} frames</div>
+          <label style="color:#aaa">Seconds per frame: <input type="number" id="prop-framedur" value="${shape.frameDur || 0.12}" min="0.02" max="5" step="0.01" style="width:60px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.1);color:#fff;border-radius:4px;padding:3px"></label>
+          <div style="font-size:0.75em;color:#888">Playback: ${Math.round(1 / (shape.frameDur || 0.12))} fps. Onion Skin ghosts show neighbouring frames.</div>
+        </div>`;
+    }
+
     var html = `
       <div style="display:flex;flex-direction:column;gap:8px">
+        ${seqHtml}
         <!-- Position -->
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
           <label style="color:#aaa">X: <input type="number" id="prop-x" value="${Math.round(shape.x)}" style="width:100%;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.1);color:#fff;border-radius:4px;padding:3px"></label>
@@ -21979,6 +22107,10 @@ var MWO = MWO || {};
         if (kx !== 0 || ky !== 0) {
           state.mx = kx;
           state.my = ky;
+        } else if (!state.isTouching) {
+          // releasing all keys must stop movement (it kept drifting before)
+          state.mx = 0;
+          state.my = 0;
         }
       }
 
@@ -22036,6 +22168,11 @@ var MWO = MWO || {};
 
       return {
         getState: function() {
+          if (!element.isConnected) {
+            // window was closed: unhook the global key listeners (leak fix)
+            window.removeEventListener('keydown', onKeyDown);
+            window.removeEventListener('keyup', onKeyUp);
+          }
           updateKeys();
           return state;
         },

@@ -20,7 +20,7 @@ MWO.CodeStudio = (function() {
   
   function launch() {
     var w = MWO.wm.create({
-      id: 'codestudio-' + Date.now(),
+      id: 'codestudio-win',
       title: 'Code Studio',
       icon: 'code-studio',
       width: 800, height: 600,
@@ -36,14 +36,14 @@ MWO.CodeStudio = (function() {
       <div style="display:flex;flex-direction:column;height:100%">
         <div style="display:flex;align-items:center;padding:6px 8px;gap:6px;border-bottom:1px solid rgba(255,255,255,0.06);background:rgba(0,0,0,0.2)">
           <select id="cs-lang" style="padding:6px 10px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.08);border-radius:6px;color:#eee;font-size:0.82em">
-            ${Object.keys(languages).map(k => `<option value="${k}" ${k===currentLang?'selected':''}>${languages[k].icon} ${languages[k].name}</option>`).join('')}
+            ${Object.keys(languages).map(k => `<option value="${k}" ${k===currentLang?'selected':''}>${languages[k].name}</option>`).join('')}
           </select>
           <button class="mw-btn" onclick="MWO.CodeStudio.newFile()" style="font-size:0.78em;padding:6px 12px">New</button>
           <button class="mw-btn" onclick="MWO.CodeStudio.openFile()" style="font-size:0.78em;padding:6px 12px">Open</button>
           <button class="mw-btn" onclick="MWO.CodeStudio.saveFile()" style="font-size:0.78em;padding:6px 12px">Save</button>
-          <button class="mw-btn primary" onclick="MWO.CodeStudio.run()" style="font-size:0.78em;padding:6px 14px">Run Run</button> <button class="mw-btn primary" onclick="MWO.CodeStudio.publish()" style="font-size:0.78em;padding:6px 14px;background:#2e7d4f">Build zip + Publish</button>
+          <button class="mw-btn primary" onclick="MWO.CodeStudio.run()" style="font-size:0.78em;padding:6px 14px">Run</button> <button class="mw-btn primary" onclick="MWO.CodeStudio.publish()" style="font-size:0.78em;padding:6px 14px;background:#2e7d4f">Build zip + Publish</button>
           <div style="flex:1"></div>
-          <span id="cs-status" style="font-size:0.72em;color:var(--text2)">Line 1, Col 1 | 1 lines | Runs practical C/C++/C# subset (pointers out of scope)</span>
+          <span id="cs-status" style="font-size:0.72em;color:var(--text2)">Line 1, Col 1 | 1 lines | C/C++/C# run on the real built-in interpreter; JS/HTML/CSS run in the preview</span>
         </div>
         <div style="display:flex;flex:1;overflow:hidden">
           <div style="display:flex;flex:1;overflow:hidden">
@@ -72,11 +72,19 @@ MWO.CodeStudio = (function() {
     var consoleEl = winBody.querySelector('#cs-console');
     
     langSel.onchange = function() {
+      var prevLang = currentLang;
       currentLang = this.value;
-      if (textarea.value === '' || textarea.value.match(/^\s*$/)) {
+      var empty = !textarea.value || textarea.value.match(/^\s*$/);
+      var wasStarter = textarea.value === languages[prevLang].template;
+      if (empty || wasStarter) {
+        // starter template: swap it for the new language's starter
         textarea.value = languages[currentLang].template;
         updateGutter();
+      } else if (prevLang !== currentLang) {
+        // user code: keep it, but tell them what language they are now in
+        try { if (MWO.notif && MWO.notif.show) MWO.notif.show('Code Studio', 'Language set to ' + languages[currentLang].name + '. Your code was kept. Clear the editor to load the ' + languages[currentLang].name + ' starter template.'); } catch (e) {}
       }
+      updateStatus();
     };
     
     textarea.oninput = function() { updateGutter(); updateStatus(); };

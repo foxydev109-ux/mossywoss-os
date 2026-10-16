@@ -565,6 +565,10 @@ var MWO = MWO || {};
         if (kx !== 0 || ky !== 0) {
           state.mx = kx;
           state.my = ky;
+        } else if (!state.isTouching) {
+          // releasing all keys must stop movement (it kept drifting before)
+          state.mx = 0;
+          state.my = 0;
         }
       }
 
@@ -622,6 +626,11 @@ var MWO = MWO || {};
 
       return {
         getState: function() {
+          if (!element.isConnected) {
+            // window was closed: unhook the global key listeners (leak fix)
+            window.removeEventListener('keydown', onKeyDown);
+            window.removeEventListener('keyup', onKeyUp);
+          }
           updateKeys();
           return state;
         },

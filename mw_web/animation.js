@@ -307,13 +307,15 @@ MWO.Animation = (function() {
         <!-- TOP TOOLBAR -->
         <div style="display:flex;align-items:center;padding:6px 12px;gap:8px;background:#1e2230;border-bottom:1px solid rgba(255,255,255,0.08);flex-wrap:wrap">
  <span style="font-weight:bold;font-size:0.95em;margin-right:6px;display:flex;align-items:center;gap:4px"> Animation Studio</span>
-          <button class="mw-btn" id="anim-btn-new" style="font-size:0.78em;padding:4px 10px">Doc New</button>
+          <button class="mw-btn" id="anim-btn-new" style="font-size:0.78em;padding:4px 10px">New</button>
           <button class="mw-btn" id="anim-btn-open" style="font-size:0.78em;padding:4px 10px">Dir Open</button>
  <button class="mw-btn" id="anim-btn-save" style="font-size:0.78em;padding:4px 10px"> Save</button>
- <button class="mw-btn primary" id="anim-btn-export" style="font-size:0.78em;padding:4px 12px"> Export Video</button>
+ <button class="mw-btn primary" id="anim-btn-export" style="font-size:0.78em;padding:4px 12px">Export Video</button>
+          <button class="mw-btn" id="anim-btn-export-png" style="font-size:0.78em;padding:4px 10px">Export Frame PNG</button>
+          <button class="mw-btn" id="anim-btn-import-imgs" style="font-size:0.78em;padding:4px 10px">Import Image Frames</button>
           <div style="height:18px;border-left:1px solid rgba(255,255,255,0.12);margin:0 4px"></div>
  <button class="mw-btn" id="anim-btn-mode3d" style="font-size:0.78em;padding:4px 10px;background:rgba(255,255,255,0.06)"> Mode: 2D</button>
- <button class="mw-btn" id="anim-btn-onionskin" style="font-size:0.78em;padding:4px 10px"> Onion Skin: OFF</button>
+ <button class="mw-btn" id="anim-btn-onionskin" style="font-size:0.78em;padding:4px 10px">Onion Skin: OFF</button>
           <button class="mw-btn" id="anim-btn-resetview" style="font-size:0.78em;padding:4px 8px"> Reset View</button>
         </div>
 
@@ -410,6 +412,91 @@ MWO.Animation = (function() {
     document.getElementById('anim-btn-save').onclick = saveProject;
     document.getElementById('anim-btn-export').onclick = exportVideo;
 
+    // props panel is re-rendered on every selection: delegate the frame-duration field
+    document.getElementById('anim-props-content').addEventListener('change', function(e) {
+      if (e.target && e.target.id === 'prop-framedur') {
+        var shape = getActiveShape();
+        if (!shape) return;
+        var v = parseFloat(e.target.value);
+        if (isFinite(v) && v >= 0.02) {
+          shape.frameDur = v;
+          MWO.notif.show('Animation Studio', 'Frame duration: ' + v + 's (' + Math.round(1 / v) + ' fps).');
+        }
+      }
+    });
+
+    // Export the CURRENT frame as a PNG (device download + copy in /Pictures)
+    document.getElementById('anim-btn-export-png').onclick = function() {
+      try {
+        var data = canvas.toDataURL('image/png');
+        var a = document.createElement('a');
+        a.href = data;
+        a.download = 'mwo-frame-' + Math.round(currentTime * 1000) + '.png';
+        document.body.appendChild(a); a.click(); a.remove();
+        MWO.fs.mkdir('/Pictures').then(function() {
+          return MWO.fs.writeFile('/Pictures/frame-' + Date.now() + '.png', data);
+        }).then(function() {
+          MWO.notif.show('Animation Studio', 'Frame exported to your device (also saved in Pictures).');
+        }).catch(function() {
+          MWO.notif.show('Animation Studio', 'Frame exported to your device.');
+        });
+      } catch (e) {
+        MWO.notif.show('Animation Studio', 'Export failed: ' + e.message);
+      }
+    };
+
+    // Import images as ANIMATION FRAMES: every selected image becomes one
+    // frame of an image-sequence shape, played back on the timeline.
+    // Onion skin shows the neighbouring frames as ghosts while you edit.
+    document.getElementById('anim-btn-import-imgs').onclick = function() {
+      var input = document.createElement('input');
+      input.type = 'file';
+      input.accept = 'image/*';
+      input.multiple = true;
+      input.onchange = function(ev) {
+        var files = Array.prototype.slice.call(ev.target.files || []);
+        if (!files.length) return;
+        var layer = layers.find(function(l) { return l.id === activeLayerId; }) || layers[0];
+        if (!layer) return;
+        var seqShape = null;
+        for (var i = 0; i < layer.shapes.length; i++) {
+          if (layer.shapes[i].type === 'image' && layer.shapes[i].imgs && layer.shapes[i].imgs.length) { seqShape = layer.shapes[i]; break; }
+        }
+        if (!seqShape) {
+          seqShape = createShape('image', layer.id, 200, 140, 320, 240);
+          seqShape.type = 'image';
+          seqShape.fill = 'none';
+          seqShape.stroke = 'none';
+          seqShape.imgs = [];
+          seqShape.frameDur = 0.12; // seconds per frame (adjustable in the props panel)
+          layer.shapes.push(seqShape);
+          activeShapeId = seqShape.id;
+        }
+        var target = seqShape.imgs;
+        var done = 0;
+        files.forEach(function(f, idx) {
+          var rd = new FileReader();
+          rd.onload = function(e2) {
+            var img = new Image();
+            img.onload = function() {
+              target[idx] = img;
+              done++;
+              if (!seqShape.imgW && img.width) { seqShape.imgW = img.width; seqShape.imgH = img.height; seqShape.w = img.width; seqShape.h = img.height; seqShape.x = Math.max(20, (canvas.width - img.width) / 2); seqShape.y = Math.max(20, (canvas.height - img.height) / 2); }
+              if (done === files.length) {
+                duration = Math.max(duration, Math.ceil(seqShape.imgs.length * (seqShape.frameDur || 0.12) * 10) / 10);
+                updateTimelineUI();
+                updatePropsPanel();
+                MWO.notif.show('Animation Studio', done + ' frame(s) imported. Each image = 1 frame at ' + (1 / (seqShape.frameDur || 0.12)).toFixed(0) + ' fps. Turn on Onion Skin to see neighbours while you work.');
+              }
+            };
+            img.src = e2.target.result;
+          };
+          rd.readAsDataURL(f);
+        });
+      };
+      input.click();
+    };
+
     document.getElementById('anim-btn-mode3d').onclick = function() {
       is3D = !is3D;
  this.textContent = is3D? ' Mode: 3D': ' Mode: 2D';
@@ -422,7 +509,7 @@ MWO.Animation = (function() {
 
     document.getElementById('anim-btn-onionskin').onclick = function() {
       onionSkin = !onionSkin;
- this.textContent = onionSkin? ' Onion Skin: ON': ' Onion Skin: OFF';
+ this.textContent = onionSkin ? 'Onion Skin: ON' : 'Onion Skin: OFF';
       this.style.background = onionSkin ? '#2d4530' : 'transparent';
       renderCanvas();
     };
@@ -913,6 +1000,13 @@ MWO.Animation = (function() {
       if (!layer.visible) return;
       layer.shapes.forEach(function(rawShape) {
         var s = getInterpolated(rawShape, time);
+        // image sequences: pick the frame for this point in time
+        if (rawShape.type === 'image' && rawShape.imgs && rawShape.imgs.length) {
+          var fd = rawShape.frameDur || 0.12;
+          var cyc = rawShape.imgs.length * fd;
+          var fi = Math.floor((time % cyc) / fd);
+          s.frameIndex = Math.min(rawShape.imgs.length - 1, Math.max(0, fi));
+        }
         renderSingle2DShape(s, isGhost, alphaMult, rawShape.id === activeShapeId);
       });
     });
@@ -931,7 +1025,14 @@ MWO.Animation = (function() {
     var halfW = s.w / 2;
     var halfH = s.h / 2;
 
-    if (s.type === 'rect') {
+    if (s.type === 'image') {
+      var imgs = s.imgs || [];
+      var im = imgs[s.frameIndex !== undefined ? s.frameIndex : 0];
+      if (im && im.complete && im.naturalWidth) {
+        if (isGhost) ctx.globalAlpha *= 0.9;
+        ctx.drawImage(im, -halfW, -halfH, s.w, s.h);
+      }
+    } else if (s.type === 'rect') {
       ctx.fillStyle = isGhost ? '#88aaff' : s.fill;
       ctx.fillRect(-halfW, -halfH, s.w, s.h);
       if (s.strokeWidth > 0) {
@@ -1265,8 +1366,19 @@ MWO.Animation = (function() {
 
     typeBadge.textContent = shape.type.toUpperCase();
 
+    var seqHtml = '';
+    if (shape.type === 'image' && shape.imgs && shape.imgs.length) {
+      seqHtml = `
+        <div style="padding:8px;background:rgba(78,158,255,0.1);border:1px solid rgba(78,158,255,0.25);border-radius:6px;display:flex;flex-direction:column;gap:6px">
+          <div style="font-size:0.85em;color:#7fb3ff">Image sequence: ${shape.imgs.length} frames</div>
+          <label style="color:#aaa">Seconds per frame: <input type="number" id="prop-framedur" value="${shape.frameDur || 0.12}" min="0.02" max="5" step="0.01" style="width:60px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.1);color:#fff;border-radius:4px;padding:3px"></label>
+          <div style="font-size:0.75em;color:#888">Playback: ${Math.round(1 / (shape.frameDur || 0.12))} fps. Onion Skin ghosts show neighbouring frames.</div>
+        </div>`;
+    }
+
     var html = `
       <div style="display:flex;flex-direction:column;gap:8px">
+        ${seqHtml}
         <!-- Position -->
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
           <label style="color:#aaa">X: <input type="number" id="prop-x" value="${Math.round(shape.x)}" style="width:100%;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.1);color:#fff;border-radius:4px;padding:3px"></label>

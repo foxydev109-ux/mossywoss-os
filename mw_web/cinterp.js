@@ -1300,6 +1300,12 @@ MWO.CInterp = (function() {
           return this.isTruthy(tCond) ? this.eval(node.trueExpr) : this.eval(node.falseExpr);
 
         case 'MemberExpr':
+          // static class method access: Calc.Square -> the registered function
+          if (!node.computed && node.object && node.object.type === 'Identifier'
+              && this.classes && this.classes[node.object.name]
+              && this.functions && this.functions[node.property]) {
+            return this.functions[node.property];
+          }
           var obj = this.eval(node.object);
           if (obj === null || obj === undefined) {
             throw new Error('Runtime error: Null reference exception');
@@ -1460,11 +1466,13 @@ MWO.CInterp = (function() {
       var programAst = parser.parseProgram();
 
       evaler = new Evaluator(stdin || '');
+      evaler.classes = {};
 
       var topLevelStmts = [];
       for (var i = 0; i < programAst.body.length; i++) {
         var stmt = programAst.body[i];
         if (stmt.type === 'ClassDecl') {
+          evaler.classes[stmt.name] = true;
           for (var m = 0; m < stmt.members.length; m++) {
             var member = stmt.members[m];
             if (member.type === 'FunctionDecl') {
