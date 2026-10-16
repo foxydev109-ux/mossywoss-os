@@ -296,6 +296,8 @@ MWO.Animation = (function() {
 
     renderAppHTML();
     initCanvas();
+    attachBrushTool();
+    brushMode = false;
     updateTimelineUI();
     updatePropsPanel();
     startRenderLoop();
