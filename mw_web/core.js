@@ -2205,7 +2205,7 @@ bootEl.style.transition = 'opacity 0.8s ease';
       if (/what time|time is it|the time/.test(q)) return 'It is ' + new Date().toLocaleTimeString() + '.';
       if (/what (day|date)|today('s date)?\b/.test(q)) return 'Today is ' + new Date().toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) + '.';
       if (/wallpaper|background|theme/.test(q)) return 'Right-click the desktop for wallpapers, or open Settings for more. Want a tip? The dark purple one pairs great with the fox aesthetic.';
-      if (/update|version/.test(q)) return 'MossGuard handles OS updates. Open it ("open mossguard") and use the OS Updates tab. The default update server points at the official GitHub manifest, so Check for Updates genuinely checks online.';
+      if (/update|version/.test(q)) return 'MossGuard handles OS updates. Open it ("open mossguard") and use the OS Updates tab. The default update server points at the official release manifest, so Check for Updates genuinely checks online.';
       if (/my name|who am i/.test(q)) return 'You are ' + name + ', signed in on this device. Nice to meet you again!';
       if (/weather/.test(q)) return 'I have no internet weather here (fully offline), but the Mood Weather app makes a fun local weather vibe. Say "open weather".';
       if (/blender|photoshop|steam|minecraft/.test(q)) return 'Heavy native PC software like that does not run inside a browser OS. But the MWO Browser can search and open their sites for you (Search the web or type a URL), and the Store has real in-OS creative tools like Animation Studio.';

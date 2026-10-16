@@ -502,7 +502,7 @@
             var full = currentPath + '/' + item;
             var lower = item.toLowerCase();
             if (/\.(exe|dll)$/.test(lower)) {
-              // Windows executable: hand it to the real PE Inspector
+              // PC executable (PE): hand it to the real PE Inspector
               try {
                 MWO._peInspectPath = full;
                 MWO.launchApp('pe-inspector');

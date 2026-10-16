@@ -1,7 +1,7 @@
-/* PE Inspector: genuinely parses Windows PE executables (.exe/.dll) stored
+/* PE Inspector: genuinely parses PC PE executables (.exe/.dll) stored
    in the VFS. Reads the DOS MZ header, PE signature, machine type, sections
    and import table from the real file bytes. Static inspection only - it is
-   honest about the fact that Windows programs cannot execute in this OS. */
+   honest about the fact that PC programs cannot execute in this OS. */
 (function(MWO) {
   'use strict';
   function bytesFromVFS(content) {
@@ -16,7 +16,7 @@
   }
   function parsePE(u) {
     var dv = new DataView(u.buffer, u.byteOffset, u.byteLength);
-    if (u.length < 0x40 || dv.getUint16(0, true) !== 0x5A4D) return { error: 'No DOS MZ header (not a Windows executable).' };
+    if (u.length < 0x40 || dv.getUint16(0, true) !== 0x5A4D) return { error: 'No DOS MZ header (not a PC executable).' };
     var e_lfanew = dv.getUint32(0x3C, true);
     if (e_lfanew + 24 > u.length || dv.getUint32(e_lfanew, true) !== 0x00004550) return { error: 'PE signature not found (not a valid PE).' };
     var pe = e_lfanew;
@@ -86,7 +86,7 @@
   MWO.registerApp({
     id: 'pe-inspector',
     name: 'PE Inspector',
-    description: 'Parse real Windows .exe/.dll files: headers, sections and imports. Honest static inspection.',
+    description: 'Parse real PC .exe/.dll executables: headers, sections and imports. Honest static inspection.',
     icon: 'binary',
     category: 'app',
     installed: false,
@@ -96,7 +96,7 @@
       body.style.cssText = 'background:#12151f;color:#dfe4f0;font-size:13px;padding:12px;overflow:auto';
       body.innerHTML = `
         <div style="font-weight:bold;margin-bottom:6px">PE Inspector</div>
-        <div style="color:#9aa4b8;margin-bottom:10px">Pick a file from your Downloads to analyze it as a real Windows executable.</div>
+        <div style="color:#9aa4b8;margin-bottom:10px">Pick a file from your Downloads to analyze it as a real PC executable.</div>
         <div id="pe-list" style="margin-bottom:10px"></div>
         <div style="display:flex;gap:8px;margin-bottom:10px">
           <input id="pe-path" class="mw-input" placeholder="or type a full VFS path, e.g. /Downloads/program.exe" style="flex:1" />
@@ -123,7 +123,7 @@
             <table style="border-collapse:collapse;font-size:12px"><tr><th style="text-align:left;padding:3px 8px">Name</th><th>Raw size</th><th>File offset</th></tr>${secs}</table>
             <div style="margin-top:8px;font-weight:600">Imports (DLLs)</div>
             <ul style="margin:4px 0 0 18px">${imps}</ul>
-            <div style="margin-top:10px;color:#9aa4b8;font-size:11px">Static inspection only. A browser OS cannot run Windows programs - this reads the real bytes of the file, it does not execute them.</div>
+            <div style="margin-top:10px;color:#9aa4b8;font-size:11px">Static inspection only. A browser OS cannot run PC programs - this reads the real bytes of the file, it does not execute them.</div>
           </div>`;
       }
       body.querySelector('#pe-open').onclick = async function() {

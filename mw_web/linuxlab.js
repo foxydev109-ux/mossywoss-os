@@ -12,49 +12,49 @@
 
   // Every entry is a REAL, free/open-source project that runs at its owner's
   // site in your browser. Rights belong to their owners; MWO is not affiliated,
-  // not endorsed by, and does not host or redistribute any of them. Windows
+  // not endorsed by, and does not host or redistribute any of them. PC
   // images are deliberately excluded (proprietary licensing).
   var BROWSER_LINUX = [
-    { name: 'v86 — Alpine, Arch, Buildroot, TinyCore, more', owner: 'Fabian Hemmer (BSD-2-Clause)', url: 'https://copy.sh/v86/',
-      desc: 'Real x86 virtual machine in WebAssembly. Boots actual Linux distro kernels in your browser: Alpine, Arch 32-bit, Buildroot, TinyCore and more. Fully interactive, runs from their site with your choice of distro image.' },
-    { name: 'v86 — KolibriOS', owner: 'KolibriOS project (GPL, rights with owners)', url: 'https://copy.sh/v86/',
-      desc: 'A astonishingly tiny (fits on a floppy) GUI operating system written in assembly — boots in seconds. One of those OSes most people have never seen. Runs for real inside v86 on their site.' },
-    { name: 'v86 — FreeDOS', owner: 'FreeDOS project (GPL)', url: 'https://copy.sh/v86/',
+    { name: 'In-browser x86 PC: several tiny Linux systems', owner: '(BSD-2-Clause; rights with the original authors)', url: 'https://copy.sh/v86/',
+      desc: 'Real x86 virtual machine in WebAssembly. Boots actual Linux distro kernels in your browser: the tiny Linux, Arch 32-bit, Buildroot, TinyCore and more. Fully interactive, runs from their site with your choice of distro image.' },
+    { name: 'In-browser x86 PC: lightweight graphical OS', owner: '(GPL, rights with owners; rights with the original authors)', url: 'https://copy.sh/v86/',
+      desc: 'A astonishingly tiny (fits on a floppy) GUI operating system written in assembly — boots in seconds. One of those OSes most people have never seen. Runs for real inside the x86 emulator on their site.' },
+    { name: 'In-browser x86 PC: classic DOS environment', owner: '(GPL; rights with the original authors)', url: 'https://copy.sh/v86/',
       desc: 'The complete, free, open-source MS-DOS-compatible operating system — still actively maintained. Text-mode, real DOS running in your browser tab.' },
-    { name: 'v86 — Minix 3', owner: 'Minix 3 project (BSD-style license)', url: 'https://copy.sh/v86/',
-      desc: 'The famous microkernel OS used to teach OS design worldwide. Tiny, academic-grade, and genuinely runnable in-browser via v86.' },
-    { name: 'v86 — Haiku (BeOS-lineage)', owner: 'Haiku project (MIT)', url: 'https://copy.sh/v86/',
-      desc: 'The open-source resurrection of BeOS: a fast, friendly desktop OS most people have never touched. Alpha x86 images run in v86.' },
-    { name: 'WebVM — full Debian', owner: 'Leaning Technologies (CheerpX)', url: 'https://webvm.io',
-      desc: 'A real Debian userspace executing in the browser sandbox via x86-to-WASM translation. Working shell, toolchain, and (with their networking setup) internet access.' },
-    { name: 'JSLinux', owner: 'Fabian Hemmer', url: 'https://bellard.org/jslinux/',
+    { name: 'In-browser x86 PC: teaching microkernel OS', owner: '(BSD-style license; rights with the original authors)', url: 'https://copy.sh/v86/',
+      desc: 'The famous microkernel OS used to teach OS design worldwide. Tiny, academic-grade, and genuinely runnable in-browser via the x86 emulator.' },
+    { name: 'In-browser x86 PC: inspired vintage desktop', owner: '(MIT; rights with the original authors)', url: 'https://copy.sh/v86/',
+      desc: 'The open-source resurrection of BeOS: a fast, friendly desktop OS most people have never touched. Alpha x86 images run in the x86 emulator.' },
+    { name: 'Full Linux desktop in the browser', owner: '(CheerpX; rights with the original authors)', url: 'https://webvm.io',
+      desc: 'A real the Linux desktop userspace executing in the browser sandbox via x86-to-WASM translation. Working shell, toolchain, and (with their networking setup) internet access.' },
+    { name: 'Tiny Linux console in the browser', owner: '(open source; rights with the original authors)', url: 'https://bellard.org/jslinux/',
       desc: 'The original x86/RISC-V emulator experiments running real kernels in JavaScript/WASM. Text-mode, very fast, great for seeing a genuine kernel boot in seconds.' }
   ];
 
   var OTHER_OS = [
-    { name: 'SerenityOS', owner: 'SerenityOS project (BSD-2-Clause)', url: 'https://github.com/SerenityOS/serenity',
+    { name: 'Hobbyist graphical OS built from scratch', owner: '(BSD-2-Clause; rights with the original authors)', url: 'https://github.com/SerenityOS/serenity',
       desc: 'A complete from-scratch Unix-like OS with its own kernel, browser and windowed desktop — built in the open and famously readable. Free, community-run, most people have never heard of it.' },
-    { name: 'Redox OS', owner: 'Redox OS project (MIT)', url: 'https://www.redox-os.org/',
+    { name: 'Microkernel OS written in Rust', owner: '(MIT; rights with the original authors)', url: 'https://www.redox-os.org/',
       desc: 'A full Unix-like microkernel OS written in Rust, focused on safety and security. Free and open source with an official site and downloads.' },
-    { name: 'RISC OS Open', owner: 'RISC OS Open (Apache-2.0)', url: 'https://www.riscosopen.org/',
-      desc: 'The direct descendant of the 1987 Acorn RISC OS — not Linux, not Windows, a completely different lineage. Free, runs great on Raspberry Pi.' },
-    { name: 'Plan 9 from Bell Labs', owner: 'Bell Labs / Lucent Public License', url: 'https://9p.io/plan9/',
+    { name: 'Classic ARM desktop OS', owner: '(Apache-2.0; rights with the original authors)', url: 'https://www.riscosopen.org/',
+      desc: 'The direct descendant of the 1987 Acorn the classic ARM desktop — not Linux, not PC, a completely different lineage. Free, runs great on Raspberry Pi.' },
+    { name: 'Research distributed OS', owner: '(open source; rights with the original authors)', url: 'https://9p.io/plan9/',
       desc: 'The legendary successor to Unix from the original researchers. Free for personal use under the Lucent Public License — a piece of OS history.' }
   ];
 
   var EASY_DISTROS = [
-    { name: 'Ubuntu', url: 'https://ubuntu.com/download', why: 'Most common beginner distro; huge community support.' },
-    { name: 'Linux Mint', url: 'https://linuxmint.com/download.php', why: 'Windows-like desktop, famously easy installer.' },
-    { name: 'Zorin OS', url: 'https://zorin.com/os/download/', why: 'Designed for people switching from Windows.' },
-    { name: 'Pop!_OS', owner: 'System76', url: 'https://pop.system76.com/', why: 'Polished, gaming-friendly, straightforward install.' },
-    { name: 'Fedora Workstation', owner: 'Red Hat sponsored project', url: 'https://fedoraproject.org/workstation/download/', why: 'Modern, up-to-date, clean GNOME desktop.' }
+    { name: 'Beginner-friendly Linux desktop', url: 'https://ubuntu.com/download', why: 'Most common beginner distro; huge community support.' },
+    { name: 'Easy Linux desktop for switchers', url: 'https://linuxmint.com/download.php', why: 'PC-like desktop, famously easy installer.' },
+    { name: 'Polished familiar-layout Linux desktop', url: 'https://zorin.com/os/download/', why: 'Designed for people switching from PC.' },
+    { name: 'Gaming-friendly Linux desktop', owner: '(open source; rights with the original authors)', url: 'https://pop.system76.com/', why: 'Polished, gaming-friendly, straightforward install.' },
+    { name: 'Modern workstation Linux desktop', owner: '(open source; rights with the original authors)', url: 'https://fedoraproject.org/workstation/download/', why: 'Modern, up-to-date, clean GNOME desktop.' }
   ];
 
   var ON_ANDROID = [
-    { name: 'Winlator', owner: 'Winlator project (GPL, rights with owners)', url: 'https://github.com/brunodev85/winlator',
-      desc: 'REAL Windows app support on Android, no root: Wine + Box86/Box64 x86 translation + Turnip/Zink/VirGL GPU drivers, all inside the normal app sandbox. This is the genuine architecture: PRoot-style isolation, Mesa drivers, DXVK pipelines, touchscreen mapped to mouse. Honest performance on a decent Android 15 tablet: light 2D PC apps and older games run well; heavy 3D titles are limited by ARM translation overhead.' },
-    { name: 'PojavLauncher', owner: 'PojavLauncherTeam (GPL-3.0)', url: 'https://github.com/PojavLauncherTeam/PojavLauncher',
-      desc: 'The real way to play Minecraft: Java Edition on Android — no root, and legal under Mojang EULA (your own account required; this project ships none of Mojang assets). Includes JVM-on-ARM translation and GPU backends. Bedrock Edition runs natively on Android already.' }
+    { name: 'PC app container for phones (open source, no root)', owner: '(GPL, rights with owners; rights with the original authors)', url: 'https://github.com/brunodev85/winlator',
+      desc: 'REAL PC app support on phone, no root: the compatibility layer + Box86/the x86 translator x86 translation + GPU drivers/VirGL GPU drivers, all inside the normal app sandbox. This is the genuine architecture: PRoot-style isolation, Mesa drivers, DXVK pipelines, touchscreen mapped to mouse. Honest performance on a decent phone 15 tablet: light 2D PC apps and older games run well; heavy 3D titles are limited by ARM translation overhead.' },
+    { name: 'Java sandbox game launcher for phones (open source)', owner: '(GPL-3.0; rights with the original authors)', url: 'https://github.com/PojavLauncherTeam/PojavLauncher',
+      desc: 'The real way to play the Java sandbox game: Java Edition on phone — no root, and legal under Mojang EULA (your own account required; this project ships none of Mojang assets). Includes JVM-on-ARM translation and GPU backends. Bedrock Edition runs natively on phone already.' }
   ];
 
   var EMU_GUIDE = [
@@ -63,7 +63,7 @@
     ]},
     { level: 'Needs a real PC (native emulators, not a web OS)', items: [
       'GameCube and Wii: Dolphin Emulator (dolphin-emu.org) — a real PC is required for full speed. A browser-based web OS cannot honestly run these.',
-      'The Sims 1/3: Windows software; runs on a real PC (Windows, or Linux via Wine/Proton). Not executable inside a browser sandbox.',
+      'The Sims 1/3: PC software; runs on a real PC (PC, or Linux via the compatibility layer/Proton). Not executable inside a browser sandbox.',
       'PlayStation 2: PCSX2. Switch: Ryujinx/yuzu-adjacent projects per their official sites.'
     ]},
     { level: 'Rules that always apply', items: [
@@ -152,7 +152,7 @@
       });
       body.appendChild(list);
 
-      body.appendChild(section('4. On Android: real PC software, no root (third-party, rights with owners)'));
+      body.appendChild(section('4. On a phone: real PC software, no root (third-party, rights with owners)'));
       ON_ANDROID.forEach(function(d) {
         var card = el('div', 'll-card');
         card.style.cssText = 'background:var(--card,#1e2431);border:1px solid var(--border,#2c3346);border-radius:10px;padding:12px;margin:8px 0';

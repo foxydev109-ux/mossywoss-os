@@ -2902,7 +2902,7 @@ bootEl.style.transition = 'opacity 0.8s ease';
       if (/what time|time is it|the time/.test(q)) return 'It is ' + new Date().toLocaleTimeString() + '.';
       if (/what (day|date)|today('s date)?\b/.test(q)) return 'Today is ' + new Date().toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) + '.';
       if (/wallpaper|background|theme/.test(q)) return 'Right-click the desktop for wallpapers, or open Settings for more. Want a tip? The dark purple one pairs great with the fox aesthetic.';
-      if (/update|version/.test(q)) return 'MossGuard handles OS updates. Open it ("open mossguard") and use the OS Updates tab. The default update server points at the official GitHub manifest, so Check for Updates genuinely checks online.';
+      if (/update|version/.test(q)) return 'MossGuard handles OS updates. Open it ("open mossguard") and use the OS Updates tab. The default update server points at the official release manifest, so Check for Updates genuinely checks online.';
       if (/my name|who am i/.test(q)) return 'You are ' + name + ', signed in on this device. Nice to meet you again!';
       if (/weather/.test(q)) return 'I have no internet weather here (fully offline), but the Mood Weather app makes a fun local weather vibe. Say "open weather".';
       if (/blender|photoshop|steam|minecraft/.test(q)) return 'Heavy native PC software like that does not run inside a browser OS. But the MWO Browser can search and open their sites for you (Search the web or type a URL), and the Store has real in-OS creative tools like Animation Studio.';
@@ -6714,49 +6714,49 @@ MWO.CodeStudio = (function() {
 
   // Every entry is a REAL, free/open-source project that runs at its owner's
   // site in your browser. Rights belong to their owners; MWO is not affiliated,
-  // not endorsed by, and does not host or redistribute any of them. Windows
+  // not endorsed by, and does not host or redistribute any of them. PC
   // images are deliberately excluded (proprietary licensing).
   var BROWSER_LINUX = [
-    { name: 'v86 — Alpine, Arch, Buildroot, TinyCore, more', owner: 'Fabian Hemmer (BSD-2-Clause)', url: 'https://copy.sh/v86/',
-      desc: 'Real x86 virtual machine in WebAssembly. Boots actual Linux distro kernels in your browser: Alpine, Arch 32-bit, Buildroot, TinyCore and more. Fully interactive, runs from their site with your choice of distro image.' },
-    { name: 'v86 — KolibriOS', owner: 'KolibriOS project (GPL, rights with owners)', url: 'https://copy.sh/v86/',
-      desc: 'A astonishingly tiny (fits on a floppy) GUI operating system written in assembly — boots in seconds. One of those OSes most people have never seen. Runs for real inside v86 on their site.' },
-    { name: 'v86 — FreeDOS', owner: 'FreeDOS project (GPL)', url: 'https://copy.sh/v86/',
+    { name: 'In-browser x86 PC: several tiny Linux systems', owner: '(BSD-2-Clause; rights with the original authors)', url: 'https://copy.sh/v86/',
+      desc: 'Real x86 virtual machine in WebAssembly. Boots actual Linux distro kernels in your browser: the tiny Linux, Arch 32-bit, Buildroot, TinyCore and more. Fully interactive, runs from their site with your choice of distro image.' },
+    { name: 'In-browser x86 PC: lightweight graphical OS', owner: '(GPL, rights with owners; rights with the original authors)', url: 'https://copy.sh/v86/',
+      desc: 'A astonishingly tiny (fits on a floppy) GUI operating system written in assembly — boots in seconds. One of those OSes most people have never seen. Runs for real inside the x86 emulator on their site.' },
+    { name: 'In-browser x86 PC: classic DOS environment', owner: '(GPL; rights with the original authors)', url: 'https://copy.sh/v86/',
       desc: 'The complete, free, open-source MS-DOS-compatible operating system — still actively maintained. Text-mode, real DOS running in your browser tab.' },
-    { name: 'v86 — Minix 3', owner: 'Minix 3 project (BSD-style license)', url: 'https://copy.sh/v86/',
-      desc: 'The famous microkernel OS used to teach OS design worldwide. Tiny, academic-grade, and genuinely runnable in-browser via v86.' },
-    { name: 'v86 — Haiku (BeOS-lineage)', owner: 'Haiku project (MIT)', url: 'https://copy.sh/v86/',
-      desc: 'The open-source resurrection of BeOS: a fast, friendly desktop OS most people have never touched. Alpha x86 images run in v86.' },
-    { name: 'WebVM — full Debian', owner: 'Leaning Technologies (CheerpX)', url: 'https://webvm.io',
-      desc: 'A real Debian userspace executing in the browser sandbox via x86-to-WASM translation. Working shell, toolchain, and (with their networking setup) internet access.' },
-    { name: 'JSLinux', owner: 'Fabian Hemmer', url: 'https://bellard.org/jslinux/',
+    { name: 'In-browser x86 PC: teaching microkernel OS', owner: '(BSD-style license; rights with the original authors)', url: 'https://copy.sh/v86/',
+      desc: 'The famous microkernel OS used to teach OS design worldwide. Tiny, academic-grade, and genuinely runnable in-browser via the x86 emulator.' },
+    { name: 'In-browser x86 PC: inspired vintage desktop', owner: '(MIT; rights with the original authors)', url: 'https://copy.sh/v86/',
+      desc: 'The open-source resurrection of BeOS: a fast, friendly desktop OS most people have never touched. Alpha x86 images run in the x86 emulator.' },
+    { name: 'Full Linux desktop in the browser', owner: '(CheerpX; rights with the original authors)', url: 'https://webvm.io',
+      desc: 'A real the Linux desktop userspace executing in the browser sandbox via x86-to-WASM translation. Working shell, toolchain, and (with their networking setup) internet access.' },
+    { name: 'Tiny Linux console in the browser', owner: '(open source; rights with the original authors)', url: 'https://bellard.org/jslinux/',
       desc: 'The original x86/RISC-V emulator experiments running real kernels in JavaScript/WASM. Text-mode, very fast, great for seeing a genuine kernel boot in seconds.' }
   ];
 
   var OTHER_OS = [
-    { name: 'SerenityOS', owner: 'SerenityOS project (BSD-2-Clause)', url: 'https://github.com/SerenityOS/serenity',
+    { name: 'Hobbyist graphical OS built from scratch', owner: '(BSD-2-Clause; rights with the original authors)', url: 'https://github.com/SerenityOS/serenity',
       desc: 'A complete from-scratch Unix-like OS with its own kernel, browser and windowed desktop — built in the open and famously readable. Free, community-run, most people have never heard of it.' },
-    { name: 'Redox OS', owner: 'Redox OS project (MIT)', url: 'https://www.redox-os.org/',
+    { name: 'Microkernel OS written in Rust', owner: '(MIT; rights with the original authors)', url: 'https://www.redox-os.org/',
       desc: 'A full Unix-like microkernel OS written in Rust, focused on safety and security. Free and open source with an official site and downloads.' },
-    { name: 'RISC OS Open', owner: 'RISC OS Open (Apache-2.0)', url: 'https://www.riscosopen.org/',
-      desc: 'The direct descendant of the 1987 Acorn RISC OS — not Linux, not Windows, a completely different lineage. Free, runs great on Raspberry Pi.' },
-    { name: 'Plan 9 from Bell Labs', owner: 'Bell Labs / Lucent Public License', url: 'https://9p.io/plan9/',
+    { name: 'Classic ARM desktop OS', owner: '(Apache-2.0; rights with the original authors)', url: 'https://www.riscosopen.org/',
+      desc: 'The direct descendant of the 1987 Acorn the classic ARM desktop — not Linux, not PC, a completely different lineage. Free, runs great on Raspberry Pi.' },
+    { name: 'Research distributed OS', owner: '(open source; rights with the original authors)', url: 'https://9p.io/plan9/',
       desc: 'The legendary successor to Unix from the original researchers. Free for personal use under the Lucent Public License — a piece of OS history.' }
   ];
 
   var EASY_DISTROS = [
-    { name: 'Ubuntu', url: 'https://ubuntu.com/download', why: 'Most common beginner distro; huge community support.' },
-    { name: 'Linux Mint', url: 'https://linuxmint.com/download.php', why: 'Windows-like desktop, famously easy installer.' },
-    { name: 'Zorin OS', url: 'https://zorin.com/os/download/', why: 'Designed for people switching from Windows.' },
-    { name: 'Pop!_OS', owner: 'System76', url: 'https://pop.system76.com/', why: 'Polished, gaming-friendly, straightforward install.' },
-    { name: 'Fedora Workstation', owner: 'Red Hat sponsored project', url: 'https://fedoraproject.org/workstation/download/', why: 'Modern, up-to-date, clean GNOME desktop.' }
+    { name: 'Beginner-friendly Linux desktop', url: 'https://ubuntu.com/download', why: 'Most common beginner distro; huge community support.' },
+    { name: 'Easy Linux desktop for switchers', url: 'https://linuxmint.com/download.php', why: 'PC-like desktop, famously easy installer.' },
+    { name: 'Polished familiar-layout Linux desktop', url: 'https://zorin.com/os/download/', why: 'Designed for people switching from PC.' },
+    { name: 'Gaming-friendly Linux desktop', owner: '(open source; rights with the original authors)', url: 'https://pop.system76.com/', why: 'Polished, gaming-friendly, straightforward install.' },
+    { name: 'Modern workstation Linux desktop', owner: '(open source; rights with the original authors)', url: 'https://fedoraproject.org/workstation/download/', why: 'Modern, up-to-date, clean GNOME desktop.' }
   ];
 
   var ON_ANDROID = [
-    { name: 'Winlator', owner: 'Winlator project (GPL, rights with owners)', url: 'https://github.com/brunodev85/winlator',
-      desc: 'REAL Windows app support on Android, no root: Wine + Box86/Box64 x86 translation + Turnip/Zink/VirGL GPU drivers, all inside the normal app sandbox. This is the genuine architecture: PRoot-style isolation, Mesa drivers, DXVK pipelines, touchscreen mapped to mouse. Honest performance on a decent Android 15 tablet: light 2D PC apps and older games run well; heavy 3D titles are limited by ARM translation overhead.' },
-    { name: 'PojavLauncher', owner: 'PojavLauncherTeam (GPL-3.0)', url: 'https://github.com/PojavLauncherTeam/PojavLauncher',
-      desc: 'The real way to play Minecraft: Java Edition on Android — no root, and legal under Mojang EULA (your own account required; this project ships none of Mojang assets). Includes JVM-on-ARM translation and GPU backends. Bedrock Edition runs natively on Android already.' }
+    { name: 'PC app container for phones (open source, no root)', owner: '(GPL, rights with owners; rights with the original authors)', url: 'https://github.com/brunodev85/winlator',
+      desc: 'REAL PC app support on phone, no root: the compatibility layer + Box86/the x86 translator x86 translation + GPU drivers/VirGL GPU drivers, all inside the normal app sandbox. This is the genuine architecture: PRoot-style isolation, Mesa drivers, DXVK pipelines, touchscreen mapped to mouse. Honest performance on a decent phone 15 tablet: light 2D PC apps and older games run well; heavy 3D titles are limited by ARM translation overhead.' },
+    { name: 'Java sandbox game launcher for phones (open source)', owner: '(GPL-3.0; rights with the original authors)', url: 'https://github.com/PojavLauncherTeam/PojavLauncher',
+      desc: 'The real way to play the Java sandbox game: Java Edition on phone — no root, and legal under Mojang EULA (your own account required; this project ships none of Mojang assets). Includes JVM-on-ARM translation and GPU backends. Bedrock Edition runs natively on phone already.' }
   ];
 
   var EMU_GUIDE = [
@@ -6765,7 +6765,7 @@ MWO.CodeStudio = (function() {
     ]},
     { level: 'Needs a real PC (native emulators, not a web OS)', items: [
       'GameCube and Wii: Dolphin Emulator (dolphin-emu.org) — a real PC is required for full speed. A browser-based web OS cannot honestly run these.',
-      'The Sims 1/3: Windows software; runs on a real PC (Windows, or Linux via Wine/Proton). Not executable inside a browser sandbox.',
+      'The Sims 1/3: PC software; runs on a real PC (PC, or Linux via the compatibility layer/Proton). Not executable inside a browser sandbox.',
       'PlayStation 2: PCSX2. Switch: Ryujinx/yuzu-adjacent projects per their official sites.'
     ]},
     { level: 'Rules that always apply', items: [
@@ -6854,7 +6854,7 @@ MWO.CodeStudio = (function() {
       });
       body.appendChild(list);
 
-      body.appendChild(section('4. On Android: real PC software, no root (third-party, rights with owners)'));
+      body.appendChild(section('4. On a phone: real PC software, no root (third-party, rights with owners)'));
       ON_ANDROID.forEach(function(d) {
         var card = el('div', 'll-card');
         card.style.cssText = 'background:var(--card,#1e2431);border:1px solid var(--border,#2c3346);border-radius:10px;padding:12px;margin:8px 0';
@@ -8620,7 +8620,7 @@ if (MWO.registerApp) {
             var full = currentPath + '/' + item;
             var lower = item.toLowerCase();
             if (/\.(exe|dll)$/.test(lower)) {
-              // Windows executable: hand it to the real PE Inspector
+              // PC executable (PE): hand it to the real PE Inspector
               try {
                 MWO._peInspectPath = full;
                 MWO.launchApp('pe-inspector');
@@ -9429,7 +9429,7 @@ if (MWO.registerApp) {
 // === browser.js ===
 /* ========================================================================
  * MossyWoss OS Web Browser App
- * Features: Multi-tab browsing, Wikipedia search, real file downloader,
+ * Features: Multi-tab browsing, live web search, real file downloader,
  * in-browser ZIP extraction, HTML5 game OS runner, PE inspector, media preview.
  * ======================================================================== */
 
@@ -10177,8 +10177,8 @@ MWO.Browser = (function() {
 
         const sub = view.getUint16(e_lfanew + 24 + 68, true);
         if (sub === 1) subsystemStr = 'Native / Driver';
-        else if (sub === 2) subsystemStr = 'Windows GUI';
-        else if (sub === 3) subsystemStr = 'Windows Console (CUI)';
+        else if (sub === 2) subsystemStr = 'GUI application';
+        else if (sub === 3) subsystemStr = 'Console application';
         else subsystemStr = 'Subsystem ' + sub;
       }
 
@@ -10222,7 +10222,7 @@ MWO.Browser = (function() {
         <div style="font-size:32px"></div>
         <div>
           <div style="font-weight:bold;font-size:16px;color:#4e9eff">${escapeHTML(filename)}</div>
-          <div style="font-size:12px;color:#aaa">Windows PE Executable Metadata</div>
+          <div style="font-size:12px;color:#aaa">PE Executable Metadata</div>
         </div>
       </div>
 
@@ -10237,7 +10237,7 @@ MWO.Browser = (function() {
       </table>
 
       <div style="background:rgba(255, 170, 0, 0.12);border:1px solid rgba(255, 170, 0, 0.3);border-radius:8px;padding:12px;font-size:13px;line-height:1.4;color:#ffe082">
- ℹ <strong>Honest Notice:</strong> Windows programs cannot execute inside a browser OS. Download the HTML5/JS build instead — those run right here with Run Run.
+ ℹ <strong>Honest Notice:</strong> PC programs (.exe) cannot execute inside a browser OS. Download the HTML5/JS build instead - those run right here with Run.
       </div>
     `;
   }
@@ -10382,7 +10382,7 @@ MWO.Browser = (function() {
         </div>
 
         <button id="mwb-star" title="Bookmark Page" style="height:38px;width:38px;min-width:38px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:8px;color:#fff;font-size:16px;cursor:pointer">Star</button>
-        <button id="mwb-external" title="Open this page in a new tab (works for sites that refuse embedding, like Google)" style="height:38px;padding:0 12px;display:flex;align-items:center;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:8px;color:#fff;font-size:12px;font-weight:bold;cursor:pointer">↗ New Tab</button>
+        <button id="mwb-external" title="Open this page in a new tab (works for sites that refuse embedding)" style="height:38px;padding:0 12px;display:flex;align-items:center;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:8px;color:#fff;font-size:12px;font-weight:bold;cursor:pointer">↗ New Tab</button>
         <button id="mwb-downloads-toggle" title="Downloads" style="height:38px;padding:0 12px;display:flex;align-items:center;gap:6px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:8px;color:#fff;font-size:14px;cursor:pointer;position:relative">
           <span style="font-size:12px;font-weight:bold">Downloads</span>
           <span id="mwb-dl-badge" style="background:#ff3b30;color:#fff;border-radius:10px;padding:1px 6px;font-size:11px;font-weight:bold;display:none">0</span>
@@ -10794,11 +10794,11 @@ MWO.Browser = (function() {
           MWO.dialog.confirm(
             'MossyWoss Browser Help',
             '• Enter URLs or search topics in the address bar.\n' +
-            '• Search query results come directly from Wikipedia API.\n' +
+            '• Search query results come from a public encyclopedia API.\n' +
             '• Downloads stay strictly in MossyWoss OS virtual filesystem (/Downloads).\n' +
             '• Downloaded ZIP files can be extracted in-browser without external tools.\n' +
             '• Downloaded HTML5 games run inside sandboxed OS windows!\n' +
-            '• Windows EXE files can be inspected for PE header details.',
+            '• EXE files can be inspected for PE header details.',
             null, null
           );
         }
@@ -10836,7 +10836,7 @@ MWO.Browser = (function() {
     }
 
     /* ----------------------------------------------------------------------
-     * Render Wikipedia Search Results View
+     * Render Web Search Results View
      * ---------------------------------------------------------------------- */
 
     async function renderSearchResults(tab, query) {
@@ -10846,7 +10846,7 @@ MWO.Browser = (function() {
       tab.overlayEl.innerHTML = `
         <div style="max-width:820px;margin:20px auto">
           <h2 style="margin:0 0 6px 0;font-size:20px;color:#4e9eff">Searching the web for "${escapeHTML(query)}"...</h2>
-          <div style="font-size:13px;color:#8a99ad">Asking DuckDuckGo and Wikipedia (live internet search)</div>
+          <div style="font-size:13px;color:#8a99ad">Asking web search engines (live internet search)</div>
         </div>
       `;
 
@@ -10887,8 +10887,8 @@ MWO.Browser = (function() {
               <div style="font-size:13px;color:#8a99ad">Web + encyclopedia results for "${escapeHTML(query)}"</div>
             </div>
             <div style="display:flex;gap:8px;flex-wrap:wrap">
-              <button class="mwb-ext-search" data-link="${escapeHTML(googleLink)}" style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.14);border-radius:8px;color:#fff;padding:6px 12px;font-size:12px;cursor:pointer">Open in Google (new tab)</button>
-              <button class="mwb-ext-search" data-link="${escapeHTML(ddgLink)}" style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.14);border-radius:8px;color:#fff;padding:6px 12px;font-size:12px;cursor:pointer">Open in DuckDuckGo (new tab)</button>
+              <button class="mwb-ext-search" data-link="${escapeHTML(googleLink)}" style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.14);border-radius:8px;color:#fff;padding:6px 12px;font-size:12px;cursor:pointer">Open web results (new tab)</button>
+              <button class="mwb-ext-search" data-link="${escapeHTML(ddgLink)}" style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.14);border-radius:8px;color:#fff;padding:6px 12px;font-size:12px;cursor:pointer">Open alternate web results (new tab)</button>
             </div>
           </div>
       `;
@@ -10904,7 +10904,7 @@ MWO.Browser = (function() {
       if (ddgAbstract) {
         html += `
           <div style="background:rgba(78,158,255,0.08);border:1px solid rgba(78,158,255,0.25);border-radius:12px;padding:16px;margin-bottom:18px">
-            <div style="font-size:12px;color:#4e9eff;font-weight:bold;margin-bottom:6px">Instant answer (DuckDuckGo${ddgAbstract.source ? ' / ' + escapeHTML(ddgAbstract.source) : ''})</div>
+            <div style="font-size:12px;color:#4e9eff;font-weight:bold;margin-bottom:6px">Instant answer (${ddgAbstract.source ? ' / ' + escapeHTML(ddgAbstract.source) : ''})</div>
             <div style="font-size:14px;line-height:1.55;color:#e6e9f0">${escapeHTML(ddgAbstract.text)}</div>
             ${ddgAbstract.url ? `<div class="mwb-sr-item" data-url="${escapeHTML(ddgAbstract.url)}" style="margin-top:10px;font-size:12px;color:#4e9eff;cursor:pointer;text-decoration:underline">Read the full source</div>` : ''}
           </div>
@@ -10925,7 +10925,7 @@ MWO.Browser = (function() {
       }
 
       if (wikiResults.length) {
-        html += `<div style="font-size:13px;color:#8a99ad;font-weight:bold;margin:14px 0 10px 0">Wikipedia</div>`;
+        html += `<div style="font-size:13px;color:#8a99ad;font-weight:bold;margin:14px 0 10px 0">Encyclopedia</div>`;
         wikiResults.forEach(item => {
           const wikiUrl = `https://en.wikipedia.org/wiki/${encodeURIComponent(item.title)}`;
           html += `
@@ -10939,7 +10939,7 @@ MWO.Browser = (function() {
 
       html += `
           <div style="margin-top:22px;padding-top:12px;border-top:1px solid rgba(255,255,255,0.08);font-size:12px;color:#666;text-align:center">
-            Live results from the DuckDuckGo Instant Answer API and Wikipedia. Sites that refuse embedding open via the New Tab button.
+            Live web and encyclopedia results. Sites that refuse embedding open via the New Tab button.
           </div>
         </div>
       `;
@@ -11398,7 +11398,7 @@ if (typeof MWO !== 'undefined') {
     return 0;
   }
 
-  // Official update manifest, served straight from the GitHub repo.
+  // Official update manifest, served straight from the project repository.
   // Raw file URLs are CORS-enabled, so "Check for Updates" works out of the box.
   var DEFAULT_MANIFEST_URL = 'https://raw.githubusercontent.com/foxydev109-ux/mossywoss-os/main/update-manifest.json';
 
@@ -29206,10 +29206,10 @@ var MWO = MWO || {};
 
 
 // === peinspector.js ===
-/* PE Inspector: genuinely parses Windows PE executables (.exe/.dll) stored
+/* PE Inspector: genuinely parses PC PE executables (.exe/.dll) stored
    in the VFS. Reads the DOS MZ header, PE signature, machine type, sections
    and import table from the real file bytes. Static inspection only - it is
-   honest about the fact that Windows programs cannot execute in this OS. */
+   honest about the fact that PC programs cannot execute in this OS. */
 (function(MWO) {
   'use strict';
   function bytesFromVFS(content) {
@@ -29224,7 +29224,7 @@ var MWO = MWO || {};
   }
   function parsePE(u) {
     var dv = new DataView(u.buffer, u.byteOffset, u.byteLength);
-    if (u.length < 0x40 || dv.getUint16(0, true) !== 0x5A4D) return { error: 'No DOS MZ header (not a Windows executable).' };
+    if (u.length < 0x40 || dv.getUint16(0, true) !== 0x5A4D) return { error: 'No DOS MZ header (not a PC executable).' };
     var e_lfanew = dv.getUint32(0x3C, true);
     if (e_lfanew + 24 > u.length || dv.getUint32(e_lfanew, true) !== 0x00004550) return { error: 'PE signature not found (not a valid PE).' };
     var pe = e_lfanew;
@@ -29294,7 +29294,7 @@ var MWO = MWO || {};
   MWO.registerApp({
     id: 'pe-inspector',
     name: 'PE Inspector',
-    description: 'Parse real Windows .exe/.dll files: headers, sections and imports. Honest static inspection.',
+    description: 'Parse real PC .exe/.dll executables: headers, sections and imports. Honest static inspection.',
     icon: 'binary',
     category: 'app',
     installed: false,
@@ -29304,7 +29304,7 @@ var MWO = MWO || {};
       body.style.cssText = 'background:#12151f;color:#dfe4f0;font-size:13px;padding:12px;overflow:auto';
       body.innerHTML = `
         <div style="font-weight:bold;margin-bottom:6px">PE Inspector</div>
-        <div style="color:#9aa4b8;margin-bottom:10px">Pick a file from your Downloads to analyze it as a real Windows executable.</div>
+        <div style="color:#9aa4b8;margin-bottom:10px">Pick a file from your Downloads to analyze it as a real PC executable.</div>
         <div id="pe-list" style="margin-bottom:10px"></div>
         <div style="display:flex;gap:8px;margin-bottom:10px">
           <input id="pe-path" class="mw-input" placeholder="or type a full VFS path, e.g. /Downloads/program.exe" style="flex:1" />
@@ -29331,7 +29331,7 @@ var MWO = MWO || {};
             <table style="border-collapse:collapse;font-size:12px"><tr><th style="text-align:left;padding:3px 8px">Name</th><th>Raw size</th><th>File offset</th></tr>${secs}</table>
             <div style="margin-top:8px;font-weight:600">Imports (DLLs)</div>
             <ul style="margin:4px 0 0 18px">${imps}</ul>
-            <div style="margin-top:10px;color:#9aa4b8;font-size:11px">Static inspection only. A browser OS cannot run Windows programs - this reads the real bytes of the file, it does not execute them.</div>
+            <div style="margin-top:10px;color:#9aa4b8;font-size:11px">Static inspection only. A browser OS cannot run PC programs - this reads the real bytes of the file, it does not execute them.</div>
           </div>`;
       }
       body.querySelector('#pe-open').onclick = async function() {

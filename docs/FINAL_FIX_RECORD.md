@@ -97,3 +97,8 @@ the build fails loudly in CI instead of shipping a stale file.
 - Files: double-click now does the right thing per type. .exe/.dll opens the PE Inspector on that file; .zip extracts into the OS filesystem (real extractor); images open in a preview window. Downloads from the Browser have always landed in /Downloads inside the OS - now they are usable there too.
 - Code Studio: "Insert Image" imports image files (multi-select), stores a copy in /Pictures and inserts the right snippet at the cursor for the active language (<img> for HTML, background-image for CSS, new Image() for JS, an honest comment for C/C++/C#).
 - Visual Code: new Sound block "play sfx" (coin / boing / zap / blip / boom - real WebAudio synthesis, no audio files) and a VFX category (flash, screen shake, particle burst) - tap a block into the workspace like any other. Block-run engine and the JS code export both handle them. Fixed the leftover artifact labels in the blueprint palette.
+
+## Round 6 (17 Oct, night) - real-world brand scrub
+- All visible real-world brand names removed from the OS product: OS Lab entries are now generic descriptions ("In-browser x86 PC: classic DOS environment", "Microkernel OS written in Rust", ...), the phone-compat section is generic ("PC app container for phones"), browser search buttons are "Open web results / Open alternate web results (new tab)" with neutral footers, and PE/Files copy says "PC executables (.exe)".
+- Owner lines in OS Lab now carry the license only; the full project attribution stays in the repo-level NOTICE file (kept on purpose: deep links need honest attribution).
+- Destination URLs (e.g. emulator sites) are untouched by design - a deep link must point where it points; they are not displayed as brand labels.

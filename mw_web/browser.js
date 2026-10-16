@@ -1,6 +1,6 @@
 /* ========================================================================
  * MossyWoss OS Web Browser App
- * Features: Multi-tab browsing, Wikipedia search, real file downloader,
+ * Features: Multi-tab browsing, live web search, real file downloader,
  * in-browser ZIP extraction, HTML5 game OS runner, PE inspector, media preview.
  * ======================================================================== */
 
@@ -748,8 +748,8 @@ MWO.Browser = (function() {
 
         const sub = view.getUint16(e_lfanew + 24 + 68, true);
         if (sub === 1) subsystemStr = 'Native / Driver';
-        else if (sub === 2) subsystemStr = 'Windows GUI';
-        else if (sub === 3) subsystemStr = 'Windows Console (CUI)';
+        else if (sub === 2) subsystemStr = 'GUI application';
+        else if (sub === 3) subsystemStr = 'Console application';
         else subsystemStr = 'Subsystem ' + sub;
       }
 
@@ -793,7 +793,7 @@ MWO.Browser = (function() {
         <div style="font-size:32px"></div>
         <div>
           <div style="font-weight:bold;font-size:16px;color:#4e9eff">${escapeHTML(filename)}</div>
-          <div style="font-size:12px;color:#aaa">Windows PE Executable Metadata</div>
+          <div style="font-size:12px;color:#aaa">PE Executable Metadata</div>
         </div>
       </div>
 
@@ -808,7 +808,7 @@ MWO.Browser = (function() {
       </table>
 
       <div style="background:rgba(255, 170, 0, 0.12);border:1px solid rgba(255, 170, 0, 0.3);border-radius:8px;padding:12px;font-size:13px;line-height:1.4;color:#ffe082">
- ℹ <strong>Honest Notice:</strong> Windows programs cannot execute inside a browser OS. Download the HTML5/JS build instead — those run right here with Run Run.
+ ℹ <strong>Honest Notice:</strong> PC programs (.exe) cannot execute inside a browser OS. Download the HTML5/JS build instead - those run right here with Run.
       </div>
     `;
   }
@@ -953,7 +953,7 @@ MWO.Browser = (function() {
         </div>
 
         <button id="mwb-star" title="Bookmark Page" style="height:38px;width:38px;min-width:38px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:8px;color:#fff;font-size:16px;cursor:pointer">Star</button>
-        <button id="mwb-external" title="Open this page in a new tab (works for sites that refuse embedding, like Google)" style="height:38px;padding:0 12px;display:flex;align-items:center;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:8px;color:#fff;font-size:12px;font-weight:bold;cursor:pointer">↗ New Tab</button>
+        <button id="mwb-external" title="Open this page in a new tab (works for sites that refuse embedding)" style="height:38px;padding:0 12px;display:flex;align-items:center;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:8px;color:#fff;font-size:12px;font-weight:bold;cursor:pointer">↗ New Tab</button>
         <button id="mwb-downloads-toggle" title="Downloads" style="height:38px;padding:0 12px;display:flex;align-items:center;gap:6px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:8px;color:#fff;font-size:14px;cursor:pointer;position:relative">
           <span style="font-size:12px;font-weight:bold">Downloads</span>
           <span id="mwb-dl-badge" style="background:#ff3b30;color:#fff;border-radius:10px;padding:1px 6px;font-size:11px;font-weight:bold;display:none">0</span>
@@ -1365,11 +1365,11 @@ MWO.Browser = (function() {
           MWO.dialog.confirm(
             'MossyWoss Browser Help',
             '• Enter URLs or search topics in the address bar.\n' +
-            '• Search query results come directly from Wikipedia API.\n' +
+            '• Search query results come from a public encyclopedia API.\n' +
             '• Downloads stay strictly in MossyWoss OS virtual filesystem (/Downloads).\n' +
             '• Downloaded ZIP files can be extracted in-browser without external tools.\n' +
             '• Downloaded HTML5 games run inside sandboxed OS windows!\n' +
-            '• Windows EXE files can be inspected for PE header details.',
+            '• EXE files can be inspected for PE header details.',
             null, null
           );
         }
@@ -1407,7 +1407,7 @@ MWO.Browser = (function() {
     }
 
     /* ----------------------------------------------------------------------
-     * Render Wikipedia Search Results View
+     * Render Web Search Results View
      * ---------------------------------------------------------------------- */
 
     async function renderSearchResults(tab, query) {
@@ -1417,7 +1417,7 @@ MWO.Browser = (function() {
       tab.overlayEl.innerHTML = `
         <div style="max-width:820px;margin:20px auto">
           <h2 style="margin:0 0 6px 0;font-size:20px;color:#4e9eff">Searching the web for "${escapeHTML(query)}"...</h2>
-          <div style="font-size:13px;color:#8a99ad">Asking DuckDuckGo and Wikipedia (live internet search)</div>
+          <div style="font-size:13px;color:#8a99ad">Asking web search engines (live internet search)</div>
         </div>
       `;
 
@@ -1458,8 +1458,8 @@ MWO.Browser = (function() {
               <div style="font-size:13px;color:#8a99ad">Web + encyclopedia results for "${escapeHTML(query)}"</div>
             </div>
             <div style="display:flex;gap:8px;flex-wrap:wrap">
-              <button class="mwb-ext-search" data-link="${escapeHTML(googleLink)}" style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.14);border-radius:8px;color:#fff;padding:6px 12px;font-size:12px;cursor:pointer">Open in Google (new tab)</button>
-              <button class="mwb-ext-search" data-link="${escapeHTML(ddgLink)}" style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.14);border-radius:8px;color:#fff;padding:6px 12px;font-size:12px;cursor:pointer">Open in DuckDuckGo (new tab)</button>
+              <button class="mwb-ext-search" data-link="${escapeHTML(googleLink)}" style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.14);border-radius:8px;color:#fff;padding:6px 12px;font-size:12px;cursor:pointer">Open web results (new tab)</button>
+              <button class="mwb-ext-search" data-link="${escapeHTML(ddgLink)}" style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.14);border-radius:8px;color:#fff;padding:6px 12px;font-size:12px;cursor:pointer">Open alternate web results (new tab)</button>
             </div>
           </div>
       `;
@@ -1475,7 +1475,7 @@ MWO.Browser = (function() {
       if (ddgAbstract) {
         html += `
           <div style="background:rgba(78,158,255,0.08);border:1px solid rgba(78,158,255,0.25);border-radius:12px;padding:16px;margin-bottom:18px">
-            <div style="font-size:12px;color:#4e9eff;font-weight:bold;margin-bottom:6px">Instant answer (DuckDuckGo${ddgAbstract.source ? ' / ' + escapeHTML(ddgAbstract.source) : ''})</div>
+            <div style="font-size:12px;color:#4e9eff;font-weight:bold;margin-bottom:6px">Instant answer (${ddgAbstract.source ? ' / ' + escapeHTML(ddgAbstract.source) : ''})</div>
             <div style="font-size:14px;line-height:1.55;color:#e6e9f0">${escapeHTML(ddgAbstract.text)}</div>
             ${ddgAbstract.url ? `<div class="mwb-sr-item" data-url="${escapeHTML(ddgAbstract.url)}" style="margin-top:10px;font-size:12px;color:#4e9eff;cursor:pointer;text-decoration:underline">Read the full source</div>` : ''}
           </div>
@@ -1496,7 +1496,7 @@ MWO.Browser = (function() {
       }
 
       if (wikiResults.length) {
-        html += `<div style="font-size:13px;color:#8a99ad;font-weight:bold;margin:14px 0 10px 0">Wikipedia</div>`;
+        html += `<div style="font-size:13px;color:#8a99ad;font-weight:bold;margin:14px 0 10px 0">Encyclopedia</div>`;
         wikiResults.forEach(item => {
           const wikiUrl = `https://en.wikipedia.org/wiki/${encodeURIComponent(item.title)}`;
           html += `
@@ -1510,7 +1510,7 @@ MWO.Browser = (function() {
 
       html += `
           <div style="margin-top:22px;padding-top:12px;border-top:1px solid rgba(255,255,255,0.08);font-size:12px;color:#666;text-align:center">
-            Live results from the DuckDuckGo Instant Answer API and Wikipedia. Sites that refuse embedding open via the New Tab button.
+            Live web and encyclopedia results. Sites that refuse embedding open via the New Tab button.
           </div>
         </div>
       `;

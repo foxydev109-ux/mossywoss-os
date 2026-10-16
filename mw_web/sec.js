@@ -45,7 +45,7 @@
     return 0;
   }
 
-  // Official update manifest, served straight from the GitHub repo.
+  // Official update manifest, served straight from the project repository.
   // Raw file URLs are CORS-enabled, so "Check for Updates" works out of the box.
   var DEFAULT_MANIFEST_URL = 'https://raw.githubusercontent.com/foxydev109-ux/mossywoss-os/main/update-manifest.json';
 
