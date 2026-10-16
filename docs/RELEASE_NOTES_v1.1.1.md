@@ -18,3 +18,9 @@
 ## Verified
 - 87/87 apps working, fresh-boot 15/15, second-boot 12/12, publisher 4/4,
   Game Builder 9/9, APK install check 15/15 (CI).
+
+## Browser (v1.1.1 hotfix)
+- Search now shows live web results (real clickable links from a public web
+  index) alongside Wikipedia - not wiki-only pages anymore.
+- New Google button in the toolbar: does a real Google lookup of the URL bar
+  text in a new tab.
