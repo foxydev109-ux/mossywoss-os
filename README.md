@@ -37,7 +37,7 @@ Direct downloads (always the latest build — refreshed automatically on every p
 
 **Windows 10/11:** extract the zip anywhere and double-click `mossywoss_os.html` — it opens as a full OS in your browser tab. Nothing is installed to your PC. Use the same browser each time to keep your files.
 
-**Linux (Debian, Ubuntu, Fedora, Arch, ...):** extract, then:
+**Linux (any major distribution):** extract, then:
 ```bash
 chmod +x install.sh
 ./install.sh
@@ -73,9 +73,9 @@ cd tests && node smoketest.js
 Direct download: `https://github.com/foxydev109-ux/mossywoss-os/releases/latest/download/mossywoss.apk`
 
 **"App blocked to protect your device / Play Protect hasn't seen an app from
-this developer before"** - this is Google Play Protect, not a fault in the
+this developer before"** - this is the phone’s built-in install scanner, not a fault in the
 APK. It appears for ANY app that is not from the Play Store and whose
-developer is new to Google (no installs/reputation yet). It cannot be removed
+developer is new to its reputation database (no installs yet for this developer). It cannot be removed
 from inside an APK. To install anyway: tap **Install anyway** (or **More
 details**, then **Install anyway**). If you prefer, Play Protect can be paused
 in Play Store, Profile, Play Protect, Settings.

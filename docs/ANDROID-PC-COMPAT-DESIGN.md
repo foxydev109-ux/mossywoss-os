@@ -1,13 +1,13 @@
 # Android PC-Compatibility Container — Engineering Design
 
 Status: **DESIGN / SPECIFICATION — NOT BUILT.** This document describes the
-proven architecture used by real, shipping, no-root projects (Winlator,
-PojavLauncher) so contributors can understand and (in the future, as a
+proven architecture used by real, shipping, no-root projects (a PC app container,
+a game launcher) so contributors can understand and (in the future, as a
 separate companion app) build it. MossyWoss OS itself does not claim any of
 this capability today. No placeholder code is shipped in this repo.
 
 Goal: a standalone Android APK that runs x86_64/x86 Windows binaries
-(.exe, older 3D games, Blender-class tools) on Android 15 / ARM64 tablets
+(.exe, older 3D games, a 3D suite-class tools) on Android 15 / ARM64 tablets
 (e.g. Samsung Galaxy Tab with Snapdragon/Exynos), with strict host
 separation and zero root.
 
@@ -17,7 +17,7 @@ separation and zero root.
 Android 15 (ARM64)
 └── App sandbox (uid-isolated, no root, normal APK permissions)
     └── PRoot user-space container (ptrace-based, no kernel modules)
-        ├── guest rootfs (Ubuntu/Debian userspace, packaged as asset)
+        ├── guest rootfs (a beginner distro/a Linux desktop userspace, packaged as asset)
         ├── Box86/Box64 ──────► x86/x86_64 → ARM64 dynamic recompiler
         ├── Wine (staging) ───► Win32 → Linux syscall translation
         │     └── DXVK ───────► Direct3D 9/10/11 → Vulkan calls
@@ -75,9 +75,9 @@ downloaded at runtime, nothing is compiled on-device.
 - Older/light Windows apps and 2D games: genuinely usable
 - Sims 1 / Sims 2: community-reported playable on strong hardware
 - Sims 3, modern AAA: far beyond realistic — ARM translation + mobile GPU
-- Blender: launches in community projects; performance is a fraction of a PC
-- Minecraft Java: use PojavLauncher (purpose-built, better than via Wine)
-- Minecraft Bedrock: native Android version (official)
+- a 3D suite: launches in community projects; performance is a fraction of a PC
+- the Java sandbox game: use a game launcher (purpose-built, better than via Wine)
+- the Java sandbox game Bedrock: native Android version (official)
 
 Use only software you legally own. This design and MossyWoss OS claim no
 affiliation with any upstream project.

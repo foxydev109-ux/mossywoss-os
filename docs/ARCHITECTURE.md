@@ -132,7 +132,7 @@ Signed v1+v2+v3 with a dedicated release key (CN=MossyWoss OS), `resources.arsc`
 ## CI
 
 Every push to main: rebuild HTML → build packages → rebuild APK →
-refresh the `latest` GitHub release. The download links in the README
+refresh the `latest` the repository release. The download links in the README
 (`/releases/latest/download/...`) never go stale.
 
 ---
@@ -152,11 +152,11 @@ login screen (first boot)
 
 OS Lab contents (all third-party, deep links only — nothing hosted,
 bundled, or redistributed; rights belong to each owner):
-- Real in-browser OSes: v86 (Alpine, Arch, TinyCore, KolibriOS, FreeDOS,
-  Minix 3, Haiku), WebVM (Debian), JSLinux — real kernels via x86/WASM
-- Free open-source OSes people rarely see: SerenityOS, Redox OS, RISC OS
+- Real in-browser OSes: an x86 emulator (a tiny Linux, Arch, TinyCore, a graphical OS, a DOS system,
+  a microkernel OS, an inspired desktop OS), a browser desktop (a Linux desktop), a tiny Linux console — real kernels via x86/WASM
+- Free open-source OSes people rarely see: a hobbyist OS, Redox OS, RISC OS
   Open, Plan 9 — official project sites only
-- Easier Linux directory for real PCs (Ubuntu, Mint, Zorin, Pop!_OS, Fedora)
+- Easier Linux directory for real PCs (a beginner distro, Mint, Zorin, Pop!_OS, Fedora)
 - Honest emulator guide (8/16-bit era is real in-browser; GameCube/Wii/Sims
   need a real PC) + "games you own only" anti-piracy rule
 - Proprietary OS images (Windows) deliberately excluded for licensing
@@ -213,10 +213,10 @@ NO developer or studio attribution - only user-published content does.
 - Packages: Windows zip (no install), Linux zip (user-level installer +
   menu entry + `mossywoss` command), web zip
 - Docs: honest scope, device-separation notes, disclaimer
-- Boot chooser + OS Lab: real third-party in-browser OSes (v86 KolibriOS,
-  FreeDOS, Minix, Haiku, Alpine, WebVM Debian, JSLinux) + SerenityOS,
+- Boot chooser + OS Lab: real third-party in-browser OSes (an x86 emulator a graphical OS,
+  a DOS system, a microkernel OS, an inspired desktop OS, a tiny Linux, a browser desktop a Linux desktop, a tiny Linux console) + a hobbyist OS,
   Redox OS, RISC OS, Plan 9 directory — deep links only, rights + NOTICE
-- On-Android section: real no-root PC software (Winlator, PojavLauncher)
+- On-Android section: real no-root PC software (a PC app container, a game launcher)
   cataloged with honest capability notes; full PC-compat container design
   in docs/ANDROID-PC-COMPAT-DESIGN.md (design only, not claimed)
 - LICENSE (MIT), NOTICE (third-party rights), CONTRIBUTING.md, ROADMAP.md
