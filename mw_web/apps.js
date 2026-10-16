@@ -460,6 +460,9 @@
             <button id="fm-new-folder" class="mw-btn">+ Folder</button>
             <button id="fm-new-file" class="mw-btn primary">+ File</button>
             <button id="fm-rename" class="mw-btn">Rename</button>
+          <button id="fm-copy" class="mw-btn">Copy</button>
+          <button id="fm-move" class="mw-btn">Move</button>
+          <input id="fm-search" placeholder="Search all files..." style="flex:1;min-width:120px;padding:8px 10px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:#fff">
           </div>
           <div id="fm-grid" style="flex:1;padding:14px;display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:12px;overflow-y:auto"></div>
         </div>
@@ -579,6 +582,55 @@
           } catch (e2) {
             showNotif('Files', 'Rename failed: ' + (e2 && e2.message ? e2.message : e2));
           }
+        }
+      };
+      body.querySelector('#fm-copy').onclick = async () => {
+        var name = prompt('Copy which file?');
+        if (!name) return;
+        try {
+          var dest = currentPath + '/' + name.replace(/\.[^.]*$/, '') + ' (copy)' + (name.match(/\.[^.]*$/) ? name.match(/\.[^.]*$/)[0] : '');
+          var c = await VFS.readFile(currentPath + '/' + name);
+          await VFS.writeFile(dest, c);
+          showNotif('Files', 'Copied to ' + dest); renderDir();
+        } catch (e) { showNotif('Files', 'Copy failed: ' + (e && e.message)); }
+      };
+      body.querySelector('#fm-move').onclick = async () => {
+        var name = prompt('Move which file?');
+        if (!name) return;
+        var dest = prompt('Move "' + name + '" to folder path (e.g. /Documents):', currentPath);
+        if (!dest) return;
+        try {
+          var c = await VFS.readFile(currentPath + '/' + name);
+          await VFS.writeFile(dest + '/' + name, c);
+          await VFS.deleteFile(currentPath + '/' + name);
+          showNotif('Files', 'Moved to ' + dest); currentPath = dest; renderDir();
+        } catch (e) { showNotif('Files', 'Move failed: ' + (e && e.message)); }
+      };
+      body.querySelector('#fm-search').oninput = async (e) => {
+        var q = (e.target.value || '').trim().toLowerCase();
+        if (q.length < 2) { renderDir(); return; }
+        var found = [];
+        async function walk(dir, depth) {
+          if (depth > 6 || found.length >= 60) return;
+          var items;
+          try { items = await VFS.listDir(dir); } catch (err) { return; }
+          for (var i = 0; i < items.length; i++) {
+            var nm = (typeof items[i] === 'string') ? items[i] : items[i].name;
+            var full = (dir === '/' ? '' : dir) + '/' + nm;
+            if (nm.toLowerCase().includes(q)) found.push(full);
+            var isD = nm.endsWith('/') || !nm.includes('.');
+            if (isD) await walk(full, depth + 1);
+          }
+        }
+        await walk('/', 0);
+        var grid = body.querySelector('#fm-grid');
+        if (grid) {
+          grid.innerHTML = found.length ? found.map(function(p) {
+            return '<div class="fm-side" data-p="' + p.split('/').slice(0, -1).join('/') + '" style="padding:6px 10px;border-radius:6px;cursor:pointer;font-size:0.85em">' + p + '</div>';
+          }).join('') : '<div style="padding:20px;color:#888">No files matching "' + q + '"</div>';
+          grid.querySelectorAll('.fm-side').forEach(function(el) {
+            el.onclick = function() { currentPath = el.dataset.p || '/'; renderDir(); };
+          });
         }
       };
 

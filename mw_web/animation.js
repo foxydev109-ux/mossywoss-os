@@ -13,6 +13,7 @@ MWO.Animation = (function() {
   var activeTool = 'select'; // 'select', 'rect', 'ellipse', 'line', 'text', 'star', 'orbit'
   var is3D = false;
   var onionSkin = false;
+  var bonesMode = false;
   var currentTime = 0; // seconds
   var duration = 10; // seconds
   var fps = 60;
@@ -317,7 +318,8 @@ MWO.Animation = (function() {
           <button class="mw-btn" id="anim-btn-import-imgs" style="font-size:0.78em;padding:4px 10px">Import Image Frames</button>
           <div style="height:18px;border-left:1px solid rgba(255,255,255,0.12);margin:0 4px"></div>
  <button class="mw-btn" id="anim-btn-mode3d" style="font-size:0.78em;padding:4px 10px;background:rgba(255,255,255,0.06)"> Mode: 2D</button>
- <button class="mw-btn" id="anim-btn-onionskin" style="font-size:0.78em;padding:4px 10px">Onion Skin: OFF</button>
+ <button class="mw-btn" id="anim-btn-bones" style="font-size:0.78em;padding:4px 10px">Bones: OFF</button>
+        <button class="mw-btn" id="anim-btn-onionskin" style="font-size:0.78em;padding:4px 10px">Onion Skin: OFF</button>
 <button class="mw-btn" id="anim-tool-brush" style="font-size:0.78em;padding:4px 10px">Brush: OFF</button>
           <button class="mw-btn" id="anim-btn-resetview" style="font-size:0.78em;padding:4px 8px"> Reset View</button>
         </div>
@@ -645,6 +647,41 @@ MWO.Animation = (function() {
 
   // Canvas Setup & Pointer Interaction
   
+  // ---- Bones tool: click-drag to add a bone; each new bone's parent is the previous one ----
+  function attachBonesTool() {
+    if (!canvas || canvas.__bonesBound) { if (!canvas) setTimeout(attachBonesTool, 300); return; }
+    canvas.__bonesBound = true;
+    var btn = document.getElementById('anim-btn-bones');
+    if (btn) btn.onclick = function() {
+      bonesMode = !bonesMode;
+      this.style.background = bonesMode ? '#2d4530' : 'transparent';
+      this.textContent = bonesMode ? 'Bones: ON' : 'Bones: OFF';
+    };
+    var startPt = null, lastBoneId = null;
+    canvas.addEventListener('pointerdown', function(e) {
+      if (!bonesMode) return;
+      e.stopPropagation();
+      startPt = getCanvasCoords(e);
+    }, true);
+    canvas.addEventListener('pointerup', function(e) {
+      if (!bonesMode || !startPt) { startPt = null; return; }
+      e.stopPropagation();
+      var endPt = getCanvasCoords(e);
+      var dx = endPt.x - startPt.x, dy = endPt.y - startPt.y;
+      var len = Math.sqrt(dx * dx + dy * dy);
+      if (len < 12) { startPt = null; return; }
+      var layer = layers.find(function(l) { return l.id === activeLayerId; });
+      if (!layer) { startPt = null; return; }
+      var bone = { id: 'shape_' + Date.now() + '_' + Math.floor(Math.random() * 1000), type: 'bone', x: startPt.x, y: startPt.y, w: 8, h: 8, rotation: Math.atan2(dy, dx), length: len, parent: lastBoneId, fill: 'none', stroke: '#f4d35e', strokeWidth: 5, keyframes: [] };
+      setKeyframeForShape(bone, 0);
+      layer.shapes.push(bone);
+      activeShapeId = bone.id;
+      lastBoneId = bone.id;
+      startPt = null;
+      updateTimelineUI(); updatePropsPanel();
+    }, true);
+  }
+
   function attachBrushTool() {
     if (!canvas) { setTimeout(attachBrushTool, 300); return; }
     if (canvas.__brushBound) return;
@@ -1000,6 +1037,19 @@ MWO.Animation = (function() {
   }
 
   // RENDERING PIPELINE
+  // ---- Smart bones (Moho-style): rotating a parent bone moves its children ----
+  function boneChainAngle(shape) {
+    var ang = (shape.rotation || 0);
+    var p = shape.parent ? findShapeById(shape.parent) : null;
+    var guard = 0;
+    while (p && guard < 24) {
+      ang += (p.rotation || 0);
+      p = p.parent ? findShapeById(p.parent) : null;
+      guard++;
+    }
+    return ang;
+  }
+
   function renderCanvas() {
     if (!ctx || !canvas) return;
 
@@ -1060,6 +1110,12 @@ MWO.Animation = (function() {
       layer.shapes.forEach(function(rawShape) {
         var s = getInterpolated(rawShape, time);
         // image sequences: pick the frame for this point in time
+        if (rawShape.type === 'bone' && rawShape.parent) {
+          var par = findShapeById(rawShape.parent);
+          var chain = 0, gp = par, gguard = 0;
+          while (gp && gguard < 24) { chain += (gp.rotation || 0); gp = gp.parent ? findShapeById(gp.parent) : null; gguard++; }
+          s.rotation = (s.rotation || 0) + chain;
+        }
         if (rawShape.type === 'image' && rawShape.imgs && rawShape.imgs.length) {
           var fd = rawShape.frameDur || 0.12;
           var cyc = rawShape.imgs.length * fd;
@@ -1101,6 +1157,18 @@ MWO.Animation = (function() {
         for (var pi = 1; pi < s.points.length; pi++) ctx.lineTo(s.points[pi].x - s.w/2, s.points[pi].y - s.h/2);
       }
       ctx.stroke();
+    } else if (s.type === 'bone') {
+      ctx.strokeStyle = s.stroke || '#f4d35e';
+      ctx.lineWidth = Math.max(2, s.strokeWidth || 5);
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.moveTo(-s.w / 2, -s.h / 2);
+      ctx.lineTo(-s.w / 2 + (s.length || 60), -s.h / 2);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.arc(-s.w / 2, -s.h / 2, 4, 0, Math.PI * 2);
+      ctx.fillStyle = s.stroke || '#f4d35e';
+      ctx.fill();
     } else if (s.type === 'rect') {
       ctx.fillStyle = isGhost ? '#88aaff' : s.fill;
       ctx.fillRect(-halfW, -halfH, s.w, s.h);

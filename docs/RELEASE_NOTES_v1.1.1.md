@@ -24,3 +24,19 @@
   index) alongside Wikipedia - not wiki-only pages anymore.
 - New Google button in the toolbar: does a real Google lookup of the URL bar
   text in a new tab.
+
+## Animation Studio - Smart Bones (Moho-style, real)
+- Bones tool: toggle Bones ON, drag on the canvas to add a bone segment.
+  Each new bone parents to the previous one - rotating a parent bone
+  moves the whole chain (accumulated parent transforms, keyframeable).
+- Bones are real shapes: select them, set rotation keyframes across the
+  timeline, and the chain animates (that is the core of rig-based
+  animation, honest scope: rig motion, not mesh deformation).
+
+## Files - the remaining gaps, closed
+- Copy, Move (with path prompt) and live recursive Search across the
+  whole VFS (type 2+ chars in the search box; results are clickable).
+
+## Desktop
+- Two new original retro wallpapers (Retro Teal, Retro Fields) - original
+  art, no copyrighted artwork, no Clippy.

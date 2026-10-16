@@ -594,7 +594,9 @@ bootEl.style.transition = 'opacity 0.8s ease';
     'wp-2': 'linear-gradient(135deg, #1a0826, #3a1c5d 50%, #6e2a8d)',
     'wp-3': 'linear-gradient(135deg, #051923, #003554 50%, #006494)',
     'wp-4': 'linear-gradient(135deg, #1b263b, #415a77 50%, #778da9)',
-    'wp-5': 'linear-gradient(135deg, #2b0b14, #5c1328 50%, #8f1d3c)'
+    'wp-5': 'linear-gradient(135deg, #2b0b14, #5c1328 50%, #8f1d3c)',
+    'wp-retro95': 'linear-gradient(180deg, #08297a, #0a3fa8 55%, #10805a)',
+    'wp-retroxp': 'linear-gradient(180deg, #3a7f3f, #79b75a 45%, #b9d98a)'
   };
 
   MWO.desktop = {
