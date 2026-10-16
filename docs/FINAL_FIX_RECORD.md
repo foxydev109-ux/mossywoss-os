@@ -106,3 +106,8 @@ the build fails loudly in CI instead of shipping a stale file.
 ## Round 7 (17 Oct 2026) - final cleanup + Files rename
 - Purged the last doubled-word artifacts ("Run Run" in Maker and Visual Code) and stray sidebar characters in Files.
 - Files: new Rename button using the native VFS rename (copy+delete fallback), alongside New Folder / New File.
+
+## Round 8 (17 Oct 2026, evening) - real search in the Browser
+- Search results now lead with a prominent "Search Google (new tab)" primary button (plus DuckDuckGo alternate) - the user explicitly asked for real Google search in the browser, so the search UI uses engine names on purpose; brand scrub stays everywhere else.
+- Wikipedia is now its own clearly-labeled section. Fixed the "Instant answer ( / Source)" label artifact.
+- OS Lab (other OSes) remains a separate Store app, fully separated from the user's own OS, files and devices.

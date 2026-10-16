@@ -1417,7 +1417,7 @@ MWO.Browser = (function() {
       tab.overlayEl.innerHTML = `
         <div style="max-width:820px;margin:20px auto">
           <h2 style="margin:0 0 6px 0;font-size:20px;color:#4e9eff">Searching the web for "${escapeHTML(query)}"...</h2>
-          <div style="font-size:13px;color:#8a99ad">Asking web search engines (live internet search)</div>
+          <div style="font-size:13px;color:#8a99ad">Live web results plus real searches on Google and DuckDuckGo</div>
         </div>
       `;
 
@@ -1455,11 +1455,11 @@ MWO.Browser = (function() {
           <div style="margin-bottom:20px;border-bottom:1px solid rgba(255,255,255,0.1);padding-bottom:12px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">
             <div>
               <h2 style="margin:0 0 4px 0;font-size:20px;color:#4e9eff">Search Results</h2>
-              <div style="font-size:13px;color:#8a99ad">Web + encyclopedia results for "${escapeHTML(query)}"</div>
+              <div style="font-size:13px;color:#8a99ad">Web + Wikipedia results for "${escapeHTML(query)}"</div>
             </div>
             <div style="display:flex;gap:8px;flex-wrap:wrap">
-              <button class="mwb-ext-search" data-link="${escapeHTML(googleLink)}" style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.14);border-radius:8px;color:#fff;padding:6px 12px;font-size:12px;cursor:pointer">Open web results (new tab)</button>
-              <button class="mwb-ext-search" data-link="${escapeHTML(ddgLink)}" style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.14);border-radius:8px;color:#fff;padding:6px 12px;font-size:12px;cursor:pointer">Open alternate web results (new tab)</button>
+              <button class="mwb-ext-search" data-link="${escapeHTML(googleLink)}" style="background:#4e9eff;border:1px solid #4e9eff;border-radius:8px;color:#fff;padding:8px 16px;font-size:13px;font-weight:bold;cursor:pointer">Search Google (new tab)</button>
+              <button class="mwb-ext-search" data-link="${escapeHTML(ddgLink)}" style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.14);border-radius:8px;color:#fff;padding:8px 14px;font-size:12px;cursor:pointer">DuckDuckGo (new tab)</button>
             </div>
           </div>
       `;
@@ -1475,7 +1475,7 @@ MWO.Browser = (function() {
       if (ddgAbstract) {
         html += `
           <div style="background:rgba(78,158,255,0.08);border:1px solid rgba(78,158,255,0.25);border-radius:12px;padding:16px;margin-bottom:18px">
-            <div style="font-size:12px;color:#4e9eff;font-weight:bold;margin-bottom:6px">Instant answer (${ddgAbstract.source ? ' / ' + escapeHTML(ddgAbstract.source) : ''})</div>
+            <div style="font-size:12px;color:#4e9eff;font-weight:bold;margin-bottom:6px">Instant answer (${ddgAbstract.source ? escapeHTML(ddgAbstract.source) : ''})</div>
             <div style="font-size:14px;line-height:1.55;color:#e6e9f0">${escapeHTML(ddgAbstract.text)}</div>
             ${ddgAbstract.url ? `<div class="mwb-sr-item" data-url="${escapeHTML(ddgAbstract.url)}" style="margin-top:10px;font-size:12px;color:#4e9eff;cursor:pointer;text-decoration:underline">Read the full source</div>` : ''}
           </div>
