@@ -102,6 +102,8 @@ and inconsistent builds; the build now says which toolchain it used.
 
 How the MWO Store and publishing work (real flow, no mock-ups):
 see [docs/STORE_PUBLISH.md](docs/STORE_PUBLISH.md).
+Full record of the Android install fix and final install steps:
+[docs/FINAL_FIX_RECORD.md](docs/FINAL_FIX_RECORD.md).
 
 ## Architecture
 

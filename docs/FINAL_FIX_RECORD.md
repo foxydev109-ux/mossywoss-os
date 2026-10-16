@@ -1,0 +1,77 @@
+# Final fix record: "App not installed" on Android (resolved 2026-10-16)
+
+This is the complete record of the install failure on a Galaxy S10 Lite
+(Android 15), what each symptom was, the real root causes found, and the
+exact final steps that work. Written after everything was verified against
+the actual GitHub release, not before.
+
+## Timeline of the two errors seen on the phone
+
+```
+[install attempt]        -> "Installing..." spinner
+Play Protect prompt       -> "App blocked to protect your device.
+                             Play Protect hasn't seen an app from this
+                             developer before. It may be unsafe."
+   (tap Install anyway)
+final result              -> "App not installed"
+```
+
+The two errors had two DIFFERENT causes. Treating them as one bug is why
+this took several rounds.
+
+## Cause 1: "App not installed" (the hard failure)
+
+Early test APKs were signed with a sandbox keystore that was never saved:
+every rebuild produced a different signing key. Android refuses to update
+an installed app when the new APK has a different key, and refuses a second
+install with the same package name under a different key. So the phone held
+an old "MossyWoss OS" (package com.foxydev109ux.mossywoss) that no new APK
+could ever replace.
+
+## Cause 2: CI kept failing, so the fixed APK never reached GitHub
+
+Three consecutive CI failures meant the release kept serving the OLD APK.
+The failures had two real bugs:
+
+1. build_apk.sh downloaded androidx `annotation-1.6.0.jar` but compiled
+   against `annotation-jvm-1.6.0.jar`. It only worked on machines where the
+   right jar already existed. (fixed in commit 1fe9c26)
+2. The script picked the NEWEST build-tools and platform on the machine.
+   GitHub runners ship newer versions than local, so CI used a different
+   aapt2 - it prints `minSdkVersion:'24'` where build-tools 34 prints
+   `sdkVersion:'24'`, and linked against platform 37 instead of 34. This
+   made CI builds non-deterministic and tripped the install gate.
+   (fixed in commit 314ac71: toolchain pinned to build-tools 34.0.0 +
+   platform android-34, gate parses both formats and prints what it saw)
+
+## The fix stack (all verified, in order)
+
+| # | Fix | Where | Verified by |
+|---|-----|-------|-------------|
+| 1 | Package renamed to com.foxydev109ux.mwos (cannot collide with old builds) | commit 740af4e | aapt2 badging on the released APK |
+| 2 | Dedicated release key (CN=MossyWoss OS), committed, stable across CI | commit 740af4e | apksigner on the released APK |
+| 3 | Install-readiness gate in the build + 15-check offline test | commit 740af4e | tests/apk_install_check.sh 15/15 |
+| 4 | Correct androidx jar downloaded + missing-library guard | commit 1fe9c26 | build from a completely clean SDK dir |
+| 5 | Toolchain pinned; gate accepts both aapt2 formats, prints diagnostics | commit 314ac71 | CI green; released APK says platform 34 |
+| 6 | Released APK downloaded back from GitHub and checked | - | 15/15 checks on the exact released file |
+
+Final verified state of the released APK:
+package `com.foxydev109ux.mwos`, versionCode 3 (versionName 1.2),
+signed v1+v2+v3 with CN=MossyWoss OS, foxydev109-ux, resources.arsc
+stored, minSdk 24, targetSdk 34, launcher activity and icon present.
+
+## Final install steps (these are the steps that work)
+
+1. Settings, Apps: uninstall any old "MossyWoss OS" (any old build).
+2. Files/Downloads: delete old APK files (e.g. "mossywoss (1).apk").
+3. Download fresh:
+   https://github.com/foxydev109-ux/mossywoss-os/releases/latest/download/mossywoss.apk
+4. If Play Protect warns, choose More details, then Install anyway.
+   This prompt appears for every sideloaded app from a developer Google
+   has no reputation for. It is not an error in the APK and cannot be
+   removed from inside the APK.
+5. The app installs as "MossyWoss OS" with your saves inside the app.
+
+What changed for the user after the fix: updates install cleanly over it
+from now on (same key, same package), and if a future APK is ever rejected
+the build fails loudly in CI instead of shipping a stale file.
