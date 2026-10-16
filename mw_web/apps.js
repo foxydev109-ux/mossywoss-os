@@ -375,6 +375,7 @@
         setTimeout(() => {
           removeTyping();
           var reply = "Hmm let me think... I'm not sure about that, but foxes are awesome!";
+          try { if (MWO.mossy && MWO.mossy.reply) { removeTyping(); addMsg('ai', MWO.mossy.reply(query)); return; } } catch (e) {}
 
           if (q.includes('joke')) {
             var jokes = [
@@ -445,9 +446,9 @@
       body.innerHTML = `
         <div style="width:180px;background:#0f3460;padding:10px;border-right:1px solid rgba(255,255,255,0.06);display:flex;flex-direction:column;gap:6px">
           <div style="font-size:0.75em;color:#999;text-transform:uppercase;margin-bottom:4px">Favorites</div>
- <div class="fm-side" data-p="/Desktop" style="padding:6px 10px;border-radius:6px;cursor:pointer;font-size:0.85em"> Desktop</div>
- <div class="fm-side" data-p="/Documents" style="padding:6px 10px;border-radius:6px;cursor:pointer;font-size:0.85em"> Documents</div>
-          <div class="fm-side" data-p="/Downloads" style="padding:6px 10px;border-radius:6px;cursor:pointer;font-size:0.85em">In Downloads</div>
+ <div class="fm-side" data-p="/Desktop" style="padding:6px 10px;border-radius:6px;cursor:pointer;font-size:0.85em">Desktop</div>
+ <div class="fm-side" data-p="/Documents" style="padding:6px 10px;border-radius:6px;cursor:pointer;font-size:0.85em">Documents</div>
+          <div class="fm-side" data-p="/Downloads" style="padding:6px 10px;border-radius:6px;cursor:pointer;font-size:0.85em">Downloads</div>
  <div class="fm-side" data-p="/Pictures" style="padding:6px 10px;border-radius:6px;cursor:pointer;font-size:0.85em"> Pictures</div>
           <div class="fm-side" data-p="/Music" style="padding:6px 10px;border-radius:6px;cursor:pointer;font-size:0.85em">~ Music</div>
  <div class="fm-side" data-p="/Videos" style="padding:6px 10px;border-radius:6px;cursor:pointer;font-size:0.85em"> Videos</div>
@@ -527,6 +528,62 @@
         var name = prompt('Enter file name:');
         if (name) { await VFS.writeFile(currentPath + '/' + name, 'Sample Content'); renderDir(); }
       };
+
+      // Export the current folder as a real .zip - device download AND a
+      // copy saved inside the OS at /Downloads (MWO downloads stay in MWO).
+      (function() {
+        var nfBtn = body.querySelector('#fm-new-file');
+        if (!nfBtn || !MWO.ZipBuilder) return;
+        var exBtn = document.createElement('button');
+        exBtn.textContent = 'Export folder as ZIP';
+        if (nfBtn.className) exBtn.className = nfBtn.className;
+        var st = nfBtn.getAttribute('style'); if (st) exBtn.setAttribute('style', st);
+        nfBtn.parentNode.appendChild(exBtn);
+        exBtn.onclick = async function() {
+          try {
+            var files = [];
+            async function walk(dir, prefix) {
+              var names = await VFS.listDir(dir);
+              for (var i = 0; i < names.length; i++) {
+                var nm = (typeof names[i] === 'string') ? names[i] : names[i].name;
+                if (typeof nm !== 'string' || !nm) continue;
+                var full = (dir === '/' ? '' : dir) + '/' + nm;
+                var isD = nm.slice(-1) === '/' || nm.indexOf('.') === -1;
+                if (isD) { await walk(full, prefix + nm + '/'); }
+                else {
+                  var c = await VFS.readFile(full);
+                  var bytes;
+                  if (typeof c === 'string' && c.indexOf('data:') === 0) {
+                    var bin = atob((c.split(',')[1] || ''));
+                    bytes = new Uint8Array(bin.length);
+                    for (var j = 0; j < bin.length; j++) bytes[j] = bin.charCodeAt(j);
+                  } else {
+                    bytes = new TextEncoder().encode(String(c));
+                  }
+                  files.push({ name: prefix + nm, bytes: bytes });
+                }
+              }
+            }
+            await walk(currentPath, '');
+            if (!files.length) { showNotif('Files', 'Nothing to export in this folder.'); return; }
+            var ab = await MWO.ZipBuilder.buildZip(files);
+            var u8 = new Uint8Array(ab);
+            var bstr = ''; for (var k = 0; k < u8.length; k++) bstr += String.fromCharCode(u8[k]);
+            try {
+              await VFS.mkdir('/Downloads');
+              await VFS.writeFile('/Downloads/' + (currentPath.split('/').filter(Boolean).pop() || 'mossy-export') + '.zip', 'data:application/zip;base64,' + btoa(bstr));
+            } catch (e) {}
+            var blob = new Blob([ab], { type: 'application/zip' });
+            var url = URL.createObjectURL(blob);
+            var dl = document.createElement('a');
+            dl.href = url;
+            dl.download = (currentPath.split('/').filter(Boolean).pop() || 'mossy-export') + '.zip';
+            document.body.appendChild(dl); dl.click(); dl.remove();
+            setTimeout(function() { URL.revokeObjectURL(url); }, 5000);
+            showNotif('Files', 'Exported ' + files.length + ' files as a real .zip (a copy is in Downloads).');
+          } catch (e) { showNotif('Files', 'Export failed: ' + (e && e.message)); }
+        };
+      })();
 
       renderDir();
     }

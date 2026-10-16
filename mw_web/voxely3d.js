@@ -6,6 +6,9 @@ MWO.Voxely3D = (function() {
   var blocks = {};
   var inventory = { wood: 0, stone: 0, dirt: 0, food: 0, diamond: 0 };
   var health = 100, hunger = 100, energy = 100;
+  var dayCount = 1, dead = false;
+  var lastGenX = null, lastGenZ = null;
+  var fpsSamples = 0, fpsAccum = 0, lastFpsCheck = 0;
   var keys = {};
   var mouseLocked = false;
   var touchControls = { moveX: 0, moveY: 0, look: false };
@@ -468,10 +471,8 @@ MWO.Voxely3D = (function() {
     el = winBody.querySelector('#vx-energy-bar'); if (el) el.style.width = energy + '%';
     el = winBody.querySelector('#vx-time');
     if (el) {
-      if (time < 0.25 || time > 0.75) el.textContent = 'Moon Night';
- else if (time < 0.3) el.textContent = ' Dawn';
- else if (time > 0.7) el.textContent = ' Dusk';
- else el.textContent = ' Day';
+      var tod = (time < 0.25 || time > 0.75) ? 'Night' : (time < 0.3 ? 'Dawn' : (time > 0.7 ? 'Dusk' : 'Day'));
+      el.textContent = tod + ' - Day ' + dayCount;
     }
   }
 
@@ -543,17 +544,48 @@ MWO.Voxely3D = (function() {
     if (hunger <= 0) health -= dt * 2;
     if (hunger > 50 && health < 100) health += dt * 0.5;
     health = Math.max(0, Math.min(100, health));
+
+    // Death: show a respawn overlay. Never reloads the OS; inventory is kept.
+    if (dead) return;
+    if (health <= 0) {
+      dead = true;
+      var cont = winBody.querySelector('#voxely-container');
+      if (cont) {
+        var dlg = document.createElement('div');
+        dlg.id = 'vx-death-overlay';
+        dlg.style.cssText = 'position:absolute;inset:0;background:rgba(60,8,8,0.82);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:30;color:#fff;text-align:center';
+        dlg.innerHTML = '<div style="font-size:26px;font-weight:bold;text-shadow:0 2px 8px #000">You died</div>' +
+          '<div style="margin:10px 0 16px 0;font-size:13px;opacity:0.92">Survived ' + dayCount + ' day' + (dayCount > 1 ? 's' : '') + '. Your inventory is safe.</div>';
+        var btn = document.createElement('button');
+        btn.textContent = 'Respawn';
+        btn.style.cssText = 'padding:10px 24px;border:none;border-radius:8px;background:#e94560;color:#fff;font-weight:bold;cursor:pointer;font-size:15px';
+        btn.onclick = function() {
+          health = 100; hunger = 100; energy = 100;
+          player.x = 0; player.y = 40; player.z = 0;
+          dead = false;
+          dlg.remove();
+          updateBars();
+        };
+        dlg.appendChild(btn);
+        cont.appendChild(dlg);
+      }
+      return;
+    }
     
-    // Day/night cycle
+    // Day/night cycle (a full cycle = one in-game day)
     time += dt * 0.005;
-    if (time > 1) time = 0;
+    if (time > 1) { time = 0; dayCount++; }
     
-    // Generate chunks around player
+    // Generate chunks around player - only when crossing a chunk border.
+    // (Rescanning every frame caused real lag on phones.)
     var pcx = Math.floor(player.x / chunkSize);
     var pcz = Math.floor(player.z / chunkSize);
-    for (var dx = -renderDistance; dx <= renderDistance; dx++) {
-      for (var dz = -renderDistance; dz <= renderDistance; dz++) {
-        generateChunk(pcx + dx, pcz + dz);
+    if (pcx !== lastGenX || pcz !== lastGenZ) {
+      lastGenX = pcx; lastGenZ = pcz;
+      for (var dx = -renderDistance; dx <= renderDistance; dx++) {
+        for (var dz = -renderDistance; dz <= renderDistance; dz++) {
+          generateChunk(pcx + dx, pcz + dz);
+        }
       }
     }
   }
@@ -825,6 +857,15 @@ MWO.Voxely3D = (function() {
     
     updatePhysics(dt);
     render();
+
+    // Adaptive quality: keep the frame rate smooth on phones.
+    fpsAccum += dt; fpsSamples++;
+    if (now - lastFpsCheck > 2000) {
+      var avgFps = fpsSamples / Math.max(0.001, fpsAccum);
+      if (avgFps < 28 && renderDistance > 2) renderDistance--;
+      else if (avgFps > 50 && renderDistance < 4) renderDistance++;
+      fpsSamples = 0; fpsAccum = 0; lastFpsCheck = now;
+    }
     updateBars();
     
     // FPS

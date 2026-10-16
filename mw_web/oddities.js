@@ -343,12 +343,12 @@ var MWO = MWO || {};
       var windBtn = win.querySelector('.btn-wind');
 
       var tools = [
- { id: 'bell', name: 'Bell ' },
- { id: 'pluck', name: 'Pluck ' },
- { id: 'pad', name: 'Pad ' },
- { id: 'chime', name: 'Chime ' },
- { id: 'bass', name: 'Bass ' },
-        { id: 'water', name: 'Water ' }
+ { id: 'bell', name: 'Bell' },
+ { id: 'pluck', name: 'Pluck' },
+ { id: 'pad', name: 'Pad' },
+ { id: 'chime', name: 'Chime' },
+ { id: 'bass', name: 'Bass' },
+        { id: 'water', name: 'Water' }
       ];
 
       var activeTool = 'bell';
@@ -594,9 +594,9 @@ var MWO = MWO || {};
       var chartCtx = chartCvs.getContext('2d');
 
       var MOODS = [
- { id: 'joyful', name: 'Joyful ', color: '#f59e0b' },
- { id: 'calm', name: 'Calm ', color: '#38bdf8' },
- { id: 'energetic', name: 'Energetic ', color: '#eab308' },
+ { id: 'joyful', name: 'Joyful', color: '#f59e0b' },
+ { id: 'calm', name: 'Calm', color: '#38bdf8' },
+ { id: 'energetic', name: 'Energetic', color: '#eab308' },
  { id: 'sad', name: 'Sad ', color: '#6366f1' },
  { id: 'anxious', name: 'Anxious ', color: '#a855f7' },
  { id: 'angry', name: 'Angry ', color: '#ef4444' },

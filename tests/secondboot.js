@@ -6,6 +6,7 @@ const html = fs.readFileSync('/app/conversations/69c77ec56e1663b653b6eaa5/mossyw
 const patched = html.replace(/<script src="https:\/\/cdn\.babylonjs\.com\/babylon\.js"><\/script>/, '');
 
 const memDBs = {}; // shared across boots = IndexedDB persistence
+const SHARED_LS = {}; // shared across boots = localStorage persistence (like a real browser)
 
 function makeDom() {
   return new JSDOM(patched, {
@@ -13,6 +14,16 @@ function makeDom() {
     url: 'http://localhost:8000/../mossywoss_os.html',
     pretendToBeVisual: true,
     beforeParse(window) {
+      // real browsers persist localStorage across reloads; mirror that here
+      const lsImpl = {
+        getItem: (k) => (Object.prototype.hasOwnProperty.call(SHARED_LS, k) ? SHARED_LS[k] : null),
+        setItem: (k, v) => { SHARED_LS[k] = String(v); },
+        removeItem: (k) => { delete SHARED_LS[k]; },
+        clear: () => { Object.keys(SHARED_LS).forEach(k => delete SHARED_LS[k]); },
+        key: (i) => Object.keys(SHARED_LS)[i] || null
+      };
+      Object.defineProperty(lsImpl, 'length', { get: () => Object.keys(SHARED_LS).length });
+      try { Object.defineProperty(window, 'localStorage', { value: lsImpl, configurable: true }); } catch (e) {}
       const ctxStub = new Proxy({}, {
         get: (t, p) => {
           if (p === 'measureText') return () => ({ width: 10 });
@@ -90,8 +101,15 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
   dom = makeDom();
   doc = dom.window.document;
   await sleep(5500);
+  // NEW CONTRACT: a reload auto-restores the last signed-in user.
+  // (A game death used to location.reload() and force a fresh sign-in.)
+  console.log(doc.getElementById('desktop').classList.contains('active') ? 'PASS reload auto-restores session (no forced re-login)' : 'FAIL auto-login did not restore session');
+  if (!doc.getElementById('desktop').classList.contains('active')) process.exit(1);
+  // Explicit sign-out still shows the account picker:
+  dom.window.MWO.login.signOut();
+  await sleep(400);
   const chips = doc.querySelectorAll('.user-chip');
-  console.log(chips.length === 1 ? 'PASS returning user chip shows' : 'FAIL expected 1 chip, got ' + chips.length);
+  console.log(chips.length === 1 ? 'PASS sign-out shows returning user chip' : 'FAIL expected 1 chip after sign-out, got ' + chips.length);
   if (chips.length < 1) process.exit(1);
   const chipName = chips[0].querySelector('span') ? chips[0].querySelector('span').textContent : null;
   console.log(chipName === 'Socks' ? 'PASS chip name = Socks' : 'FAIL chip name: ' + chipName);
@@ -122,11 +140,10 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
   dom = makeDom();
   doc = dom.window.document;
   await sleep(5500);
-  const chips3 = doc.querySelectorAll('.user-chip');
-  chips3[0] && chips3[0].click();
+  // boot 3 auto-restores the session too (no chip click needed)
   await sleep(700);
   const wp = doc.getElementById('wallpaper');
-  const hasWp3 = wp && /#006494|051923/.test(wp.style.background || wp.style.backgroundImage || '');
+  const hasWp3 = wp && /#006494|0, 100, 148|051923|5, 25, 35/.test(wp.style.background || wp.style.backgroundImage || '');
   console.log(doc.getElementById('desktop').classList.contains('active') ? 'PASS boot3 login' : 'FAIL boot3 login');
   console.log(hasWp3 ? 'PASS wallpaper setting survived reboot' : 'FAIL wallpaper not restored: ' + (wp && wp.style.cssText));
   dom.window.close();

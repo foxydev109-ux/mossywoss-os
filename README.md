@@ -186,3 +186,7 @@ JSLinux, and open-source OSes) without hosting, bundling, or redistributing
 any of them — all rights belong to their owners, and MossyWoss OS claims no
 affiliation or endorsement. Proprietary OS images (like Windows) are
 deliberately excluded for licensing reasons.
+
+- Game Pad: on-screen D-pad + buttons that inject real keyboard events, so keyboard-only games work on touch devices
+- PE Inspector: genuine Windows PE (.exe/.dll) header/section/import parser - static inspection, honestly no execution
+- Files can export any folder as a real .zip to your device; browser downloads stay inside the OS

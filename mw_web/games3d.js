@@ -917,7 +917,7 @@ var MWO = MWO || {};
               win.querySelector('#sky-overlay').innerHTML =
                 '<h1 style="color:#e94560;">FINISH! WIN</h1>' +
                 '<p style="margin:12px 0;">Total Time: ' + lapTime.toFixed(1) + 's</p>' +
-                '<button onclick="location.reload()" class="mw-btn primary">Play Again</button>';
+                '<button class="mw-btn primary mw-restart" data-app="skyracers3d">Play Again</button>';
             } else {
               win.querySelector('#sky-lap').textContent = player.lap + '/3';
             }
@@ -1210,7 +1210,7 @@ var MWO = MWO || {};
                 win.querySelector('#sf-overlay').innerHTML =
                   '<h1 style="color:#e94560;">DEFEATED! X</h1>' +
                   '<p>Total Kills: ' + kills + ' | Wave: ' + wave + '</p>' +
-                  '<button onclick="location.reload()" class="mw-btn primary">Restart</button>';
+                  '<button class="mw-btn primary mw-restart" data-app="starfighter3d">Restart</button>';
               }
             }
             if (elsr.life <= 0) enemyLasers.splice(el, 1);
@@ -1460,7 +1460,7 @@ var MWO = MWO || {};
                   win.querySelector('#cd-overlay').style.display = 'flex';
                   win.querySelector('#cd-overlay').innerHTML =
  '<h1 style="color:#e94560;">YOU DIED! </h1>' +
-                    '<button onclick="location.reload()" class="mw-btn primary">Try Again</button>';
+                    '<button class="mw-btn primary mw-restart" data-app="crimsondepths">Try Again</button>';
                 }
               }
             }
@@ -1481,7 +1481,7 @@ var MWO = MWO || {};
               win.querySelector('#cd-overlay').style.display = 'flex';
               win.querySelector('#cd-overlay').innerHTML =
                 '<h1 style="color:#2ecc71;">DUNGEON ESCAPED! WIN</h1>' +
-                '<button onclick="location.reload()" class="mw-btn primary">Main Menu</button>';
+                '<button class="mw-btn primary mw-restart" data-app="crimsondepths">Main Menu</button>';
             } else {
               win.querySelector('#cd-floor').textContent = player.floor + '/5';
               player.x = 3.0; player.z = 3.0; player.hasKey = false;
@@ -1681,7 +1681,7 @@ var MWO = MWO || {};
                 win.querySelector('#sd-overlay').style.display = 'flex';
                 win.querySelector('#sd-overlay').innerHTML =
                   '<h1 style="color:#e94560;">CASTLE FELL! X</h1>' +
-                  '<button onclick="location.reload()" class="mw-btn primary">Try Again</button>';
+                  '<button class="mw-btn primary mw-restart" data-app="siegedefense3d">Try Again</button>';
               }
               continue;
             }
@@ -1731,7 +1731,7 @@ var MWO = MWO || {};
               win.querySelector('#sd-overlay').style.display = 'flex';
               win.querySelector('#sd-overlay').innerHTML =
                 '<h1 style="color:#2ecc71;">VICTORY! WIN</h1>' +
-                '<button onclick="location.reload()" class="mw-btn primary">Play Again</button>';
+                '<button class="mw-btn primary mw-restart" data-app="siegedefense3d">Play Again</button>';
             } else {
               win.querySelector('#sd-wave').textContent = wave + '/15';
               spawnWaveEnemies(wave);
@@ -1782,3 +1782,15 @@ var MWO = MWO || {};
   });
 
 })();
+
+/* Death/finish screens restart the GAME, not the whole OS.
+   (location.reload used to wipe the session and force a re-login.) */
+document.addEventListener('click', function(e) {
+  var t = e.target;
+  while (t && t !== document.body && !(t.classList && t.classList.contains('mw-restart'))) t = t.parentElement;
+  if (!t || !t.classList || !t.classList.contains('mw-restart')) return;
+  var appId = t.getAttribute('data-app');
+  var winEl = t.closest ? t.closest('.window') : null;
+  if (winEl && winEl.id) { try { MWO.wm.close(winEl.id); } catch (err) {} }
+  if (appId && MWO.apps[appId]) MWO.launchApp(appId);
+});

@@ -25,9 +25,9 @@
   MWO.Updates = MWO.Updates || {};
 
   MWO.Updates.history = [
-    { v: '1.0.0', date: '5012-10-13', note: 'Production release Mossdrop — full system stability, MossGuard security suite, and touch-optimized shell.' },
-    { v: '0.9.5', date: '5012-07-22', note: 'Added sandboxed HTML5 game runtime and background VFS synchronization.' },
-    { v: '0.9.0', date: '5012-03-08', note: 'First boot on moss hardware architecture.' },
+    { v: '1.0.0', date: '2026-10-13', note: 'Production release Mossdrop — full system stability, MossGuard security suite, and touch-optimized shell.' },
+    { v: '0.9.5', date: '2026-07-22', note: 'Added sandboxed HTML5 game runtime and background VFS synchronization.' },
+    { v: '0.9.0', date: '2026-03-08', note: 'First boot on moss hardware architecture.' },
     { v: '0.8.0', date: '5011-11-15', note: 'Introduced Touch-VFS filesystem layer and multi-window manager.' },
     { v: '0.5.0', date: '5010-04-22', note: 'Alpha release of Spores UI and core process scheduler.' },
     { v: '0.1.0', date: '5008-11-14', note: 'Initial moss-kernel prototype created in cave lab.' }
@@ -45,11 +45,15 @@
     return 0;
   }
 
+  // Official update manifest, served straight from the GitHub repo.
+  // Raw file URLs are CORS-enabled, so "Check for Updates" works out of the box.
+  var DEFAULT_MANIFEST_URL = 'https://raw.githubusercontent.com/foxydev109-ux/mossywoss-os/main/update-manifest.json';
+
   MWO.Updates.getManifestUrl = function() {
     try {
-      return localStorage.getItem('mwo_update_url') || '';
+      return localStorage.getItem('mwo_update_url') || DEFAULT_MANIFEST_URL;
     } catch(e) {
-      return '';
+      return DEFAULT_MANIFEST_URL;
     }
   };
 
@@ -76,7 +80,7 @@
   MWO.Updates.checkForUpdates = async function(customUrl) {
     var url = customUrl || MWO.Updates.getManifestUrl();
     if (!url) {
-      return { status: 'no_url', message: 'No manifest URL configured. Please set an update server URL.' };
+      return { status: 'no_url', message: 'No update server set. Add a manifest URL in the settings below.' };
     }
 
     try {
@@ -714,7 +718,7 @@
               <div style="font-size:12px;color:#94a3b8;margin-top:2px">Codename: ${MWO.version.codename}</div>
             </div>
             <button id="mg-check-upd-btn" ${updateState.checking?'disabled':''} style="padding:10px 16px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:8px;color:#fff;font-weight:600;font-size:12px;cursor:pointer">
- ${updateState.checking? ' Checking...': ' Check for Updates'}
+ ${updateState.checking? 'Checking...': 'Check for Updates'}
             </button>
           </div>
 
@@ -733,7 +737,7 @@
 
             ${!manifestUrl ? `
               <div style="font-size:11px;color:#94a3b8;background:rgba(0,0,0,0.2);padding:8px 10px;border-radius:6px;margin-top:4px">
-                ℹ Setup Instructions: Set a manifest URL above to receive OS updates over HTTP/HTTPS. A manifest JSON must provide <code>version</code>, <code>url</code>, and <code>notes</code>.
+                Setup instructions: Set a manifest URL above to receive OS updates over HTTP/HTTPS. A manifest JSON must provide <code>version</code>, <code>url</code>, and <code>notes</code>.
               </div>
             ` : ''}
           </div>
@@ -773,8 +777,8 @@
           ` : ''}
 
           ${updateState.error ? `
-            <div style="background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.3);border-radius:8px;padding:10px 12px;color:#fca5a5;font-size:12px">
-              [FAIL] ${updateState.error}
+            <div style="background:rgba(251,191,36,0.12);border:1px solid rgba(251,191,36,0.3);border-radius:8px;padding:10px 12px;color:#fcd34d;font-size:12px">
+              Update check: ${updateState.error} (You can still use MossyGuard fully offline.)
             </div>
           ` : ''}
 

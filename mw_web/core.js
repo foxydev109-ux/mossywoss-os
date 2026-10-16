@@ -468,6 +468,13 @@ bootEl.style.transition = 'opacity 0.8s ease';
 
       const users = await MWO.db.getAll(STORE_NAME, DB_NAME);
       if (users.length > 0) {
+        // Auto-restore the last signed-in user. This is a local-first personal
+        // device: a page reload (or any game restart) must never force a fresh
+        // sign-in. "Switch user" happens by signing out explicitly.
+        let lastId = null;
+        try { lastId = localStorage.getItem('mwo_last_user'); } catch (e) {}
+        const lastUser = lastId ? users.find(u => u.id === lastId) : null;
+        if (lastUser) { this.loginAsUser(lastUser); return; }
         this.showSignin();
         users.forEach(u => {
           const chip = document.createElement('div');
@@ -557,7 +564,18 @@ bootEl.style.transition = 'opacity 0.8s ease';
     loginAsUser(user) {
       const loginEl = document.getElementById('login');
       if (loginEl) loginEl.classList.remove('active');
+      try { localStorage.setItem('mwo_last_user', user.id); } catch (e) {}
       MWO.desktop.init(user);
+    },
+
+    // Sign out on demand: next boot shows the login screen again.
+    // (Reloads still auto-restore the session - dying in a game must
+    // never sign you out. Only an explicit sign-out does.)
+    signOut() {
+      try { localStorage.removeItem('mwo_last_user'); } catch (e) {}
+      const loginEl = document.getElementById('login');
+      if (loginEl) loginEl.classList.add('active');
+      try { this.init(); } catch (e) {}
     }
   };
 })(MWO);
@@ -721,21 +739,25 @@ bootEl.style.transition = 'opacity 0.8s ease';
 
         MWO.ctx.show(e.clientX, e.clientY, [
           {
- label: ' Change Wallpaper',
+ label: 'Change Wallpaper',
             action: () => this.showWallpaperPicker()
           },
           {
- label: ' Add Desktop',
+ label: 'Add Desktop',
             action: () => this.addDesktop()
           },
           { separator: true },
           {
-            label: ' Settings',
+            label: 'Settings',
             action: () => MWO.launchApp('settings')
           },
           {
-            label: ' Open Store',
+            label: 'Open Store',
             action: () => MWO.store.open()
+          },
+          {
+            label: 'Sign out',
+            action: () => MWO.login.signOut()
           }
         ]);
       };
@@ -2071,6 +2093,141 @@ bootEl.style.transition = 'opacity 0.8s ease';
   });
 
   /* Mossy AI */
+
+  /* MWO.mossy - Mossy AI conversation engine.
+     Fully local (offline) free chat: pattern intents + memory + actions.
+     Honest by design: it never claims to be a cloud AI. */
+  MWO.mossy = (function() {
+    var mem = { msgCount: 0, lastTopic: null, userNameKnown: false, favGame: null };
+    var pick = function(a) { return a[Math.floor(Math.random() * a.length)]; };
+    var user = function() {
+      try { return (MWO.desktop.getCurrentUser() || {}).name || 'you'; } catch (e) { return 'you'; }
+    };
+    var FOX_FACTS = [
+      'Red foxes can hear a mouse squeak from 100 metres away. Built-in sonar ears!',
+      'A fox uses its fluffy tail as a blanket in winter AND as a balance beam when jumping.',
+      'Foxes are basically cats in dog costumes: vertical pupils, whiskers, and they pounce to hunt.',
+      'A group of foxes is called a "skulk". Very dramatic. Very fitting.',
+      'Arctic foxes can survive -70C. Their fur changes colour with the seasons for camouflage.',
+      'Foxes cache food for later and remember thousands of hiding spots. Tiny survival geniuses.'
+    ];
+    var JOKES = [
+      'Why did the fox cross the road? To prove it was not chicken!',
+      'What do you call a clever fox? An out-foxer!',
+      'Why are foxes good at coding? They already know how to handle bug hunts!',
+      'I told my computer I needed a break. It said "no problem, I will go to sleep".',
+      'Why do programmers prefer dark mode? Because light attracts bugs.'
+    ];
+    var OPEN_ALIASES = {
+      paint: 'paint', draw: 'paint', drawing: 'paint', notes: 'notes', notepad: 'notes',
+      calculator: 'calculator', calc: 'calculator', math: 'calculator',
+      camera: 'camera', photo: 'camera', gallery: 'gallery', photos: 'gallery',
+      music: 'musicmaker', song: 'musicmaker', clock: 'clock', calendar: 'calendar',
+      terminal: 'terminal', console: 'terminal', cmd: 'terminal',
+      files: 'files', file: 'files', explorer: 'files', filemanager: 'files',
+      settings: 'settings', code: 'codestudio', coding: 'codestudio',
+      animation: 'animation', animate: 'animation', recorder: 'recorder',
+      record: 'recorder', aura: 'aura', browser: 'browser', internet: 'browser',
+      task: 'taskmgr', taskmanager: 'taskmgr', voxel: 'voxely3d', minecraft: 'voxely3d',
+      os: 'linux-lab', linux: 'linux-lab', security: 'mossguard',
+      mossguard: 'mossguard', antivirus: 'mossguard', virus: 'mossguard',
+      publisher: 'publisher', publish: 'publisher', gamebuilder: 'game-builder',
+      gamebuilderkit: 'game-builder', visualcode: 'visualcode', blocks: 'visualcode',
+      nodeeditor: 'nodeeditor', nodes: 'nodeeditor', vr: 'vrvoxel', recycle: 'bin', gamepad: 'gamepad', controller: 'gamepad',
+      trash: 'bin', bin: 'bin', weather: 'moodweather'
+    };
+    var safeMath = function(s) {
+      var m = s.match(/[-0-9+*/(). %]+/g);
+      if (!m) return null;
+      var expr = m.join(' ').replace(/[^-0-9+*/(). %]/g, '');
+      if (!/\d/.test(expr) || !/[+\-*/%]/.test(expr)) return null;
+      try { var v = Function('"use strict"; return (' + expr + ')')(); 
+        if (typeof v === 'number' && isFinite(v)) return Math.round(v * 1e6) / 1e6; } catch (e) {}
+      return null;
+    };
+    var listApps = function(catFilter) {
+      try {
+        return Object.values(MWO.apps || {}).filter(function(a) {
+          return !catFilter || a.category === catFilter;
+        }).map(function(a) { return a.name; }).slice(0, 40);
+      } catch (e) { return []; }
+    };
+    var listGames = function() {
+      try {
+        return Object.values(MWO.apps || {}).filter(function(a) { return a.category === 'game'; })
+          .map(function(a) { return a.name; }).slice(0, 40);
+      } catch (e) { return []; }
+    };
+
+    function reply(text) {
+      var q = (text || '').toLowerCase().trim();
+      mem.msgCount++;
+      var name = user();
+
+      // actions: open <app>
+      var openM = q.match(/^(?:open|launch|start|run|go to)\s+(.+)$/);
+      if (openM) {
+        var want = openM[1].replace(/[^a-z0-9 ]/g, '').trim().split(/\s+/)[0];
+        var appId = OPEN_ALIASES[want] || want;
+        try {
+          if (appId === 'store' || want === 'store' || want === 'appstore') { MWO.store.open(); return 'Opening the Store for you! Browse by category now: Games, Coding, Creative, AI and Tools.'; }
+          if (MWO.apps[appId]) { MWO.launchApp(appId); return 'Opening ' + MWO.apps[appId].name + ' for you!'; }
+        } catch (e) {}
+        return 'I could not find an app called "' + openM[1] + '". You can say "open paint", "open code", "open store" and so on.';
+      }
+
+      if (/(^|\s)(hi|hello|hey|heya|yo|hii+|hay)\b/.test(q)) return pick(['Heya ' + name + '! What are we up to today?', 'Hello! Fox ears on. What do you want to chat about?', 'Hey! Games, coding, foxes, or random chatter. Pick one!']);
+      if (/how are you|how('s| is) it going|how you doing/.test(q)) return pick(['Doing great, thanks for asking! Chatting with you is the best part of my day. How about you?', 'Running at a solid 60fps today. How are YOU doing though?']);
+      if (/how (are|am) (you|i)|i('m| am) (fine|good|great|okay|ok)/.test(q)) return 'Glad to hear it! Anything on your mind?';
+      if (/i('m| am) (sad|down|upset|tired|bored|annoyed|stressed|angry)/.test(q)) return pick(['Ugh, rough days happen. Want a distraction? I can tell you a fox fact, a joke, or we can just vent about it.', 'That sounds heavy. I am here for it. Want to talk about it or be cheered up?']);
+      if (/thank(s| you)/.test(q)) return pick(['Anytime! That is what I am here for.', 'You are welcome! Fox salutes all around.']);
+      if (/^(bye|goodbye|goodnight|good night|see ya|cya)\b/.test(q)) return 'Talk soon! I will be right here on the desktop.';
+
+      if (q.indexOf('joke') >= 0 || q.indexOf('funny') >= 0) return pick(JOKES);
+      if (/fox|foxes|vulpine/.test(q)) { mem.lastTopic = 'foxes'; return pick(FOX_FACTS); }
+      if (/tell me (a )?fact|random fact|another fact/.test(q)) return pick(FOX_FACTS.concat(['Honey never spoils. Archaeologists have eaten 3000-year-old honey.', 'Octopuses have three hearts and blue blood.']));
+
+      if (/what (coding|code|programming) apps|which.*coding|coding apps/.test(q)) {
+        return 'Real coding apps on this OS: Code Studio (C, C++, C#, HTML, CSS, JS all in one editor), Visual Code (drag-and-drop block coding), Game Builder Kit (write a game, build it into a real zip, publish it), Node Editor (logic with nodes), Publish Studio (publish your own apps to the Store) and Terminal. Open Code Studio by typing "open code"!';
+      }
+      if (/store/.test(q)) { try { return 'The Store now has categories: Games, Coding, Creative, AI and Tools. Say "open store" and I will take you there. ' + (listGames().length ? 'Installed-ready games include ' + listGames().slice(0, 6).join(', ') + '.' : ''); } catch (e) { return 'Say "open store"!'; } }
+      if (/what games|list (of )?games|games (do|can) (you|i)|any games|game recommendations|what should i play/.test(q)) {
+        var gs = listGames();
+        return gs.length ? ('Games on this OS: ' + gs.slice(0, 12).join(', ') + (gs.length > 12 ? ' and more in the Store.' : '. Want me to open one? Say "open voxel" for example.') ) : 'Open the Store to see the game catalog!';
+      }
+      if (/what apps|list (of )?apps|all apps|app list/.test(q)) {
+        var as = listApps();
+        return as.length ? ('Apps installed or available: ' + as.slice(0, 18).join(', ') + '... say "open <name>" to launch anything.') : 'Browse the Store!';
+      }
+      if (/what can you do|help|commands|options/.test(q)) return 'I am a fully offline chat assistant. I can: chat about anything (foxes, games, life), open apps ("open paint"), answer time/date, do math ("12*8"), tell jokes and facts, and explain this OS. I never send anything to the internet.';
+      if (/who are you|what are you|are you (an? )?(ai|robot|real)/.test(q)) return 'I am Mossy AI, the built-in assistant of MossyWoss OS. I run 100% locally on your device, no internet, no cloud. Just a friendly local fox-brain.';
+
+      if (/what time|time is it|the time/.test(q)) return 'It is ' + new Date().toLocaleTimeString() + '.';
+      if (/what (day|date)|today('s date)?\b/.test(q)) return 'Today is ' + new Date().toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) + '.';
+      if (/wallpaper|background|theme/.test(q)) return 'Right-click the desktop for wallpapers, or open Settings for more. Want a tip? The dark purple one pairs great with the fox aesthetic.';
+      if (/update|version/.test(q)) return 'MossGuard handles OS updates. Open it ("open mossguard") and use the OS Updates tab. The default update server points at the official GitHub manifest, so Check for Updates genuinely checks online.';
+      if (/my name|who am i/.test(q)) return 'You are ' + name + ', signed in on this device. Nice to meet you again!';
+      if (/weather/.test(q)) return 'I have no internet weather here (fully offline), but the Mood Weather app makes a fun local weather vibe. Say "open weather".';
+      if (/blender|photoshop|steam|minecraft/.test(q)) return 'Heavy native PC software like that does not run inside a browser OS. But the MWO Browser can search and open their sites for you (Search the web or type a URL), and the Store has real in-OS creative tools like Animation Studio.';
+
+      var mv = safeMath(text);
+      if (mv !== null && /[0-9]/.test(q) && /[+\-*/%]/.test(q)) return 'The answer is ' + mv + '.';
+
+      // free chat fallback - varied, engages back, remembers topic
+      mem.lastTopic = mem.lastTopic || null;
+      var fallback = [
+        'Interesting! Tell me more about that?',
+        'Hmm, I am listening. What makes you say that?',
+        'That is a good one. How does that make you feel?',
+        'Ooh I do not know much about that, but I am curious now. Go on?',
+        'You always bring the good topics. What else is on your mind?',
+        'I am just a local fox-brain so I may not know that one, but I love the chat. What got you thinking about it?'
+      ];
+      return pick(fallback);
+    }
+    return { reply: reply };
+  })();
+
   MWO.registerApp({
     id: 'mossy-ai',
     name: 'Mossy AI',
@@ -2150,14 +2307,9 @@ bootEl.style.transition = 'opacity 0.8s ease';
         addMsg('user', text);
 
         setTimeout(() => {
-          const lower = text.toLowerCase();
-          let reply = "I'm here to assist! You can open the App Store, browse files in the File Manager, or customize your wallpapers in Settings.";
-          if (lower.includes('hello') || lower.includes('hi')) reply = "Greetings! How is your day going on MossyWoss OS?";
-          if (lower.includes('wallpaper')) reply = "You can change wallpapers by right-clicking the desktop and selecting 'Change Wallpaper'.";
-          if (lower.includes('store') || lower.includes('install')) reply = "Visit the App Store from the taskbar or start menu to install apps and games!";
-          if (lower.includes('time') || lower.includes('clock')) reply = `The current time is ${new Date().toLocaleTimeString()}.`;
-          if (lower.includes('name')) reply = `Your account name is ${MWO.desktop.getCurrentUser()?.name || 'User'}.`;
-          addMsg('ai', reply);
+          let r;
+          try { r = MWO.mossy.reply(text); } catch (e) { r = 'Hmm, my brain hiccuped. Ask me again?'; }
+          addMsg('ai', r);
         }, 600);
       };
 
@@ -2545,12 +2697,27 @@ bootEl.style.transition = 'opacity 0.8s ease';
       search.style.border = '1px solid rgba(255,255,255,0.12)';
       search.style.borderRadius = '8px';
       search.style.color = 'var(--text)';
-      const filters = ['All', 'app', 'game'];
+      const filters = ['All', 'Games', 'Apps', 'Coding', 'Creative', 'AI', 'Tools'];
+      const CAT_OVERRIDE = {
+        codestudio: 'Coding', visualcode: 'Coding', 'game-builder': 'Coding',
+        nodeeditor: 'Coding', publisher: 'Coding', terminal: 'Coding', maker: 'Coding',
+        animation: 'Creative', paint: 'Creative', musicmaker: 'Creative', recorder: 'Creative',
+        camera: 'Creative', gallery: 'Creative', soundgarden: 'Creative', emotioncanvas: 'Creative',
+        importer: 'Creative', vrvoxel: 'Creative',
+        mossy_ai: 'AI', 'mossy-ai': 'AI', aura: 'AI', videoai: 'AI', ideaforge: 'AI', dreamdecoder: 'AI',
+        'gamepad': 'Tools', 'pe-inspector': 'Tools',
+        files: 'Tools', calculator: 'Tools', notes: 'Tools', clock: 'Tools', calendar: 'Tools',
+        taskmgr: 'Tools', bin: 'Tools', mossguard: 'Tools', browser: 'Tools', settings: 'Tools',
+        'linux-lab': 'Tools', timecapsule: 'Tools', whisperwall: 'Tools', cosmicradio: 'Tools',
+        moodweather: 'Tools', labyrinthjournal: 'Tools', fortunepond: 'Tools', infinitycookie: 'Tools',
+        reversequiz: 'Games'
+      };
+      const categoryOf = (a) => CAT_OVERRIDE[a.id] || (a.category === 'game' ? 'Games' : 'Apps');
       let activeFilter = 'All';
       const chips = [];
       filters.forEach(f => {
         const chip = document.createElement('button');
-        chip.textContent = f === 'All' ? 'All' : (f === 'game' ? 'Games' : 'Apps');
+        chip.textContent = f;
         chip.style.padding = '8px 14px';
         chip.style.borderRadius = '999px';
         chip.style.border = '1px solid rgba(255,255,255,0.15)';
@@ -2568,7 +2735,7 @@ bootEl.style.transition = 'opacity 0.8s ease';
       bar.appendChild(search);
       if (MWO.Publisher && MWO.Publisher.open) {
         const pubBtn = document.createElement('button');
-        pubBtn.textContent = 'Out Publish your own';
+        pubBtn.textContent = 'Publish your own';
         pubBtn.style.padding = '8px 14px';
         pubBtn.style.borderRadius = '999px';
         pubBtn.style.border = '1px solid rgba(255,255,255,0.15)';
@@ -2592,7 +2759,7 @@ bootEl.style.transition = 'opacity 0.8s ease';
         grid.innerHTML = '';
         const q = search.value.trim().toLowerCase();
         const apps = Object.values(MWO.apps || {}).filter(a => {
-          if (activeFilter !== 'All' && (a.category || 'app') !== activeFilter) return false;
+          if (activeFilter !== 'All' && categoryOf(a) !== activeFilter) return false;
           if (!q) return true;
           return (a.name + ' ' + (a.description || '')).toLowerCase().includes(q);
         }).sort((a, b) => a.name.localeCompare(b.name));
@@ -2631,7 +2798,7 @@ bootEl.style.transition = 'opacity 0.8s ease';
           const cat = document.createElement('div');
           cat.style.fontSize = '0.72em';
           cat.style.color = 'var(--text2)';
-          cat.textContent = (item.category === 'game' ? 'Game' : 'App');
+          cat.textContent = categoryOf(item);
           info.appendChild(nm);
           info.appendChild(cat);
           top.appendChild(icn);
@@ -2748,7 +2915,7 @@ bootEl.style.transition = 'opacity 0.8s ease';
               desc.style.flex = '1';
               desc.textContent = p.description || '';
               const runBtn = document.createElement('button');
-              runBtn.textContent = 'Run Run';
+              runBtn.textContent = 'Run';
               runBtn.style.padding = '9px';
               runBtn.style.borderRadius = '6px';
               runBtn.style.border = 'none';

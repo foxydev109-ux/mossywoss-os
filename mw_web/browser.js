@@ -941,20 +941,20 @@ MWO.Browser = (function() {
       <!-- Toolbar -->
       <div id="mwb-toolbar" style="display:flex;align-items:center;background:#1f2338;padding:6px 10px;gap:8px;border-bottom:1px solid rgba(255,255,255,0.08);min-height:48px">
         <button id="mwb-back" title="Back" style="height:38px;width:38px;min-width:38px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:8px;color:#fff;font-size:15px;cursor:pointer">◀</button>
-        <button id="mwb-forward" title="Forward" style="height:38px;width:38px;min-width:38px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:8px;color:#fff;font-size:15px;cursor:pointer">Run</button>
- <button id="mwb-reload" title="Reload" style="height:38px;width:38px;min-width:38px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:8px;color:#fff;font-size:15px;cursor:pointer"></button>
- <button id="mwb-home" title="Home Page" style="height:38px;width:38px;min-width:38px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:8px;color:#fff;font-size:15px;cursor:pointer"></button>
+        <button id="mwb-forward" title="Forward" style="height:38px;width:38px;min-width:38px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:8px;color:#fff;font-size:15px;cursor:pointer">▶</button>
+ <button id="mwb-reload" title="Reload" style="height:38px;width:38px;min-width:38px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:8px;color:#fff;font-size:15px;cursor:pointer">↻</button>
+ <button id="mwb-home" title="Home Page" style="height:38px;min-width:38px;padding:0 8px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:8px;color:#fff;font-size:13px;cursor:pointer">Home</button>
 
         <!-- URL Input Container -->
         <div style="flex:1;height:38px;display:flex;align-items:center;background:rgba(0,0,0,0.35);border:1px solid rgba(255,255,255,0.15);border-radius:8px;padding:0 10px;gap:8px">
           <span id="mwb-scheme-icon" style="font-size:14px;color:#8a99ad"></span>
-          <input id="mwb-url-input" type="text" placeholder="Search Wikipedia or type URL..." style="flex:1;background:transparent;border:none;color:#fff;font-size:14px;outline:none" />
+          <input id="mwb-url-input" type="text" placeholder="Search the web or type URL..." style="flex:1;background:transparent;border:none;color:#fff;font-size:14px;outline:none" />
           <button id="mwb-go-btn" style="background:var(--accent, #4e9eff);border:none;border-radius:6px;color:#fff;padding:4px 10px;font-size:12px;font-weight:bold;cursor:pointer">Go</button>
         </div>
 
         <button id="mwb-star" title="Bookmark Page" style="height:38px;width:38px;min-width:38px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:8px;color:#fff;font-size:16px;cursor:pointer">Star</button>
+        <button id="mwb-external" title="Open this page in a new tab (works for sites that refuse embedding, like Google)" style="height:38px;padding:0 12px;display:flex;align-items:center;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:8px;color:#fff;font-size:12px;font-weight:bold;cursor:pointer">↗ New Tab</button>
         <button id="mwb-downloads-toggle" title="Downloads" style="height:38px;padding:0 12px;display:flex;align-items:center;gap:6px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:8px;color:#fff;font-size:14px;cursor:pointer;position:relative">
-          <span>In</span>
           <span style="font-size:12px;font-weight:bold">Downloads</span>
           <span id="mwb-dl-badge" style="background:#ff3b30;color:#fff;border-radius:10px;padding:1px 6px;font-size:11px;font-weight:bold;display:none">0</span>
         </button>
@@ -967,7 +967,7 @@ MWO.Browser = (function() {
       <div id="mwb-downloads-panel" style="position:absolute;bottom:0;left:0;right:0;max-height:55%;background:#161829;border-top:2px solid var(--accent, #4e9eff);box-shadow:0 -6px 20px rgba(0,0,0,0.6);display:none;flex-direction:column;z-index:100">
         <div style="padding:10px 14px;background:#1f223a;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.08)">
           <div style="font-weight:bold;font-size:14px;display:flex;align-items:center;gap:8px">
-            <span>In Downloads Manager</span>
+            <span>Downloads Manager</span>
           </div>
           <div style="display:flex;gap:8px">
             <button id="mwb-new-dl-toggle" style="background:var(--accent, #4e9eff);border:none;border-radius:6px;color:#fff;padding:6px 12px;font-size:12px;font-weight:bold;cursor:pointer;height:34px">＋ New Download</button>
@@ -1303,7 +1303,7 @@ MWO.Browser = (function() {
           <!-- Big Search Box -->
           <div style="width:100%;display:flex;gap:8px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);border-radius:12px;padding:6px 12px;box-shadow:0 8px 24px rgba(0,0,0,0.3)">
             <span style="font-size:18px;color:#8a99ad;align-self:center"></span>
-            <input id="mwb-home-search-input" type="text" placeholder="Search Wikipedia or type URL..." style="flex:1;background:transparent;border:none;color:#fff;font-size:15px;padding:8px;outline:none" />
+            <input id="mwb-home-search-input" type="text" placeholder="Search the web or type URL..." style="flex:1;background:transparent;border:none;color:#fff;font-size:15px;padding:8px;outline:none" />
             <button id="mwb-home-search-btn" style="background:var(--accent, #4e9eff);border:none;border-radius:8px;color:#fff;padding:8px 20px;font-weight:bold;cursor:pointer;font-size:14px">Search</button>
           </div>
 
@@ -1415,96 +1415,119 @@ MWO.Browser = (function() {
       tab.overlayEl.style.display = 'block';
 
       tab.overlayEl.innerHTML = `
-        <div style="max-width:800px;margin:20px auto">
-          <div style="margin-bottom:20px;border-bottom:1px solid rgba(255,255,255,0.1);padding-bottom:12px">
-            <h2 style="margin:0 0 6px 0;font-size:20px;color:#4e9eff">Searching Wikipedia...</h2>
-            <div style="font-size:13px;color:#8a99ad">Query: "${escapeHTML(query)}"</div>
+        <div style="max-width:820px;margin:20px auto">
+          <h2 style="margin:0 0 6px 0;font-size:20px;color:#4e9eff">Searching the web for "${escapeHTML(query)}"...</h2>
+          <div style="font-size:13px;color:#8a99ad">Asking DuckDuckGo and Wikipedia (live internet search)</div>
+        </div>
+      `;
+
+      const ddgP = fetch('https://api.duckduckgo.com/?q=' + encodeURIComponent(query) + '&format=json&no_html=1&skip_disambig=1')
+        .then(r => r.ok ? r.json() : null).catch(() => null);
+      const wikiP = fetch('https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=' + encodeURIComponent(query) + '&format=json&origin=*&srlimit=10')
+        .then(r => r.ok ? r.json() : null).catch(() => null);
+
+      const [ddgRes, wikiRes] = await Promise.allSettled([ddgP, wikiP]);
+      const ddg = ddgRes.status === 'fulfilled' ? ddgRes.value : null;
+      const wiki = wikiRes.status === 'fulfilled' ? wikiRes.value : null;
+
+      const ddgAbstract = ddg && ddg.AbstractText ? { text: ddg.AbstractText, url: ddg.AbstractURL, source: ddg.AbstractSource } : null;
+      let ddgTopics = [];
+      if (ddg && Array.isArray(ddg.RelatedTopics)) {
+        ddg.RelatedTopics.forEach(function(t) {
+          if (ddgTopics.length >= 8) return;
+          if (t && t.FirstURL && t.Text) {
+            ddgTopics.push({ url: t.FirstURL, text: t.Text });
+          } else if (t && Array.isArray(t.Topics)) {
+            t.Topics.forEach(function(s) {
+              if (ddgTopics.length < 8 && s && s.FirstURL && s.Text) ddgTopics.push({ url: s.FirstURL, text: s.Text });
+            });
+          }
+        });
+      }
+      const wikiResults = (wiki && wiki.query && wiki.query.search) ? wiki.query.search : [];
+      const googleLink = 'https://www.google.com/search?q=' + encodeURIComponent(query);
+      const ddgLink = 'https://duckduckgo.com/?q=' + encodeURIComponent(query);
+
+      const nothingFound = !ddgAbstract && ddgTopics.length === 0 && wikiResults.length === 0;
+
+      let html = `
+        <div style="max-width:820px;margin:20px auto">
+          <div style="margin-bottom:20px;border-bottom:1px solid rgba(255,255,255,0.1);padding-bottom:12px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">
+            <div>
+              <h2 style="margin:0 0 4px 0;font-size:20px;color:#4e9eff">Search Results</h2>
+              <div style="font-size:13px;color:#8a99ad">Web + encyclopedia results for "${escapeHTML(query)}"</div>
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              <button class="mwb-ext-search" data-link="${escapeHTML(googleLink)}" style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.14);border-radius:8px;color:#fff;padding:6px 12px;font-size:12px;cursor:pointer">Open in Google (new tab)</button>
+              <button class="mwb-ext-search" data-link="${escapeHTML(ddgLink)}" style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.14);border-radius:8px;color:#fff;padding:6px 12px;font-size:12px;cursor:pointer">Open in DuckDuckGo (new tab)</button>
+            </div>
           </div>
-          <div style="display:flex;align-items:center;gap:10px;color:#aaa">
-            <div style="font-size:20px">⏳</div>
-            <div>Fetching search results...</div>
+      `;
+
+      if (nothingFound) {
+        html += `
+          <div style="padding:20px;background:rgba(255,255,255,0.03);border-radius:10px;text-align:center;color:#8a99ad;margin-bottom:16px">
+            ${ddg || wiki ? 'No results found for that.' : 'Could not reach the search services (offline?).'} Use the buttons above to search in a new tab.
+          </div>
+        `;
+      }
+
+      if (ddgAbstract) {
+        html += `
+          <div style="background:rgba(78,158,255,0.08);border:1px solid rgba(78,158,255,0.25);border-radius:12px;padding:16px;margin-bottom:18px">
+            <div style="font-size:12px;color:#4e9eff;font-weight:bold;margin-bottom:6px">Instant answer (DuckDuckGo${ddgAbstract.source ? ' / ' + escapeHTML(ddgAbstract.source) : ''})</div>
+            <div style="font-size:14px;line-height:1.55;color:#e6e9f0">${escapeHTML(ddgAbstract.text)}</div>
+            ${ddgAbstract.url ? `<div class="mwb-sr-item" data-url="${escapeHTML(ddgAbstract.url)}" style="margin-top:10px;font-size:12px;color:#4e9eff;cursor:pointer;text-decoration:underline">Read the full source</div>` : ''}
+          </div>
+        `;
+      }
+
+      if (ddgTopics.length) {
+        html += `<div style="font-size:13px;color:#8a99ad;font-weight:bold;margin:14px 0 10px 0">Web results</div>`;
+        ddgTopics.forEach(t => {
+          html += `
+            <div class="mwb-sr-item" data-url="${escapeHTML(t.url)}" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:13px 14px;cursor:pointer;margin-bottom:10px">
+              <div style="font-size:15px;color:#9fc4ff;margin-bottom:3px">${escapeHTML(t.text.split(' - ')[0])}</div>
+              <div style="font-size:12px;color:#a8b3c7;line-height:1.4">${escapeHTML(t.text)}</div>
+              <div style="font-size:11px;color:#8a99ad;margin-top:5px">${escapeHTML(t.url)}</div>
+            </div>
+          `;
+        });
+      }
+
+      if (wikiResults.length) {
+        html += `<div style="font-size:13px;color:#8a99ad;font-weight:bold;margin:14px 0 10px 0">Wikipedia</div>`;
+        wikiResults.forEach(item => {
+          const wikiUrl = `https://en.wikipedia.org/wiki/${encodeURIComponent(item.title)}`;
+          html += `
+            <div class="mwb-sr-item" data-url="${escapeHTML(wikiUrl)}" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:13px 14px;cursor:pointer;margin-bottom:10px">
+              <div style="font-size:15px;font-weight:bold;color:#4e9eff;margin-bottom:3px">${escapeHTML(item.title)}</div>
+              <div style="font-size:12px;color:#c2c8d4;line-height:1.4">${escapeHTML(stripHTML(item.snippet))}...</div>
+            </div>
+          `;
+        });
+      }
+
+      html += `
+          <div style="margin-top:22px;padding-top:12px;border-top:1px solid rgba(255,255,255,0.08);font-size:12px;color:#666;text-align:center">
+            Live results from the DuckDuckGo Instant Answer API and Wikipedia. Sites that refuse embedding open via the New Tab button.
           </div>
         </div>
       `;
 
-      try {
-        const searchUrl = `https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(query)}&format=json&origin=*&srlimit=20`;
-        const res = await fetch(searchUrl);
-        if (!res.ok) throw new Error('HTTP ' + res.status);
-
-        const data = await res.json();
-        const results = (data.query && data.query.search) ? data.query.search : [];
-
-        if (results.length === 0) {
-          tab.overlayEl.innerHTML = `
-            <div style="max-width:800px;margin:20px auto">
-              <div style="margin-bottom:20px;border-bottom:1px solid rgba(255,255,255,0.1);padding-bottom:12px">
-                <h2 style="margin:0 0 6px 0;font-size:20px;color:#4e9eff">Search Results</h2>
-                <div style="font-size:13px;color:#8a99ad">Query: "${escapeHTML(query)}"</div>
-              </div>
-              <div style="padding:20px;background:rgba(255,255,255,0.03);border-radius:10px;text-align:center;color:#8a99ad">
-                No matching results found on Wikipedia.
-              </div>
-              <div style="margin-top:20px;font-size:12px;color:#666;text-align:center">Results from Wikipedia</div>
-            </div>
-          `;
-          return;
-        }
-
-        let itemsHtml = '';
-        results.forEach(item => {
-          const wikiUrl = `https://en.wikipedia.org/wiki/${encodeURIComponent(item.title)}`;
-          const cleanSnippet = stripHTML(item.snippet);
-
-          itemsHtml += `
-            <div class="mwb-sr-item" data-url="${escapeHTML(wikiUrl)}" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:14px;cursor:pointer;transition:all 0.2s">
-              <div style="font-size:16px;font-weight:bold;color:#4e9eff;margin-bottom:4px">${escapeHTML(item.title)}</div>
-              <div style="font-size:13px;color:#cccccc;line-height:1.4">${escapeHTML(cleanSnippet)}...</div>
-              <div style="font-size:11px;color:#8a99ad;margin-top:6px">${escapeHTML(wikiUrl)}</div>
-            </div>
-          `;
-        });
-
-        tab.overlayEl.innerHTML = `
-          <div style="max-width:800px;margin:20px auto">
-            <div style="margin-bottom:20px;border-bottom:1px solid rgba(255,255,255,0.1);padding-bottom:12px;display:flex;align-items:center;justify-space-between">
-              <div>
-                <h2 style="margin:0 0 4px 0;font-size:20px;color:#4e9eff">Search Results</h2>
-                <div style="font-size:13px;color:#8a99ad">Found ${results.length} results for "${escapeHTML(query)}"</div>
-              </div>
-              <div style="font-size:12px;color:#8a99ad;background:rgba(255,255,255,0.06);padding:4px 10px;border-radius:6px">Source: Wikipedia</div>
-            </div>
-
-            <div style="display:flex;flex-direction:column;gap:12px">
-              ${itemsHtml}
-            </div>
-
-            <div style="margin-top:24px;padding-top:12px;border-top:1px solid rgba(255,255,255,0.08);font-size:12px;color:#666;text-align:center">
-              Results from Wikipedia
-            </div>
-          </div>
-        `;
-
-        tab.overlayEl.querySelectorAll('.mwb-sr-item').forEach(el => {
-          el.onclick = () => {
-            const url = el.getAttribute('data-url');
-            if (url) navigateTab(tab, url);
-          };
-        });
-      } catch(err) {
-        tab.overlayEl.innerHTML = `
-          <div style="max-width:800px;margin:20px auto">
-            <div style="margin-bottom:20px;border-bottom:1px solid rgba(255,255,255,0.1);padding-bottom:12px">
-              <h2 style="margin:0 0 6px 0;font-size:20px;color:#ff5555">Search Failed</h2>
-              <div style="font-size:13px;color:#8a99ad">Query: "${escapeHTML(query)}"</div>
-            </div>
-            <div style="padding:16px;background:rgba(255,85,85,0.1);border:1px solid rgba(255,85,85,0.3);border-radius:10px;color:#ff8888">
-              Failed to load search results. Please check your internet connection.
-            </div>
-            <div style="margin-top:20px;font-size:12px;color:#666;text-align:center">Results from Wikipedia</div>
-          </div>
-        `;
-      }
+      tab.overlayEl.innerHTML = html;
+      tab.overlayEl.querySelectorAll('.mwb-sr-item').forEach(el => {
+        el.onclick = () => {
+          const url = el.getAttribute('data-url');
+          if (url) navigateTab(tab, url);
+        };
+      });
+      tab.overlayEl.querySelectorAll('.mwb-ext-search').forEach(el => {
+        el.onclick = () => {
+          const link = el.getAttribute('data-link');
+          if (link) { try { window.open(link, '_blank'); } catch (e) {} }
+        };
+      });
     }
 
     /* ----------------------------------------------------------------------
@@ -1531,10 +1554,10 @@ MWO.Browser = (function() {
 
           <div style="display:flex;gap:10px;justify-content:flex-end">
             <button id="mwb-fb-open-dl" style="background:var(--accent, #4e9eff);border:none;border-radius:8px;color:#fff;padding:8px 16px;font-weight:bold;cursor:pointer;font-size:13px;height:38px">
-              In Open Downloads
+              Open Downloads
             </button>
             <button id="mwb-fb-home" style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:8px;color:#fff;padding:8px 16px;cursor:pointer;font-size:13px;height:38px">
- Back to Home
+              Back to Home
             </button>
           </div>
         </div>
@@ -1800,6 +1823,15 @@ MWO.Browser = (function() {
     }
 
     goBtn.onclick = triggerNavInput;
+
+    const externalBtn = winBody.querySelector('#mwb-external');
+    if (externalBtn) {
+      externalBtn.onclick = () => {
+        const tab = getActiveTab();
+        if (!tab || !tab.url || tab.url === 'about:home') return;
+        try { window.open(tab.url, '_blank'); } catch (e) {}
+      };
+    }
     urlInput.onkeydown = (e) => { if (e.key === 'Enter') triggerNavInput(); };
 
     starBtn.onclick = () => {

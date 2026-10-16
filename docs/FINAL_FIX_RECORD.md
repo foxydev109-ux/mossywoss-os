@@ -75,3 +75,14 @@ stored, minSdk 24, targetSdk 34, launcher activity and icon present.
 What changed for the user after the fix: updates install cleanly over it
 from now on (same key, same package), and if a future APK is ever rejected
 the build fails loudly in CI instead of shipping a stale file.
+
+## Round 3 (16 Oct 2026) - "death logs me out" + search/Store/AI overhaul
+- Dying in a 3D game no longer signs you out. Root cause: game-over buttons called `location.reload()`, which rebooted the whole OS and dropped the session. All 6 death/finish screens now restart the game in-window.
+- Sessions auto-restore on reload (last signed-in user, `mwo_last_user`). An explicit Start menu "Sign out" shows the account picker again. Voxely 3D got a real death/respawn screen with a day counter.
+- Voxely performance: chunk generation only runs when the player crosses a chunk border, plus adaptive render distance (drops to a smaller radius if FPS < 28). Fixes the ~20 FPS phone lag.
+- MossGuard OS Updates: ships with the official GitHub manifest URL by default, so "Check for Updates" genuinely checks online. The "[FAIL] No manifest URL" red banner is replaced with a calm status; the wrong 5012 history dates are now real 2026 dates.
+- Mossy AI: full offline free-chat engine (small talk, feelings, fox facts, jokes, math, time/date, real app roster answers, "open paint"-style commands). Honest about being local-only.
+- Browser: searches the real web (DuckDuckGo Instant Answers API + Wikipedia, both CORS-enabled), "Open in Google / DuckDuckGo (new tab)" buttons for sites that refuse embedding, "New Tab" toolbar button, downloads stay inside MWO's VFS (/Downloads) and export to the device as real files.
+- Files: "Export folder as ZIP" (real CRC32/deflate zip, device download + copy in /Downloads), fixed purge-artifact labels.
+- Store: real categories (Games, Apps, Coding, Creative, AI, Tools); fixed "Run Run"/"Out Publish your own" artifacts.
+- New apps: Game Pad (on-screen D-pad that injects genuine KeyboardEvents for keyboard-only games) and PE Inspector (real MZ/PE header, section and import-table parser for .exe/.dll files, honest static-inspection only).

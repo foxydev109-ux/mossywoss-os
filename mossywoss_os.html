@@ -1165,6 +1165,13 @@ bootEl.style.transition = 'opacity 0.8s ease';
 
       const users = await MWO.db.getAll(STORE_NAME, DB_NAME);
       if (users.length > 0) {
+        // Auto-restore the last signed-in user. This is a local-first personal
+        // device: a page reload (or any game restart) must never force a fresh
+        // sign-in. "Switch user" happens by signing out explicitly.
+        let lastId = null;
+        try { lastId = localStorage.getItem('mwo_last_user'); } catch (e) {}
+        const lastUser = lastId ? users.find(u => u.id === lastId) : null;
+        if (lastUser) { this.loginAsUser(lastUser); return; }
         this.showSignin();
         users.forEach(u => {
           const chip = document.createElement('div');
@@ -1254,7 +1261,18 @@ bootEl.style.transition = 'opacity 0.8s ease';
     loginAsUser(user) {
       const loginEl = document.getElementById('login');
       if (loginEl) loginEl.classList.remove('active');
+      try { localStorage.setItem('mwo_last_user', user.id); } catch (e) {}
       MWO.desktop.init(user);
+    },
+
+    // Sign out on demand: next boot shows the login screen again.
+    // (Reloads still auto-restore the session - dying in a game must
+    // never sign you out. Only an explicit sign-out does.)
+    signOut() {
+      try { localStorage.removeItem('mwo_last_user'); } catch (e) {}
+      const loginEl = document.getElementById('login');
+      if (loginEl) loginEl.classList.add('active');
+      try { this.init(); } catch (e) {}
     }
   };
 })(MWO);
@@ -1418,21 +1436,25 @@ bootEl.style.transition = 'opacity 0.8s ease';
 
         MWO.ctx.show(e.clientX, e.clientY, [
           {
- label: ' Change Wallpaper',
+ label: 'Change Wallpaper',
             action: () => this.showWallpaperPicker()
           },
           {
- label: ' Add Desktop',
+ label: 'Add Desktop',
             action: () => this.addDesktop()
           },
           { separator: true },
           {
-            label: ' Settings',
+            label: 'Settings',
             action: () => MWO.launchApp('settings')
           },
           {
-            label: ' Open Store',
+            label: 'Open Store',
             action: () => MWO.store.open()
+          },
+          {
+            label: 'Sign out',
+            action: () => MWO.login.signOut()
           }
         ]);
       };
@@ -2768,6 +2790,141 @@ bootEl.style.transition = 'opacity 0.8s ease';
   });
 
   /* Mossy AI */
+
+  /* MWO.mossy - Mossy AI conversation engine.
+     Fully local (offline) free chat: pattern intents + memory + actions.
+     Honest by design: it never claims to be a cloud AI. */
+  MWO.mossy = (function() {
+    var mem = { msgCount: 0, lastTopic: null, userNameKnown: false, favGame: null };
+    var pick = function(a) { return a[Math.floor(Math.random() * a.length)]; };
+    var user = function() {
+      try { return (MWO.desktop.getCurrentUser() || {}).name || 'you'; } catch (e) { return 'you'; }
+    };
+    var FOX_FACTS = [
+      'Red foxes can hear a mouse squeak from 100 metres away. Built-in sonar ears!',
+      'A fox uses its fluffy tail as a blanket in winter AND as a balance beam when jumping.',
+      'Foxes are basically cats in dog costumes: vertical pupils, whiskers, and they pounce to hunt.',
+      'A group of foxes is called a "skulk". Very dramatic. Very fitting.',
+      'Arctic foxes can survive -70C. Their fur changes colour with the seasons for camouflage.',
+      'Foxes cache food for later and remember thousands of hiding spots. Tiny survival geniuses.'
+    ];
+    var JOKES = [
+      'Why did the fox cross the road? To prove it was not chicken!',
+      'What do you call a clever fox? An out-foxer!',
+      'Why are foxes good at coding? They already know how to handle bug hunts!',
+      'I told my computer I needed a break. It said "no problem, I will go to sleep".',
+      'Why do programmers prefer dark mode? Because light attracts bugs.'
+    ];
+    var OPEN_ALIASES = {
+      paint: 'paint', draw: 'paint', drawing: 'paint', notes: 'notes', notepad: 'notes',
+      calculator: 'calculator', calc: 'calculator', math: 'calculator',
+      camera: 'camera', photo: 'camera', gallery: 'gallery', photos: 'gallery',
+      music: 'musicmaker', song: 'musicmaker', clock: 'clock', calendar: 'calendar',
+      terminal: 'terminal', console: 'terminal', cmd: 'terminal',
+      files: 'files', file: 'files', explorer: 'files', filemanager: 'files',
+      settings: 'settings', code: 'codestudio', coding: 'codestudio',
+      animation: 'animation', animate: 'animation', recorder: 'recorder',
+      record: 'recorder', aura: 'aura', browser: 'browser', internet: 'browser',
+      task: 'taskmgr', taskmanager: 'taskmgr', voxel: 'voxely3d', minecraft: 'voxely3d',
+      os: 'linux-lab', linux: 'linux-lab', security: 'mossguard',
+      mossguard: 'mossguard', antivirus: 'mossguard', virus: 'mossguard',
+      publisher: 'publisher', publish: 'publisher', gamebuilder: 'game-builder',
+      gamebuilderkit: 'game-builder', visualcode: 'visualcode', blocks: 'visualcode',
+      nodeeditor: 'nodeeditor', nodes: 'nodeeditor', vr: 'vrvoxel', recycle: 'bin', gamepad: 'gamepad', controller: 'gamepad',
+      trash: 'bin', bin: 'bin', weather: 'moodweather'
+    };
+    var safeMath = function(s) {
+      var m = s.match(/[-0-9+*/(). %]+/g);
+      if (!m) return null;
+      var expr = m.join(' ').replace(/[^-0-9+*/(). %]/g, '');
+      if (!/\d/.test(expr) || !/[+\-*/%]/.test(expr)) return null;
+      try { var v = Function('"use strict"; return (' + expr + ')')(); 
+        if (typeof v === 'number' && isFinite(v)) return Math.round(v * 1e6) / 1e6; } catch (e) {}
+      return null;
+    };
+    var listApps = function(catFilter) {
+      try {
+        return Object.values(MWO.apps || {}).filter(function(a) {
+          return !catFilter || a.category === catFilter;
+        }).map(function(a) { return a.name; }).slice(0, 40);
+      } catch (e) { return []; }
+    };
+    var listGames = function() {
+      try {
+        return Object.values(MWO.apps || {}).filter(function(a) { return a.category === 'game'; })
+          .map(function(a) { return a.name; }).slice(0, 40);
+      } catch (e) { return []; }
+    };
+
+    function reply(text) {
+      var q = (text || '').toLowerCase().trim();
+      mem.msgCount++;
+      var name = user();
+
+      // actions: open <app>
+      var openM = q.match(/^(?:open|launch|start|run|go to)\s+(.+)$/);
+      if (openM) {
+        var want = openM[1].replace(/[^a-z0-9 ]/g, '').trim().split(/\s+/)[0];
+        var appId = OPEN_ALIASES[want] || want;
+        try {
+          if (appId === 'store' || want === 'store' || want === 'appstore') { MWO.store.open(); return 'Opening the Store for you! Browse by category now: Games, Coding, Creative, AI and Tools.'; }
+          if (MWO.apps[appId]) { MWO.launchApp(appId); return 'Opening ' + MWO.apps[appId].name + ' for you!'; }
+        } catch (e) {}
+        return 'I could not find an app called "' + openM[1] + '". You can say "open paint", "open code", "open store" and so on.';
+      }
+
+      if (/(^|\s)(hi|hello|hey|heya|yo|hii+|hay)\b/.test(q)) return pick(['Heya ' + name + '! What are we up to today?', 'Hello! Fox ears on. What do you want to chat about?', 'Hey! Games, coding, foxes, or random chatter. Pick one!']);
+      if (/how are you|how('s| is) it going|how you doing/.test(q)) return pick(['Doing great, thanks for asking! Chatting with you is the best part of my day. How about you?', 'Running at a solid 60fps today. How are YOU doing though?']);
+      if (/how (are|am) (you|i)|i('m| am) (fine|good|great|okay|ok)/.test(q)) return 'Glad to hear it! Anything on your mind?';
+      if (/i('m| am) (sad|down|upset|tired|bored|annoyed|stressed|angry)/.test(q)) return pick(['Ugh, rough days happen. Want a distraction? I can tell you a fox fact, a joke, or we can just vent about it.', 'That sounds heavy. I am here for it. Want to talk about it or be cheered up?']);
+      if (/thank(s| you)/.test(q)) return pick(['Anytime! That is what I am here for.', 'You are welcome! Fox salutes all around.']);
+      if (/^(bye|goodbye|goodnight|good night|see ya|cya)\b/.test(q)) return 'Talk soon! I will be right here on the desktop.';
+
+      if (q.indexOf('joke') >= 0 || q.indexOf('funny') >= 0) return pick(JOKES);
+      if (/fox|foxes|vulpine/.test(q)) { mem.lastTopic = 'foxes'; return pick(FOX_FACTS); }
+      if (/tell me (a )?fact|random fact|another fact/.test(q)) return pick(FOX_FACTS.concat(['Honey never spoils. Archaeologists have eaten 3000-year-old honey.', 'Octopuses have three hearts and blue blood.']));
+
+      if (/what (coding|code|programming) apps|which.*coding|coding apps/.test(q)) {
+        return 'Real coding apps on this OS: Code Studio (C, C++, C#, HTML, CSS, JS all in one editor), Visual Code (drag-and-drop block coding), Game Builder Kit (write a game, build it into a real zip, publish it), Node Editor (logic with nodes), Publish Studio (publish your own apps to the Store) and Terminal. Open Code Studio by typing "open code"!';
+      }
+      if (/store/.test(q)) { try { return 'The Store now has categories: Games, Coding, Creative, AI and Tools. Say "open store" and I will take you there. ' + (listGames().length ? 'Installed-ready games include ' + listGames().slice(0, 6).join(', ') + '.' : ''); } catch (e) { return 'Say "open store"!'; } }
+      if (/what games|list (of )?games|games (do|can) (you|i)|any games|game recommendations|what should i play/.test(q)) {
+        var gs = listGames();
+        return gs.length ? ('Games on this OS: ' + gs.slice(0, 12).join(', ') + (gs.length > 12 ? ' and more in the Store.' : '. Want me to open one? Say "open voxel" for example.') ) : 'Open the Store to see the game catalog!';
+      }
+      if (/what apps|list (of )?apps|all apps|app list/.test(q)) {
+        var as = listApps();
+        return as.length ? ('Apps installed or available: ' + as.slice(0, 18).join(', ') + '... say "open <name>" to launch anything.') : 'Browse the Store!';
+      }
+      if (/what can you do|help|commands|options/.test(q)) return 'I am a fully offline chat assistant. I can: chat about anything (foxes, games, life), open apps ("open paint"), answer time/date, do math ("12*8"), tell jokes and facts, and explain this OS. I never send anything to the internet.';
+      if (/who are you|what are you|are you (an? )?(ai|robot|real)/.test(q)) return 'I am Mossy AI, the built-in assistant of MossyWoss OS. I run 100% locally on your device, no internet, no cloud. Just a friendly local fox-brain.';
+
+      if (/what time|time is it|the time/.test(q)) return 'It is ' + new Date().toLocaleTimeString() + '.';
+      if (/what (day|date)|today('s date)?\b/.test(q)) return 'Today is ' + new Date().toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) + '.';
+      if (/wallpaper|background|theme/.test(q)) return 'Right-click the desktop for wallpapers, or open Settings for more. Want a tip? The dark purple one pairs great with the fox aesthetic.';
+      if (/update|version/.test(q)) return 'MossGuard handles OS updates. Open it ("open mossguard") and use the OS Updates tab. The default update server points at the official GitHub manifest, so Check for Updates genuinely checks online.';
+      if (/my name|who am i/.test(q)) return 'You are ' + name + ', signed in on this device. Nice to meet you again!';
+      if (/weather/.test(q)) return 'I have no internet weather here (fully offline), but the Mood Weather app makes a fun local weather vibe. Say "open weather".';
+      if (/blender|photoshop|steam|minecraft/.test(q)) return 'Heavy native PC software like that does not run inside a browser OS. But the MWO Browser can search and open their sites for you (Search the web or type a URL), and the Store has real in-OS creative tools like Animation Studio.';
+
+      var mv = safeMath(text);
+      if (mv !== null && /[0-9]/.test(q) && /[+\-*/%]/.test(q)) return 'The answer is ' + mv + '.';
+
+      // free chat fallback - varied, engages back, remembers topic
+      mem.lastTopic = mem.lastTopic || null;
+      var fallback = [
+        'Interesting! Tell me more about that?',
+        'Hmm, I am listening. What makes you say that?',
+        'That is a good one. How does that make you feel?',
+        'Ooh I do not know much about that, but I am curious now. Go on?',
+        'You always bring the good topics. What else is on your mind?',
+        'I am just a local fox-brain so I may not know that one, but I love the chat. What got you thinking about it?'
+      ];
+      return pick(fallback);
+    }
+    return { reply: reply };
+  })();
+
   MWO.registerApp({
     id: 'mossy-ai',
     name: 'Mossy AI',
@@ -2847,14 +3004,9 @@ bootEl.style.transition = 'opacity 0.8s ease';
         addMsg('user', text);
 
         setTimeout(() => {
-          const lower = text.toLowerCase();
-          let reply = "I'm here to assist! You can open the App Store, browse files in the File Manager, or customize your wallpapers in Settings.";
-          if (lower.includes('hello') || lower.includes('hi')) reply = "Greetings! How is your day going on MossyWoss OS?";
-          if (lower.includes('wallpaper')) reply = "You can change wallpapers by right-clicking the desktop and selecting 'Change Wallpaper'.";
-          if (lower.includes('store') || lower.includes('install')) reply = "Visit the App Store from the taskbar or start menu to install apps and games!";
-          if (lower.includes('time') || lower.includes('clock')) reply = `The current time is ${new Date().toLocaleTimeString()}.`;
-          if (lower.includes('name')) reply = `Your account name is ${MWO.desktop.getCurrentUser()?.name || 'User'}.`;
-          addMsg('ai', reply);
+          let r;
+          try { r = MWO.mossy.reply(text); } catch (e) { r = 'Hmm, my brain hiccuped. Ask me again?'; }
+          addMsg('ai', r);
         }, 600);
       };
 
@@ -3242,12 +3394,27 @@ bootEl.style.transition = 'opacity 0.8s ease';
       search.style.border = '1px solid rgba(255,255,255,0.12)';
       search.style.borderRadius = '8px';
       search.style.color = 'var(--text)';
-      const filters = ['All', 'app', 'game'];
+      const filters = ['All', 'Games', 'Apps', 'Coding', 'Creative', 'AI', 'Tools'];
+      const CAT_OVERRIDE = {
+        codestudio: 'Coding', visualcode: 'Coding', 'game-builder': 'Coding',
+        nodeeditor: 'Coding', publisher: 'Coding', terminal: 'Coding', maker: 'Coding',
+        animation: 'Creative', paint: 'Creative', musicmaker: 'Creative', recorder: 'Creative',
+        camera: 'Creative', gallery: 'Creative', soundgarden: 'Creative', emotioncanvas: 'Creative',
+        importer: 'Creative', vrvoxel: 'Creative',
+        mossy_ai: 'AI', 'mossy-ai': 'AI', aura: 'AI', videoai: 'AI', ideaforge: 'AI', dreamdecoder: 'AI',
+        'gamepad': 'Tools', 'pe-inspector': 'Tools',
+        files: 'Tools', calculator: 'Tools', notes: 'Tools', clock: 'Tools', calendar: 'Tools',
+        taskmgr: 'Tools', bin: 'Tools', mossguard: 'Tools', browser: 'Tools', settings: 'Tools',
+        'linux-lab': 'Tools', timecapsule: 'Tools', whisperwall: 'Tools', cosmicradio: 'Tools',
+        moodweather: 'Tools', labyrinthjournal: 'Tools', fortunepond: 'Tools', infinitycookie: 'Tools',
+        reversequiz: 'Games'
+      };
+      const categoryOf = (a) => CAT_OVERRIDE[a.id] || (a.category === 'game' ? 'Games' : 'Apps');
       let activeFilter = 'All';
       const chips = [];
       filters.forEach(f => {
         const chip = document.createElement('button');
-        chip.textContent = f === 'All' ? 'All' : (f === 'game' ? 'Games' : 'Apps');
+        chip.textContent = f;
         chip.style.padding = '8px 14px';
         chip.style.borderRadius = '999px';
         chip.style.border = '1px solid rgba(255,255,255,0.15)';
@@ -3265,7 +3432,7 @@ bootEl.style.transition = 'opacity 0.8s ease';
       bar.appendChild(search);
       if (MWO.Publisher && MWO.Publisher.open) {
         const pubBtn = document.createElement('button');
-        pubBtn.textContent = 'Out Publish your own';
+        pubBtn.textContent = 'Publish your own';
         pubBtn.style.padding = '8px 14px';
         pubBtn.style.borderRadius = '999px';
         pubBtn.style.border = '1px solid rgba(255,255,255,0.15)';
@@ -3289,7 +3456,7 @@ bootEl.style.transition = 'opacity 0.8s ease';
         grid.innerHTML = '';
         const q = search.value.trim().toLowerCase();
         const apps = Object.values(MWO.apps || {}).filter(a => {
-          if (activeFilter !== 'All' && (a.category || 'app') !== activeFilter) return false;
+          if (activeFilter !== 'All' && categoryOf(a) !== activeFilter) return false;
           if (!q) return true;
           return (a.name + ' ' + (a.description || '')).toLowerCase().includes(q);
         }).sort((a, b) => a.name.localeCompare(b.name));
@@ -3328,7 +3495,7 @@ bootEl.style.transition = 'opacity 0.8s ease';
           const cat = document.createElement('div');
           cat.style.fontSize = '0.72em';
           cat.style.color = 'var(--text2)';
-          cat.textContent = (item.category === 'game' ? 'Game' : 'App');
+          cat.textContent = categoryOf(item);
           info.appendChild(nm);
           info.appendChild(cat);
           top.appendChild(icn);
@@ -3445,7 +3612,7 @@ bootEl.style.transition = 'opacity 0.8s ease';
               desc.style.flex = '1';
               desc.textContent = p.description || '';
               const runBtn = document.createElement('button');
-              runBtn.textContent = 'Run Run';
+              runBtn.textContent = 'Run';
               runBtn.style.padding = '9px';
               runBtn.style.borderRadius = '6px';
               runBtn.style.border = 'none';
@@ -7000,6 +7167,9 @@ MWO.Voxely3D = (function() {
   var blocks = {};
   var inventory = { wood: 0, stone: 0, dirt: 0, food: 0, diamond: 0 };
   var health = 100, hunger = 100, energy = 100;
+  var dayCount = 1, dead = false;
+  var lastGenX = null, lastGenZ = null;
+  var fpsSamples = 0, fpsAccum = 0, lastFpsCheck = 0;
   var keys = {};
   var mouseLocked = false;
   var touchControls = { moveX: 0, moveY: 0, look: false };
@@ -7462,10 +7632,8 @@ MWO.Voxely3D = (function() {
     el = winBody.querySelector('#vx-energy-bar'); if (el) el.style.width = energy + '%';
     el = winBody.querySelector('#vx-time');
     if (el) {
-      if (time < 0.25 || time > 0.75) el.textContent = 'Moon Night';
- else if (time < 0.3) el.textContent = ' Dawn';
- else if (time > 0.7) el.textContent = ' Dusk';
- else el.textContent = ' Day';
+      var tod = (time < 0.25 || time > 0.75) ? 'Night' : (time < 0.3 ? 'Dawn' : (time > 0.7 ? 'Dusk' : 'Day'));
+      el.textContent = tod + ' - Day ' + dayCount;
     }
   }
 
@@ -7537,17 +7705,48 @@ MWO.Voxely3D = (function() {
     if (hunger <= 0) health -= dt * 2;
     if (hunger > 50 && health < 100) health += dt * 0.5;
     health = Math.max(0, Math.min(100, health));
+
+    // Death: show a respawn overlay. Never reloads the OS; inventory is kept.
+    if (dead) return;
+    if (health <= 0) {
+      dead = true;
+      var cont = winBody.querySelector('#voxely-container');
+      if (cont) {
+        var dlg = document.createElement('div');
+        dlg.id = 'vx-death-overlay';
+        dlg.style.cssText = 'position:absolute;inset:0;background:rgba(60,8,8,0.82);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:30;color:#fff;text-align:center';
+        dlg.innerHTML = '<div style="font-size:26px;font-weight:bold;text-shadow:0 2px 8px #000">You died</div>' +
+          '<div style="margin:10px 0 16px 0;font-size:13px;opacity:0.92">Survived ' + dayCount + ' day' + (dayCount > 1 ? 's' : '') + '. Your inventory is safe.</div>';
+        var btn = document.createElement('button');
+        btn.textContent = 'Respawn';
+        btn.style.cssText = 'padding:10px 24px;border:none;border-radius:8px;background:#e94560;color:#fff;font-weight:bold;cursor:pointer;font-size:15px';
+        btn.onclick = function() {
+          health = 100; hunger = 100; energy = 100;
+          player.x = 0; player.y = 40; player.z = 0;
+          dead = false;
+          dlg.remove();
+          updateBars();
+        };
+        dlg.appendChild(btn);
+        cont.appendChild(dlg);
+      }
+      return;
+    }
     
-    // Day/night cycle
+    // Day/night cycle (a full cycle = one in-game day)
     time += dt * 0.005;
-    if (time > 1) time = 0;
+    if (time > 1) { time = 0; dayCount++; }
     
-    // Generate chunks around player
+    // Generate chunks around player - only when crossing a chunk border.
+    // (Rescanning every frame caused real lag on phones.)
     var pcx = Math.floor(player.x / chunkSize);
     var pcz = Math.floor(player.z / chunkSize);
-    for (var dx = -renderDistance; dx <= renderDistance; dx++) {
-      for (var dz = -renderDistance; dz <= renderDistance; dz++) {
-        generateChunk(pcx + dx, pcz + dz);
+    if (pcx !== lastGenX || pcz !== lastGenZ) {
+      lastGenX = pcx; lastGenZ = pcz;
+      for (var dx = -renderDistance; dx <= renderDistance; dx++) {
+        for (var dz = -renderDistance; dz <= renderDistance; dz++) {
+          generateChunk(pcx + dx, pcz + dz);
+        }
       }
     }
   }
@@ -7819,6 +8018,15 @@ MWO.Voxely3D = (function() {
     
     updatePhysics(dt);
     render();
+
+    // Adaptive quality: keep the frame rate smooth on phones.
+    fpsAccum += dt; fpsSamples++;
+    if (now - lastFpsCheck > 2000) {
+      var avgFps = fpsSamples / Math.max(0.001, fpsAccum);
+      if (avgFps < 28 && renderDistance > 2) renderDistance--;
+      else if (avgFps > 50 && renderDistance < 4) renderDistance++;
+      fpsSamples = 0; fpsAccum = 0; lastFpsCheck = now;
+    }
     updateBars();
     
     // FPS
@@ -8225,6 +8433,7 @@ if (MWO.registerApp) {
         setTimeout(() => {
           removeTyping();
           var reply = "Hmm let me think... I'm not sure about that, but foxes are awesome!";
+          try { if (MWO.mossy && MWO.mossy.reply) { removeTyping(); addMsg('ai', MWO.mossy.reply(query)); return; } } catch (e) {}
 
           if (q.includes('joke')) {
             var jokes = [
@@ -8295,9 +8504,9 @@ if (MWO.registerApp) {
       body.innerHTML = `
         <div style="width:180px;background:#0f3460;padding:10px;border-right:1px solid rgba(255,255,255,0.06);display:flex;flex-direction:column;gap:6px">
           <div style="font-size:0.75em;color:#999;text-transform:uppercase;margin-bottom:4px">Favorites</div>
- <div class="fm-side" data-p="/Desktop" style="padding:6px 10px;border-radius:6px;cursor:pointer;font-size:0.85em"> Desktop</div>
- <div class="fm-side" data-p="/Documents" style="padding:6px 10px;border-radius:6px;cursor:pointer;font-size:0.85em"> Documents</div>
-          <div class="fm-side" data-p="/Downloads" style="padding:6px 10px;border-radius:6px;cursor:pointer;font-size:0.85em">In Downloads</div>
+ <div class="fm-side" data-p="/Desktop" style="padding:6px 10px;border-radius:6px;cursor:pointer;font-size:0.85em">Desktop</div>
+ <div class="fm-side" data-p="/Documents" style="padding:6px 10px;border-radius:6px;cursor:pointer;font-size:0.85em">Documents</div>
+          <div class="fm-side" data-p="/Downloads" style="padding:6px 10px;border-radius:6px;cursor:pointer;font-size:0.85em">Downloads</div>
  <div class="fm-side" data-p="/Pictures" style="padding:6px 10px;border-radius:6px;cursor:pointer;font-size:0.85em"> Pictures</div>
           <div class="fm-side" data-p="/Music" style="padding:6px 10px;border-radius:6px;cursor:pointer;font-size:0.85em">~ Music</div>
  <div class="fm-side" data-p="/Videos" style="padding:6px 10px;border-radius:6px;cursor:pointer;font-size:0.85em"> Videos</div>
@@ -8377,6 +8586,62 @@ if (MWO.registerApp) {
         var name = prompt('Enter file name:');
         if (name) { await VFS.writeFile(currentPath + '/' + name, 'Sample Content'); renderDir(); }
       };
+
+      // Export the current folder as a real .zip - device download AND a
+      // copy saved inside the OS at /Downloads (MWO downloads stay in MWO).
+      (function() {
+        var nfBtn = body.querySelector('#fm-new-file');
+        if (!nfBtn || !MWO.ZipBuilder) return;
+        var exBtn = document.createElement('button');
+        exBtn.textContent = 'Export folder as ZIP';
+        if (nfBtn.className) exBtn.className = nfBtn.className;
+        var st = nfBtn.getAttribute('style'); if (st) exBtn.setAttribute('style', st);
+        nfBtn.parentNode.appendChild(exBtn);
+        exBtn.onclick = async function() {
+          try {
+            var files = [];
+            async function walk(dir, prefix) {
+              var names = await VFS.listDir(dir);
+              for (var i = 0; i < names.length; i++) {
+                var nm = (typeof names[i] === 'string') ? names[i] : names[i].name;
+                if (typeof nm !== 'string' || !nm) continue;
+                var full = (dir === '/' ? '' : dir) + '/' + nm;
+                var isD = nm.slice(-1) === '/' || nm.indexOf('.') === -1;
+                if (isD) { await walk(full, prefix + nm + '/'); }
+                else {
+                  var c = await VFS.readFile(full);
+                  var bytes;
+                  if (typeof c === 'string' && c.indexOf('data:') === 0) {
+                    var bin = atob((c.split(',')[1] || ''));
+                    bytes = new Uint8Array(bin.length);
+                    for (var j = 0; j < bin.length; j++) bytes[j] = bin.charCodeAt(j);
+                  } else {
+                    bytes = new TextEncoder().encode(String(c));
+                  }
+                  files.push({ name: prefix + nm, bytes: bytes });
+                }
+              }
+            }
+            await walk(currentPath, '');
+            if (!files.length) { showNotif('Files', 'Nothing to export in this folder.'); return; }
+            var ab = await MWO.ZipBuilder.buildZip(files);
+            var u8 = new Uint8Array(ab);
+            var bstr = ''; for (var k = 0; k < u8.length; k++) bstr += String.fromCharCode(u8[k]);
+            try {
+              await VFS.mkdir('/Downloads');
+              await VFS.writeFile('/Downloads/' + (currentPath.split('/').filter(Boolean).pop() || 'mossy-export') + '.zip', 'data:application/zip;base64,' + btoa(bstr));
+            } catch (e) {}
+            var blob = new Blob([ab], { type: 'application/zip' });
+            var url = URL.createObjectURL(blob);
+            var dl = document.createElement('a');
+            dl.href = url;
+            dl.download = (currentPath.split('/').filter(Boolean).pop() || 'mossy-export') + '.zip';
+            document.body.appendChild(dl); dl.click(); dl.remove();
+            setTimeout(function() { URL.revokeObjectURL(url); }, 5000);
+            showNotif('Files', 'Exported ' + files.length + ' files as a real .zip (a copy is in Downloads).');
+          } catch (e) { showNotif('Files', 'Export failed: ' + (e && e.message)); }
+        };
+      })();
 
       renderDir();
     }
@@ -10010,20 +10275,20 @@ MWO.Browser = (function() {
       <!-- Toolbar -->
       <div id="mwb-toolbar" style="display:flex;align-items:center;background:#1f2338;padding:6px 10px;gap:8px;border-bottom:1px solid rgba(255,255,255,0.08);min-height:48px">
         <button id="mwb-back" title="Back" style="height:38px;width:38px;min-width:38px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:8px;color:#fff;font-size:15px;cursor:pointer">◀</button>
-        <button id="mwb-forward" title="Forward" style="height:38px;width:38px;min-width:38px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:8px;color:#fff;font-size:15px;cursor:pointer">Run</button>
- <button id="mwb-reload" title="Reload" style="height:38px;width:38px;min-width:38px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:8px;color:#fff;font-size:15px;cursor:pointer"></button>
- <button id="mwb-home" title="Home Page" style="height:38px;width:38px;min-width:38px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:8px;color:#fff;font-size:15px;cursor:pointer"></button>
+        <button id="mwb-forward" title="Forward" style="height:38px;width:38px;min-width:38px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:8px;color:#fff;font-size:15px;cursor:pointer">▶</button>
+ <button id="mwb-reload" title="Reload" style="height:38px;width:38px;min-width:38px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:8px;color:#fff;font-size:15px;cursor:pointer">↻</button>
+ <button id="mwb-home" title="Home Page" style="height:38px;min-width:38px;padding:0 8px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:8px;color:#fff;font-size:13px;cursor:pointer">Home</button>
 
         <!-- URL Input Container -->
         <div style="flex:1;height:38px;display:flex;align-items:center;background:rgba(0,0,0,0.35);border:1px solid rgba(255,255,255,0.15);border-radius:8px;padding:0 10px;gap:8px">
           <span id="mwb-scheme-icon" style="font-size:14px;color:#8a99ad"></span>
-          <input id="mwb-url-input" type="text" placeholder="Search Wikipedia or type URL..." style="flex:1;background:transparent;border:none;color:#fff;font-size:14px;outline:none" />
+          <input id="mwb-url-input" type="text" placeholder="Search the web or type URL..." style="flex:1;background:transparent;border:none;color:#fff;font-size:14px;outline:none" />
           <button id="mwb-go-btn" style="background:var(--accent, #4e9eff);border:none;border-radius:6px;color:#fff;padding:4px 10px;font-size:12px;font-weight:bold;cursor:pointer">Go</button>
         </div>
 
         <button id="mwb-star" title="Bookmark Page" style="height:38px;width:38px;min-width:38px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:8px;color:#fff;font-size:16px;cursor:pointer">Star</button>
+        <button id="mwb-external" title="Open this page in a new tab (works for sites that refuse embedding, like Google)" style="height:38px;padding:0 12px;display:flex;align-items:center;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:8px;color:#fff;font-size:12px;font-weight:bold;cursor:pointer">↗ New Tab</button>
         <button id="mwb-downloads-toggle" title="Downloads" style="height:38px;padding:0 12px;display:flex;align-items:center;gap:6px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:8px;color:#fff;font-size:14px;cursor:pointer;position:relative">
-          <span>In</span>
           <span style="font-size:12px;font-weight:bold">Downloads</span>
           <span id="mwb-dl-badge" style="background:#ff3b30;color:#fff;border-radius:10px;padding:1px 6px;font-size:11px;font-weight:bold;display:none">0</span>
         </button>
@@ -10036,7 +10301,7 @@ MWO.Browser = (function() {
       <div id="mwb-downloads-panel" style="position:absolute;bottom:0;left:0;right:0;max-height:55%;background:#161829;border-top:2px solid var(--accent, #4e9eff);box-shadow:0 -6px 20px rgba(0,0,0,0.6);display:none;flex-direction:column;z-index:100">
         <div style="padding:10px 14px;background:#1f223a;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.08)">
           <div style="font-weight:bold;font-size:14px;display:flex;align-items:center;gap:8px">
-            <span>In Downloads Manager</span>
+            <span>Downloads Manager</span>
           </div>
           <div style="display:flex;gap:8px">
             <button id="mwb-new-dl-toggle" style="background:var(--accent, #4e9eff);border:none;border-radius:6px;color:#fff;padding:6px 12px;font-size:12px;font-weight:bold;cursor:pointer;height:34px">＋ New Download</button>
@@ -10372,7 +10637,7 @@ MWO.Browser = (function() {
           <!-- Big Search Box -->
           <div style="width:100%;display:flex;gap:8px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);border-radius:12px;padding:6px 12px;box-shadow:0 8px 24px rgba(0,0,0,0.3)">
             <span style="font-size:18px;color:#8a99ad;align-self:center"></span>
-            <input id="mwb-home-search-input" type="text" placeholder="Search Wikipedia or type URL..." style="flex:1;background:transparent;border:none;color:#fff;font-size:15px;padding:8px;outline:none" />
+            <input id="mwb-home-search-input" type="text" placeholder="Search the web or type URL..." style="flex:1;background:transparent;border:none;color:#fff;font-size:15px;padding:8px;outline:none" />
             <button id="mwb-home-search-btn" style="background:var(--accent, #4e9eff);border:none;border-radius:8px;color:#fff;padding:8px 20px;font-weight:bold;cursor:pointer;font-size:14px">Search</button>
           </div>
 
@@ -10484,96 +10749,119 @@ MWO.Browser = (function() {
       tab.overlayEl.style.display = 'block';
 
       tab.overlayEl.innerHTML = `
-        <div style="max-width:800px;margin:20px auto">
-          <div style="margin-bottom:20px;border-bottom:1px solid rgba(255,255,255,0.1);padding-bottom:12px">
-            <h2 style="margin:0 0 6px 0;font-size:20px;color:#4e9eff">Searching Wikipedia...</h2>
-            <div style="font-size:13px;color:#8a99ad">Query: "${escapeHTML(query)}"</div>
+        <div style="max-width:820px;margin:20px auto">
+          <h2 style="margin:0 0 6px 0;font-size:20px;color:#4e9eff">Searching the web for "${escapeHTML(query)}"...</h2>
+          <div style="font-size:13px;color:#8a99ad">Asking DuckDuckGo and Wikipedia (live internet search)</div>
+        </div>
+      `;
+
+      const ddgP = fetch('https://api.duckduckgo.com/?q=' + encodeURIComponent(query) + '&format=json&no_html=1&skip_disambig=1')
+        .then(r => r.ok ? r.json() : null).catch(() => null);
+      const wikiP = fetch('https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=' + encodeURIComponent(query) + '&format=json&origin=*&srlimit=10')
+        .then(r => r.ok ? r.json() : null).catch(() => null);
+
+      const [ddgRes, wikiRes] = await Promise.allSettled([ddgP, wikiP]);
+      const ddg = ddgRes.status === 'fulfilled' ? ddgRes.value : null;
+      const wiki = wikiRes.status === 'fulfilled' ? wikiRes.value : null;
+
+      const ddgAbstract = ddg && ddg.AbstractText ? { text: ddg.AbstractText, url: ddg.AbstractURL, source: ddg.AbstractSource } : null;
+      let ddgTopics = [];
+      if (ddg && Array.isArray(ddg.RelatedTopics)) {
+        ddg.RelatedTopics.forEach(function(t) {
+          if (ddgTopics.length >= 8) return;
+          if (t && t.FirstURL && t.Text) {
+            ddgTopics.push({ url: t.FirstURL, text: t.Text });
+          } else if (t && Array.isArray(t.Topics)) {
+            t.Topics.forEach(function(s) {
+              if (ddgTopics.length < 8 && s && s.FirstURL && s.Text) ddgTopics.push({ url: s.FirstURL, text: s.Text });
+            });
+          }
+        });
+      }
+      const wikiResults = (wiki && wiki.query && wiki.query.search) ? wiki.query.search : [];
+      const googleLink = 'https://www.google.com/search?q=' + encodeURIComponent(query);
+      const ddgLink = 'https://duckduckgo.com/?q=' + encodeURIComponent(query);
+
+      const nothingFound = !ddgAbstract && ddgTopics.length === 0 && wikiResults.length === 0;
+
+      let html = `
+        <div style="max-width:820px;margin:20px auto">
+          <div style="margin-bottom:20px;border-bottom:1px solid rgba(255,255,255,0.1);padding-bottom:12px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">
+            <div>
+              <h2 style="margin:0 0 4px 0;font-size:20px;color:#4e9eff">Search Results</h2>
+              <div style="font-size:13px;color:#8a99ad">Web + encyclopedia results for "${escapeHTML(query)}"</div>
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              <button class="mwb-ext-search" data-link="${escapeHTML(googleLink)}" style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.14);border-radius:8px;color:#fff;padding:6px 12px;font-size:12px;cursor:pointer">Open in Google (new tab)</button>
+              <button class="mwb-ext-search" data-link="${escapeHTML(ddgLink)}" style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.14);border-radius:8px;color:#fff;padding:6px 12px;font-size:12px;cursor:pointer">Open in DuckDuckGo (new tab)</button>
+            </div>
           </div>
-          <div style="display:flex;align-items:center;gap:10px;color:#aaa">
-            <div style="font-size:20px">⏳</div>
-            <div>Fetching search results...</div>
+      `;
+
+      if (nothingFound) {
+        html += `
+          <div style="padding:20px;background:rgba(255,255,255,0.03);border-radius:10px;text-align:center;color:#8a99ad;margin-bottom:16px">
+            ${ddg || wiki ? 'No results found for that.' : 'Could not reach the search services (offline?).'} Use the buttons above to search in a new tab.
+          </div>
+        `;
+      }
+
+      if (ddgAbstract) {
+        html += `
+          <div style="background:rgba(78,158,255,0.08);border:1px solid rgba(78,158,255,0.25);border-radius:12px;padding:16px;margin-bottom:18px">
+            <div style="font-size:12px;color:#4e9eff;font-weight:bold;margin-bottom:6px">Instant answer (DuckDuckGo${ddgAbstract.source ? ' / ' + escapeHTML(ddgAbstract.source) : ''})</div>
+            <div style="font-size:14px;line-height:1.55;color:#e6e9f0">${escapeHTML(ddgAbstract.text)}</div>
+            ${ddgAbstract.url ? `<div class="mwb-sr-item" data-url="${escapeHTML(ddgAbstract.url)}" style="margin-top:10px;font-size:12px;color:#4e9eff;cursor:pointer;text-decoration:underline">Read the full source</div>` : ''}
+          </div>
+        `;
+      }
+
+      if (ddgTopics.length) {
+        html += `<div style="font-size:13px;color:#8a99ad;font-weight:bold;margin:14px 0 10px 0">Web results</div>`;
+        ddgTopics.forEach(t => {
+          html += `
+            <div class="mwb-sr-item" data-url="${escapeHTML(t.url)}" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:13px 14px;cursor:pointer;margin-bottom:10px">
+              <div style="font-size:15px;color:#9fc4ff;margin-bottom:3px">${escapeHTML(t.text.split(' - ')[0])}</div>
+              <div style="font-size:12px;color:#a8b3c7;line-height:1.4">${escapeHTML(t.text)}</div>
+              <div style="font-size:11px;color:#8a99ad;margin-top:5px">${escapeHTML(t.url)}</div>
+            </div>
+          `;
+        });
+      }
+
+      if (wikiResults.length) {
+        html += `<div style="font-size:13px;color:#8a99ad;font-weight:bold;margin:14px 0 10px 0">Wikipedia</div>`;
+        wikiResults.forEach(item => {
+          const wikiUrl = `https://en.wikipedia.org/wiki/${encodeURIComponent(item.title)}`;
+          html += `
+            <div class="mwb-sr-item" data-url="${escapeHTML(wikiUrl)}" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:13px 14px;cursor:pointer;margin-bottom:10px">
+              <div style="font-size:15px;font-weight:bold;color:#4e9eff;margin-bottom:3px">${escapeHTML(item.title)}</div>
+              <div style="font-size:12px;color:#c2c8d4;line-height:1.4">${escapeHTML(stripHTML(item.snippet))}...</div>
+            </div>
+          `;
+        });
+      }
+
+      html += `
+          <div style="margin-top:22px;padding-top:12px;border-top:1px solid rgba(255,255,255,0.08);font-size:12px;color:#666;text-align:center">
+            Live results from the DuckDuckGo Instant Answer API and Wikipedia. Sites that refuse embedding open via the New Tab button.
           </div>
         </div>
       `;
 
-      try {
-        const searchUrl = `https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(query)}&format=json&origin=*&srlimit=20`;
-        const res = await fetch(searchUrl);
-        if (!res.ok) throw new Error('HTTP ' + res.status);
-
-        const data = await res.json();
-        const results = (data.query && data.query.search) ? data.query.search : [];
-
-        if (results.length === 0) {
-          tab.overlayEl.innerHTML = `
-            <div style="max-width:800px;margin:20px auto">
-              <div style="margin-bottom:20px;border-bottom:1px solid rgba(255,255,255,0.1);padding-bottom:12px">
-                <h2 style="margin:0 0 6px 0;font-size:20px;color:#4e9eff">Search Results</h2>
-                <div style="font-size:13px;color:#8a99ad">Query: "${escapeHTML(query)}"</div>
-              </div>
-              <div style="padding:20px;background:rgba(255,255,255,0.03);border-radius:10px;text-align:center;color:#8a99ad">
-                No matching results found on Wikipedia.
-              </div>
-              <div style="margin-top:20px;font-size:12px;color:#666;text-align:center">Results from Wikipedia</div>
-            </div>
-          `;
-          return;
-        }
-
-        let itemsHtml = '';
-        results.forEach(item => {
-          const wikiUrl = `https://en.wikipedia.org/wiki/${encodeURIComponent(item.title)}`;
-          const cleanSnippet = stripHTML(item.snippet);
-
-          itemsHtml += `
-            <div class="mwb-sr-item" data-url="${escapeHTML(wikiUrl)}" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:14px;cursor:pointer;transition:all 0.2s">
-              <div style="font-size:16px;font-weight:bold;color:#4e9eff;margin-bottom:4px">${escapeHTML(item.title)}</div>
-              <div style="font-size:13px;color:#cccccc;line-height:1.4">${escapeHTML(cleanSnippet)}...</div>
-              <div style="font-size:11px;color:#8a99ad;margin-top:6px">${escapeHTML(wikiUrl)}</div>
-            </div>
-          `;
-        });
-
-        tab.overlayEl.innerHTML = `
-          <div style="max-width:800px;margin:20px auto">
-            <div style="margin-bottom:20px;border-bottom:1px solid rgba(255,255,255,0.1);padding-bottom:12px;display:flex;align-items:center;justify-space-between">
-              <div>
-                <h2 style="margin:0 0 4px 0;font-size:20px;color:#4e9eff">Search Results</h2>
-                <div style="font-size:13px;color:#8a99ad">Found ${results.length} results for "${escapeHTML(query)}"</div>
-              </div>
-              <div style="font-size:12px;color:#8a99ad;background:rgba(255,255,255,0.06);padding:4px 10px;border-radius:6px">Source: Wikipedia</div>
-            </div>
-
-            <div style="display:flex;flex-direction:column;gap:12px">
-              ${itemsHtml}
-            </div>
-
-            <div style="margin-top:24px;padding-top:12px;border-top:1px solid rgba(255,255,255,0.08);font-size:12px;color:#666;text-align:center">
-              Results from Wikipedia
-            </div>
-          </div>
-        `;
-
-        tab.overlayEl.querySelectorAll('.mwb-sr-item').forEach(el => {
-          el.onclick = () => {
-            const url = el.getAttribute('data-url');
-            if (url) navigateTab(tab, url);
-          };
-        });
-      } catch(err) {
-        tab.overlayEl.innerHTML = `
-          <div style="max-width:800px;margin:20px auto">
-            <div style="margin-bottom:20px;border-bottom:1px solid rgba(255,255,255,0.1);padding-bottom:12px">
-              <h2 style="margin:0 0 6px 0;font-size:20px;color:#ff5555">Search Failed</h2>
-              <div style="font-size:13px;color:#8a99ad">Query: "${escapeHTML(query)}"</div>
-            </div>
-            <div style="padding:16px;background:rgba(255,85,85,0.1);border:1px solid rgba(255,85,85,0.3);border-radius:10px;color:#ff8888">
-              Failed to load search results. Please check your internet connection.
-            </div>
-            <div style="margin-top:20px;font-size:12px;color:#666;text-align:center">Results from Wikipedia</div>
-          </div>
-        `;
-      }
+      tab.overlayEl.innerHTML = html;
+      tab.overlayEl.querySelectorAll('.mwb-sr-item').forEach(el => {
+        el.onclick = () => {
+          const url = el.getAttribute('data-url');
+          if (url) navigateTab(tab, url);
+        };
+      });
+      tab.overlayEl.querySelectorAll('.mwb-ext-search').forEach(el => {
+        el.onclick = () => {
+          const link = el.getAttribute('data-link');
+          if (link) { try { window.open(link, '_blank'); } catch (e) {} }
+        };
+      });
     }
 
     /* ----------------------------------------------------------------------
@@ -10600,10 +10888,10 @@ MWO.Browser = (function() {
 
           <div style="display:flex;gap:10px;justify-content:flex-end">
             <button id="mwb-fb-open-dl" style="background:var(--accent, #4e9eff);border:none;border-radius:8px;color:#fff;padding:8px 16px;font-weight:bold;cursor:pointer;font-size:13px;height:38px">
-              In Open Downloads
+              Open Downloads
             </button>
             <button id="mwb-fb-home" style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:8px;color:#fff;padding:8px 16px;cursor:pointer;font-size:13px;height:38px">
- Back to Home
+              Back to Home
             </button>
           </div>
         </div>
@@ -10869,6 +11157,15 @@ MWO.Browser = (function() {
     }
 
     goBtn.onclick = triggerNavInput;
+
+    const externalBtn = winBody.querySelector('#mwb-external');
+    if (externalBtn) {
+      externalBtn.onclick = () => {
+        const tab = getActiveTab();
+        if (!tab || !tab.url || tab.url === 'about:home') return;
+        try { window.open(tab.url, '_blank'); } catch (e) {}
+      };
+    }
     urlInput.onkeydown = (e) => { if (e.key === 'Enter') triggerNavInput(); };
 
     starBtn.onclick = () => {
@@ -10986,9 +11283,9 @@ if (typeof MWO !== 'undefined') {
   MWO.Updates = MWO.Updates || {};
 
   MWO.Updates.history = [
-    { v: '1.0.0', date: '5012-10-13', note: 'Production release Mossdrop — full system stability, MossGuard security suite, and touch-optimized shell.' },
-    { v: '0.9.5', date: '5012-07-22', note: 'Added sandboxed HTML5 game runtime and background VFS synchronization.' },
-    { v: '0.9.0', date: '5012-03-08', note: 'First boot on moss hardware architecture.' },
+    { v: '1.0.0', date: '2026-10-13', note: 'Production release Mossdrop — full system stability, MossGuard security suite, and touch-optimized shell.' },
+    { v: '0.9.5', date: '2026-07-22', note: 'Added sandboxed HTML5 game runtime and background VFS synchronization.' },
+    { v: '0.9.0', date: '2026-03-08', note: 'First boot on moss hardware architecture.' },
     { v: '0.8.0', date: '5011-11-15', note: 'Introduced Touch-VFS filesystem layer and multi-window manager.' },
     { v: '0.5.0', date: '5010-04-22', note: 'Alpha release of Spores UI and core process scheduler.' },
     { v: '0.1.0', date: '5008-11-14', note: 'Initial moss-kernel prototype created in cave lab.' }
@@ -11006,11 +11303,15 @@ if (typeof MWO !== 'undefined') {
     return 0;
   }
 
+  // Official update manifest, served straight from the GitHub repo.
+  // Raw file URLs are CORS-enabled, so "Check for Updates" works out of the box.
+  var DEFAULT_MANIFEST_URL = 'https://raw.githubusercontent.com/foxydev109-ux/mossywoss-os/main/update-manifest.json';
+
   MWO.Updates.getManifestUrl = function() {
     try {
-      return localStorage.getItem('mwo_update_url') || '';
+      return localStorage.getItem('mwo_update_url') || DEFAULT_MANIFEST_URL;
     } catch(e) {
-      return '';
+      return DEFAULT_MANIFEST_URL;
     }
   };
 
@@ -11037,7 +11338,7 @@ if (typeof MWO !== 'undefined') {
   MWO.Updates.checkForUpdates = async function(customUrl) {
     var url = customUrl || MWO.Updates.getManifestUrl();
     if (!url) {
-      return { status: 'no_url', message: 'No manifest URL configured. Please set an update server URL.' };
+      return { status: 'no_url', message: 'No update server set. Add a manifest URL in the settings below.' };
     }
 
     try {
@@ -11675,7 +11976,7 @@ if (typeof MWO !== 'undefined') {
               <div style="font-size:12px;color:#94a3b8;margin-top:2px">Codename: ${MWO.version.codename}</div>
             </div>
             <button id="mg-check-upd-btn" ${updateState.checking?'disabled':''} style="padding:10px 16px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:8px;color:#fff;font-weight:600;font-size:12px;cursor:pointer">
- ${updateState.checking? ' Checking...': ' Check for Updates'}
+ ${updateState.checking? 'Checking...': 'Check for Updates'}
             </button>
           </div>
 
@@ -11694,7 +11995,7 @@ if (typeof MWO !== 'undefined') {
 
             ${!manifestUrl ? `
               <div style="font-size:11px;color:#94a3b8;background:rgba(0,0,0,0.2);padding:8px 10px;border-radius:6px;margin-top:4px">
-                ℹ Setup Instructions: Set a manifest URL above to receive OS updates over HTTP/HTTPS. A manifest JSON must provide <code>version</code>, <code>url</code>, and <code>notes</code>.
+                Setup instructions: Set a manifest URL above to receive OS updates over HTTP/HTTPS. A manifest JSON must provide <code>version</code>, <code>url</code>, and <code>notes</code>.
               </div>
             ` : ''}
           </div>
@@ -11734,8 +12035,8 @@ if (typeof MWO !== 'undefined') {
           ` : ''}
 
           ${updateState.error ? `
-            <div style="background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.3);border-radius:8px;padding:10px 12px;color:#fca5a5;font-size:12px">
-              [FAIL] ${updateState.error}
+            <div style="background:rgba(251,191,36,0.12);border:1px solid rgba(251,191,36,0.3);border-radius:8px;padding:10px 12px;color:#fcd34d;font-size:12px">
+              Update check: ${updateState.error} (You can still use MossyGuard fully offline.)
             </div>
           ` : ''}
 
@@ -21059,7 +21360,7 @@ var MWO = MWO || {};
   // =========================================================================
   MWO.registerApp({
     id: 'fox-life',
-    name: 'Fox Life Fox',
+    name: 'Fox Life',
     description: 'Deep survival life sim',
     icon: 'fox-life',
     category: 'game',
@@ -21069,7 +21370,7 @@ var MWO = MWO || {};
 
   MWO.registerApp({
     id: 'village-life',
- name: 'Village Life ',
+ name: 'Village Life',
     description: 'Top-down village management sim',
     icon: 'village-life',
     category: 'game',
@@ -21079,7 +21380,7 @@ var MWO = MWO || {};
 
   MWO.registerApp({
     id: 'pet-life',
- name: 'Pet Life ',
+ name: 'Pet Life',
     description: 'Deep virtual pet simulation',
     icon: 'pet-life',
     category: 'game',
@@ -21089,7 +21390,7 @@ var MWO = MWO || {};
 
   MWO.registerApp({
     id: 'zombie-siege',
- name: 'Zombie Siege ',
+ name: 'Zombie Siege',
     description: '2D top-down wave shooter',
     icon: 'zombie-siege',
     category: 'game',
@@ -21099,7 +21400,7 @@ var MWO = MWO || {};
 
   MWO.registerApp({
     id: 'neon-strike',
- name: 'Neon Strike ',
+ name: 'Neon Strike',
     description: 'Twin-stick neon arcade shooter',
     icon: 'neon-strike',
     category: 'game',
@@ -22030,7 +22331,7 @@ var MWO = MWO || {};
               win.querySelector('#sky-overlay').innerHTML =
                 '<h1 style="color:#e94560;">FINISH! WIN</h1>' +
                 '<p style="margin:12px 0;">Total Time: ' + lapTime.toFixed(1) + 's</p>' +
-                '<button onclick="location.reload()" class="mw-btn primary">Play Again</button>';
+                '<button class="mw-btn primary mw-restart" data-app="skyracers3d">Play Again</button>';
             } else {
               win.querySelector('#sky-lap').textContent = player.lap + '/3';
             }
@@ -22323,7 +22624,7 @@ var MWO = MWO || {};
                 win.querySelector('#sf-overlay').innerHTML =
                   '<h1 style="color:#e94560;">DEFEATED! X</h1>' +
                   '<p>Total Kills: ' + kills + ' | Wave: ' + wave + '</p>' +
-                  '<button onclick="location.reload()" class="mw-btn primary">Restart</button>';
+                  '<button class="mw-btn primary mw-restart" data-app="starfighter3d">Restart</button>';
               }
             }
             if (elsr.life <= 0) enemyLasers.splice(el, 1);
@@ -22573,7 +22874,7 @@ var MWO = MWO || {};
                   win.querySelector('#cd-overlay').style.display = 'flex';
                   win.querySelector('#cd-overlay').innerHTML =
  '<h1 style="color:#e94560;">YOU DIED! </h1>' +
-                    '<button onclick="location.reload()" class="mw-btn primary">Try Again</button>';
+                    '<button class="mw-btn primary mw-restart" data-app="crimsondepths">Try Again</button>';
                 }
               }
             }
@@ -22594,7 +22895,7 @@ var MWO = MWO || {};
               win.querySelector('#cd-overlay').style.display = 'flex';
               win.querySelector('#cd-overlay').innerHTML =
                 '<h1 style="color:#2ecc71;">DUNGEON ESCAPED! WIN</h1>' +
-                '<button onclick="location.reload()" class="mw-btn primary">Main Menu</button>';
+                '<button class="mw-btn primary mw-restart" data-app="crimsondepths">Main Menu</button>';
             } else {
               win.querySelector('#cd-floor').textContent = player.floor + '/5';
               player.x = 3.0; player.z = 3.0; player.hasKey = false;
@@ -22794,7 +23095,7 @@ var MWO = MWO || {};
                 win.querySelector('#sd-overlay').style.display = 'flex';
                 win.querySelector('#sd-overlay').innerHTML =
                   '<h1 style="color:#e94560;">CASTLE FELL! X</h1>' +
-                  '<button onclick="location.reload()" class="mw-btn primary">Try Again</button>';
+                  '<button class="mw-btn primary mw-restart" data-app="siegedefense3d">Try Again</button>';
               }
               continue;
             }
@@ -22844,7 +23145,7 @@ var MWO = MWO || {};
               win.querySelector('#sd-overlay').style.display = 'flex';
               win.querySelector('#sd-overlay').innerHTML =
                 '<h1 style="color:#2ecc71;">VICTORY! WIN</h1>' +
-                '<button onclick="location.reload()" class="mw-btn primary">Play Again</button>';
+                '<button class="mw-btn primary mw-restart" data-app="siegedefense3d">Play Again</button>';
             } else {
               win.querySelector('#sd-wave').textContent = wave + '/15';
               spawnWaveEnemies(wave);
@@ -22895,6 +23196,18 @@ var MWO = MWO || {};
   });
 
 })();
+
+/* Death/finish screens restart the GAME, not the whole OS.
+   (location.reload used to wipe the session and force a re-login.) */
+document.addEventListener('click', function(e) {
+  var t = e.target;
+  while (t && t !== document.body && !(t.classList && t.classList.contains('mw-restart'))) t = t.parentElement;
+  if (!t || !t.classList || !t.classList.contains('mw-restart')) return;
+  var appId = t.getAttribute('data-app');
+  var winEl = t.closest ? t.closest('.window') : null;
+  if (winEl && winEl.id) { try { MWO.wm.close(winEl.id); } catch (err) {} }
+  if (appId && MWO.apps[appId]) MWO.launchApp(appId);
+});
 
 
 // === megapack.js ===
@@ -25780,12 +26093,12 @@ var MWO = MWO || {};
       var windBtn = win.querySelector('.btn-wind');
 
       var tools = [
- { id: 'bell', name: 'Bell ' },
- { id: 'pluck', name: 'Pluck ' },
- { id: 'pad', name: 'Pad ' },
- { id: 'chime', name: 'Chime ' },
- { id: 'bass', name: 'Bass ' },
-        { id: 'water', name: 'Water ' }
+ { id: 'bell', name: 'Bell' },
+ { id: 'pluck', name: 'Pluck' },
+ { id: 'pad', name: 'Pad' },
+ { id: 'chime', name: 'Chime' },
+ { id: 'bass', name: 'Bass' },
+        { id: 'water', name: 'Water' }
       ];
 
       var activeTool = 'bell';
@@ -26031,9 +26344,9 @@ var MWO = MWO || {};
       var chartCtx = chartCvs.getContext('2d');
 
       var MOODS = [
- { id: 'joyful', name: 'Joyful ', color: '#f59e0b' },
- { id: 'calm', name: 'Calm ', color: '#38bdf8' },
- { id: 'energetic', name: 'Energetic ', color: '#eab308' },
+ { id: 'joyful', name: 'Joyful', color: '#f59e0b' },
+ { id: 'calm', name: 'Calm', color: '#38bdf8' },
+ { id: 'energetic', name: 'Energetic', color: '#eab308' },
  { id: 'sad', name: 'Sad ', color: '#6366f1' },
  { id: 'anxious', name: 'Anxious ', color: '#a855f7' },
  { id: 'angry', name: 'Angry ', color: '#ef4444' },
@@ -28507,6 +28820,238 @@ var MWO = MWO || {};
   }
 
 })(typeof window !== 'undefined' ? window : global);
+
+
+// === gamepad.js ===
+/* Game Pad: on-screen controller for keyboard-only games.
+   Dispatches genuine KeyboardEvents on document, so every game that
+   listens for keydown/keyup (Serpent, Blockfall, Paddle Duel, the
+   MegaPack games, ...) becomes playable on touch devices. */
+(function(MWO) {
+  'use strict';
+  MWO.registerApp({
+    id: 'gamepad',
+    name: 'Game Pad',
+    description: 'On-screen D-pad + buttons for games without touch controls. Open it next to any game.',
+    icon: 'gamepad',
+    category: 'app',
+    installed: false,
+    launch: function() {
+      var win = MWO.wm.create({ id: 'gamepad-' + Date.now(), title: 'Game Pad', icon: 'gamepad', width: 400, height: 460, resizable: true });
+      var body = win;
+      body.style.background = '#141826';
+      body.innerHTML = `
+        <div style="padding:10px 14px;font-size:0.8em;color:#9aa4b8">
+          Works with any game that uses keyboard controls. Hold buttons like you would hold keys.
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:0 18px 8px 18px">
+          <div style="position:relative;width:150px;height:150px" id="gp-dpad">
+            <button class="gp-b" data-key="ArrowUp" data-code="ArrowUp" style="position:absolute;left:50px;top:0;width:50px;height:50px">^</button>
+            <button class="gp-b" data-key="ArrowLeft" data-code="ArrowLeft" style="position:absolute;left:0;top:50px;width:50px;height:50px">&lt;</button>
+            <button class="gp-b" data-key="ArrowDown" data-code="ArrowDown" style="position:absolute;left:50px;top:100px;width:50px;height:50px">v</button>
+            <button class="gp-b" data-key="ArrowRight" data-code="ArrowRight" style="position:absolute;left:100px;top:50px;width:50px;height:50px">&gt;</button>
+          </div>
+          <div style="position:relative;width:140px;height:170px">
+            <button class="gp-b" data-key=" " data-code="Space" style="position:absolute;left:35px;top:0;width:70px;height:50px;border-radius:40px">SPACE</button>
+            <button class="gp-b" data-key="z" data-code="KeyZ" style="position:absolute;left:0;top:60px;width:60px;height:50px;border-radius:50%">Z</button>
+            <button class="gp-b" data-key="x" data-code="KeyX" style="position:absolute;left:75px;top:60px;width:60px;height:50px;border-radius:50%">X</button>
+            <button class="gp-b" data-key="Enter" data-code="Enter" style="position:absolute;left:30px;top:120px;width:80px;height:38px">ENTER</button>
+          </div>
+        </div>
+        <div style="text-align:center;padding-top:6px">
+          <label style="font-size:0.75em;color:#9aa4b8"><input type="checkbox" id="gp-sticky" /> hold-drag mode (keys stay pressed while your finger is down)</label>
+        </div>
+      `;
+      var styleEl = document.createElement('style');
+      styleEl.textContent = '.gp-b{background:#232a3f;border:1px solid #3a4460;color:#e7ecf7;border-radius:10px;font-size:15px;font-weight:bold;cursor:pointer;touch-action:none;user-select:none;-webkit-user-select:none}'
+        + '.gp-b:active,.gp-b.pressed{background:#2e7d4f;border-color:#2e7d4f;color:#fff}';
+      body.appendChild(styleEl);
+      body.querySelectorAll('.gp-b').forEach(function(b) {
+        var fire = function(type) {
+          document.dispatchEvent(new KeyboardEvent(type, { key: b.getAttribute('data-key'), code: b.getAttribute('data-code'), bubbles: true, cancelable: true }));
+        };
+        var down = function(e) { e.preventDefault(); b.classList.add('pressed'); fire('keydown'); };
+        var up = function(e) { if (e) e.preventDefault(); b.classList.remove('pressed'); fire('keyup'); };
+        b.addEventListener('touchstart', down, { passive: false });
+        b.addEventListener('touchend', up);
+        b.addEventListener('touchcancel', up);
+        b.addEventListener('mousedown', down);
+        b.addEventListener('mouseup', up);
+        b.addEventListener('mouseleave', function() { if (b.classList.contains('pressed')) up(); });
+      });
+      return win;
+    }
+  });
+})(MWO);
+
+
+// === peinspector.js ===
+/* PE Inspector: genuinely parses Windows PE executables (.exe/.dll) stored
+   in the VFS. Reads the DOS MZ header, PE signature, machine type, sections
+   and import table from the real file bytes. Static inspection only - it is
+   honest about the fact that Windows programs cannot execute in this OS. */
+(function(MWO) {
+  'use strict';
+  function bytesFromVFS(content) {
+    if (typeof content === 'string' && content.indexOf('data:') === 0) {
+      var b64 = content.split(',')[1] || '';
+      var bin = atob(b64);
+      var u = new Uint8Array(bin.length);
+      for (var i = 0; i < bin.length; i++) u[i] = bin.charCodeAt(i);
+      return u;
+    }
+    return null;
+  }
+  function parsePE(u) {
+    var dv = new DataView(u.buffer, u.byteOffset, u.byteLength);
+    if (u.length < 0x40 || dv.getUint16(0, true) !== 0x5A4D) return { error: 'No DOS MZ header (not a Windows executable).' };
+    var e_lfanew = dv.getUint32(0x3C, true);
+    if (e_lfanew + 24 > u.length || dv.getUint32(e_lfanew, true) !== 0x00004550) return { error: 'PE signature not found (not a valid PE).' };
+    var pe = e_lfanew;
+    var machine = dv.getUint16(pe + 4, true);
+    var numSections = dv.getUint16(pe + 6, true);
+    var timestamp = new Date(dv.getUint32(pe + 8, true) * 1000);
+    var optSize = dv.getUint16(pe + 20, true);
+    var magic = dv.getUint16(pe + 24, true);
+    var isPlus = (magic === 0x20b);
+    var subsystem = dv.getUint16(pe + 24 + 68, true);
+    var MACHINES = { 0x14c: 'x86 (32-bit)', 0x8664: 'x64 (64-bit)', 0x1c0: 'ARM Thumb', 0xAA64: 'ARM64', 0x1c4: 'ARMNT' };
+    var SUBSYS = { 1: 'Native', 2: 'GUI (windowed)', 3: 'Console', 5: 'OS/2', 7: 'POSIX', 10: 'EFI app' };
+    var sections = [];
+    var secOff = pe + 24 + optSize;
+    for (var s = 0; s < numSections && s < 96; s++) {
+      var o = secOff + s * 40;
+      if (o + 40 > u.length) break;
+      var name = '';
+      for (var c = 0; c < 8; c++) { var ch = u[o + c]; if (!ch) break; name += String.fromCharCode(ch); }
+      sections.push({ name: name, virtSize: dv.getUint32(o + 8, true), rawSize: dv.getUint32(o + 16, true), rawPtr: dv.getUint32(o + 20, true), flags: dv.getUint32(o + 36, true) });
+    }
+    // imports: data dir entry index 1
+    var ddOff = pe + 24 + (isPlus ? 112 : 96);
+    var imports = [];
+    if (ddOff + 16 <= u.length) {
+      var impRVA = dv.getUint32(ddOff + 8, true);
+      var impSize = dv.getUint32(ddOff + 12, true);
+      if (impRVA && impSize) {
+        // need VirtualAddress: re-read from section table
+        var secVAs = [];
+        for (var i = 0; i < sections.length; i++) { secVAs.push(null); }
+        for (var i = 0; i < numSections && i < 96; i++) {
+          var o2 = secOff + i * 40;
+          secVAs[i] = dv.getUint32(o2 + 12, true);
+        }
+        function rvaToOff2(rva) {
+          for (var i = 0; i < sections.length; i++) {
+            var vs = sections[i].virtSize || sections[i].rawSize;
+            if (rva >= secVAs[i] && rva < secVAs[i] + vs) return sections[i].rawPtr + (rva - secVAs[i]);
+          }
+          return 0;
+        }
+        var impOff = rvaToOff2(impRVA);
+        var guard = 0;
+        while (impOff && impOff + 20 <= u.length && guard++ < 64) {
+          var nameRVA = dv.getUint32(impOff + 12, true);
+          if (!nameRVA && !dv.getUint32(impOff, true)) break;
+          var nameOff = rvaToOff2(nameRVA);
+          var dll = '';
+          if (nameOff && nameOff < u.length) {
+            for (var c = nameOff; c < Math.min(u.length, nameOff + 64) && u[c]; c++) dll += String.fromCharCode(u[c]);
+          }
+          if (dll) imports.push(dll);
+          impOff += 20;
+        }
+      }
+    }
+    return {
+      machine: MACHINES[machine] || ('unknown (0x' + machine.toString(16) + ')'),
+      format: isPlus ? 'PE32+ (64-bit optional header)' : (magic === 0x10b ? 'PE32 (32-bit optional header)' : 'unknown (0x' + magic.toString(16) + ')'),
+      sections: sections, numSections: numSections,
+      timestamp: timestamp.toUTCString(),
+      subsystem: SUBSYS[subsystem] || ('other (' + subsystem + ')'),
+      imports: imports
+    };
+  }
+  MWO.registerApp({
+    id: 'pe-inspector',
+    name: 'PE Inspector',
+    description: 'Parse real Windows .exe/.dll files: headers, sections and imports. Honest static inspection.',
+    icon: 'binary',
+    category: 'app',
+    installed: false,
+    launch: function() {
+      var win = MWO.wm.create({ id: 'peinsp-' + Date.now(), title: 'PE Inspector', icon: 'binary', width: 620, height: 520, resizable: true });
+      var body = win;
+      body.style.cssText = 'background:#12151f;color:#dfe4f0;font-size:13px;padding:12px;overflow:auto';
+      body.innerHTML = `
+        <div style="font-weight:bold;margin-bottom:6px">PE Inspector</div>
+        <div style="color:#9aa4b8;margin-bottom:10px">Pick a file from your Downloads to analyze it as a real Windows executable.</div>
+        <div id="pe-list" style="margin-bottom:10px"></div>
+        <div style="display:flex;gap:8px;margin-bottom:10px">
+          <input id="pe-path" class="mw-input" placeholder="or type a full VFS path, e.g. /Downloads/program.exe" style="flex:1" />
+          <button id="pe-open" class="mw-btn primary">Analyze</button>
+        </div>
+        <div id="pe-out"></div>
+      `;
+      var out = body.querySelector('#pe-out');
+      function render(res, name) {
+        if (res.error) {
+          out.innerHTML = '<div style="padding:10px;background:rgba(245,158,11,0.12);border:1px solid rgba(245,158,11,0.3);border-radius:8px">' + res.error + '</div>';
+          return;
+        }
+        var secs = res.sections.map(function(s) {
+          return '<tr><td style="padding:3px 8px">' + s.name + '</td><td>' + s.rawSize + ' B</td><td>0x' + s.rawPtr.toString(16) + '</td></tr>';
+        }).join('');
+        var imps = res.imports.length ? res.imports.map(function(d) { return '<li>' + d + '</li>'; }).join('') : '<li>none found</li>';
+        out.innerHTML = `
+          <div style="padding:12px;background:#1a1f2e;border-radius:10px">
+            <div style="font-weight:bold;margin-bottom:8px">Valid PE executable: ${name}</div>
+            <div>Machine: <b>${res.machine}</b> | Format: <b>${res.format}</b></div>
+            <div>Subsystem: <b>${res.subsystem}</b> | Built: ${res.timestamp}</div>
+            <div style="margin-top:8px;font-weight:600">Sections (${res.numSections})</div>
+            <table style="border-collapse:collapse;font-size:12px"><tr><th style="text-align:left;padding:3px 8px">Name</th><th>Raw size</th><th>File offset</th></tr>${secs}</table>
+            <div style="margin-top:8px;font-weight:600">Imports (DLLs)</div>
+            <ul style="margin:4px 0 0 18px">${imps}</ul>
+            <div style="margin-top:10px;color:#9aa4b8;font-size:11px">Static inspection only. A browser OS cannot run Windows programs - this reads the real bytes of the file, it does not execute them.</div>
+          </div>`;
+      }
+      body.querySelector('#pe-open').onclick = async function() {
+        var path = body.querySelector('#pe-path').value.trim();
+        if (!path) return;
+        try {
+          var content = await MWO.fs.readFile(path);
+          var u = bytesFromVFS(content);
+          if (!u) { render({ error: 'That file is stored as text, not as binary data. Download it via the Browser first.' }, path); return; }
+          render(parsePE(u), path.split('/').pop());
+        } catch (e) { render({ error: 'Could not read ' + path + ': ' + e.message }, path); }
+      };
+      (async function() {
+        try {
+          var names = await MWO.fs.listDir('/Downloads');
+          var el = body.querySelector('#pe-list');
+          el.innerHTML = '<div style="color:#9aa4b8;margin-bottom:4px">In /Downloads:</div>';
+          var count = 0;
+          for (var i = 0; i < names.length && count < 12; i++) {
+            var nm = (typeof names[i] === 'string') ? names[i] : names[i].name;
+            if (typeof nm !== 'string') continue;
+            if (/\.exe$|\.dll$/i.test(nm)) {
+              count++;
+              var b = document.createElement('button');
+              b.textContent = nm;
+              b.style.cssText = 'margin:2px 6px 2px 0;padding:4px 10px;border-radius:6px;border:1px solid #2e3a55;background:#1a2033;color:#cfe0ff;cursor:pointer;font-size:12px';
+              var p = document.createElement('span');
+              (function(p, nm) {
+                b.onclick = function() { body.querySelector('#pe-path').value = '/Downloads/' + nm; body.querySelector('#pe-open').click(); };
+              })(p, nm);
+              el.appendChild(b);
+            }
+          }
+          if (!count) el.innerHTML += '<div style="color:#667">No .exe or .dll files yet - download one with the Browser (e.g. from a trusted open-source project).</div>';
+        } catch (e) {}
+      })();
+      return win;
+    }
+  });
+})(MWO);
 
 </script>
 </body>

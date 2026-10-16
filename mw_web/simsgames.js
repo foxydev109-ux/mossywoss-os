@@ -1795,7 +1795,7 @@ var MWO = MWO || {};
   // =========================================================================
   MWO.registerApp({
     id: 'fox-life',
-    name: 'Fox Life Fox',
+    name: 'Fox Life',
     description: 'Deep survival life sim',
     icon: 'fox-life',
     category: 'game',
@@ -1805,7 +1805,7 @@ var MWO = MWO || {};
 
   MWO.registerApp({
     id: 'village-life',
- name: 'Village Life ',
+ name: 'Village Life',
     description: 'Top-down village management sim',
     icon: 'village-life',
     category: 'game',
@@ -1815,7 +1815,7 @@ var MWO = MWO || {};
 
   MWO.registerApp({
     id: 'pet-life',
- name: 'Pet Life ',
+ name: 'Pet Life',
     description: 'Deep virtual pet simulation',
     icon: 'pet-life',
     category: 'game',
@@ -1825,7 +1825,7 @@ var MWO = MWO || {};
 
   MWO.registerApp({
     id: 'zombie-siege',
- name: 'Zombie Siege ',
+ name: 'Zombie Siege',
     description: '2D top-down wave shooter',
     icon: 'zombie-siege',
     category: 'game',
@@ -1835,7 +1835,7 @@ var MWO = MWO || {};
 
   MWO.registerApp({
     id: 'neon-strike',
- name: 'Neon Strike ',
+ name: 'Neon Strike',
     description: 'Twin-stick neon arcade shooter',
     icon: 'neon-strike',
     category: 'game',
