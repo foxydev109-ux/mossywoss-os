@@ -584,7 +584,7 @@
 
       body.querySelector('#fm-new-file').onclick = async () => {
         var name = prompt('Enter file name:');
-        if (name) { await VFS.writeFile(currentPath + '/' + name, 'Sample Content'); renderDir(); }
+        if (name) { await VFS.writeFile(currentPath + '/' + name, ''); renderDir(); }
       };
 
       // Export the current folder as a real .zip - device download AND a
