@@ -1,0 +1,5 @@
+{
+  "apps": [
+    { "id": "notepad", "name": "Notepad (test app)", "path": "C:\\Windows\\System32\\notepad.exe" }
+  ]
+}

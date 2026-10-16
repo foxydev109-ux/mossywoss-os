@@ -40,3 +40,14 @@
 ## Desktop
 - Two new original retro wallpapers (Retro Teal, Retro Fields) - original
   art, no copyrighted artwork, no Clippy.
+
+## Windows Host milestone (architecture + real code, untested on hardware yet)
+- host/mwo_host.py: real Windows host (Python 3.9+, pip install websockets):
+  one-time token auth, allowlist.json-only launches, y/n consent at the PC,
+  no shell, no filesystem access exposed to the browser.
+- hostlink.js: real browser-side Host Link app (connect, status, allowlist
+  view, request launch, disconnect) - installs from the Store.
+- docs/WINDOWS_HOST_ARCHITECTURE.md: ASCII diagrams, security model, honest
+  limitations (no display streaming yet; mixed-content rule), test matrix
+  starting with Notepad, and requirement 9: Roblox/Unity/Unreal are NOT
+  claimed until individually tested on real Windows hardware.

@@ -33,7 +33,7 @@ def assemble():
                 'maker.js', 'voxely3d.js',
                 'apps.js', 'browser.js', 'sec.js', 'publisher.js', 'games.js', 'animation.js', 'aura.js',
                 'recorder.js', 'mediaimport.js', 'visualcode.js',
-                'simsgames.js', 'games3d.js', 'megapack.js', 'oddities.js', 'vrvoxel.js',
+                'simsgames.js', 'games3d.js', 'megapack.js', 'oddities.js', 'hostlink.js', 'vrvoxel.js',
                 'gamepad.js', 'peinspector.js']
     
     js_parts = []
